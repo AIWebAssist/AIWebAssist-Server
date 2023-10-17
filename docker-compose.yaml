@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: dev
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on: 
