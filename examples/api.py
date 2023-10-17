@@ -18,6 +18,7 @@ def process_json():
 
 
 SOME_DB = dict()
+THREADS = dict()
 def init_agent(user_task,session_id):
     from scrape_anything import Agent
     from scrape_anything import ChatLLM
@@ -32,8 +33,7 @@ def init_agent(user_task,session_id):
         outgoing_data_queue=feed_from_agent
         ) 
     agnet = Agent(llm=ChatLLM(),max_loops=1)
-    thread = agnet.run_parallel(controller,task_to_accomplish=user_task)
-
+    THREADS[session_id] = agnet.run_parallel(controller,task_to_accomplish=user_task)
     SOME_DB[session_id] = (feed_from_chrome,feed_from_agent)
 
 def process_request(data,session_id):
@@ -54,4 +54,8 @@ def init_and_process(session_id,user_task,params):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    try:
+        app.run(debug=True)
+    finally:
+        for t in THREADS.values():
+            t.stop()
