@@ -3,12 +3,13 @@ FROM python:3.8 as base
 WORKDIR /app
 
 COPY . .
-RUN chmod +x /app/setup.sh
-RUN  /app/setup.sh
+RUN pip3 install -r requirements.txt
 
-CMD python -m pytest .
+CMD python example/api.py
 
 FROM base as dev
+
+RUN pip3 install -r requirements-dev.txt
 CMD sh -c "while sleep 1000; do :; done"
 
 
