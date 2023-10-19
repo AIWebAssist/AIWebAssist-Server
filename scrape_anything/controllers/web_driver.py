@@ -10,11 +10,12 @@ import time
 class WebDriverController(Controller):
 
 
-    def __init__(self,url,cache_to_pickle=False) -> None:
+    def __init__(self,url,user_task:str,cache_to_pickle=False) -> None:
+        super(user_task)
         try:
-
             clear_sessions(selenium_host="selenium-chrome")
             self.web_driver = start_browesr(selenium_host="selenium-chrome")
+            simulate_user_call(self.web_driver,user_task)
             self.web_driver.set_window_size(1024, 768)
             self.web_driver.get(url)
             self.url = url

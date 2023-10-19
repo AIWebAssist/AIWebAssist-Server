@@ -12,12 +12,13 @@ feed_from_agent = Queue(maxsize=1)
 
 controller = RemoteFeedController(
     incoming_data_queue=feed_from_chrome,
-    outgoing_data_queue=feed_from_agent
+    outgoing_data_queue=feed_from_agent,
+    user_task=user_task,
     ) 
 controller.unpickle(experiment,0)
 
 agnet = Agent(llm=ChatLLM(),max_loops=1)
-thread = agnet.run_parallel(controller,task_to_accomplish=user_task)
+thread = agnet.run_parallel(controller)
 
 call_to_action = feed_from_agent.get()
 print(call_to_action)

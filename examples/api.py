@@ -30,10 +30,11 @@ def init_agent(user_task,session_id):
 
     controller = RemoteFeedController(
         incoming_data_queue=feed_from_chrome,
-        outgoing_data_queue=feed_from_agent
+        outgoing_data_queue=feed_from_agent,
+        user_task=user_task,
         ) 
     agnet = Agent(llm=ChatLLM(),max_loops=1)
-    THREADS[session_id] = agnet.run_parallel(controller,task_to_accomplish=user_task)
+    THREADS[session_id] = agnet.run_parallel(controller)
     SOME_DB[session_id] = (feed_from_chrome,feed_from_agent)
 
 def process_request(data,session_id):

@@ -6,8 +6,8 @@ from ..view import *
 
 class Controller(ABC):
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self,user_task:str) -> None:
+        self.user_task = user_task
 
     @abstractmethod
     def fetch_infomration_on_screen(self,output_folder:str,loop_num:int):
@@ -31,7 +31,7 @@ class Controller(ABC):
         # store the minimized elements 
         on_screen.to_csv(f"{output_folder}/step_{loop_num+1}_minimized.csv",index=False)
 
-        return on_screen,viewpointscroll,viewportHeight,screen_size,file_name_png,file_name_html,scroll_ratio,url
+        return on_screen,viewpointscroll,viewportHeight,screen_size,file_name_png,file_name_html,scroll_ratio,url,self.user_task
     
     def pickle(self,output_folder,loop_num,data):
         import pickle

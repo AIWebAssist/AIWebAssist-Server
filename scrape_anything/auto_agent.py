@@ -47,13 +47,13 @@ class Agent(BaseModel):
 
         return generated, tool, parse_json(tool_input)
 
-    def run_parallel(self,controller: Controller, task_to_accomplish: str):
-        thread = threading.Thread(target=self.run,args=(controller, task_to_accomplish))
+    def run_parallel(self,controller: Controller):
+        thread = threading.Thread(target=self.run,args=(controller))
         thread.start()
 
         return thread
         
-    def run(self, controller: Controller, task_to_accomplish: str):
+    def run(self, controller: Controller):
         output_folder = os.path.join("outputs",self.get_output_folder())
         os.makedirs(output_folder)
         
@@ -65,7 +65,7 @@ class Agent(BaseModel):
      
             on_screen,_,_,\
             screen_size,_, _,\
-                scroll_ratio,url = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
+                scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
             
             while num_loops < self.max_loops or self.max_loops == -1:
                 num_loops += 1
@@ -95,7 +95,7 @@ class Agent(BaseModel):
                 finally:
                      on_screen,_,_,\
                      screen_size,_, _,\
-                     scroll_ratio,url = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
+                     scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
 
                 previous_responses.append(f"\n\nPrevious {num_loops} response:\n{self.clean_empty_lines(generated)}\nexecution status:{previous_responses_status}")
         except Exception as e:
