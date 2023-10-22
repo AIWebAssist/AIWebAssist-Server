@@ -9,7 +9,6 @@ outputs/*
 */*/*/__pycache__/*
 
 .vscode
-.vscode/launch.json
 node_modules/
 extension/
 extension.zip

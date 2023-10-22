@@ -5,7 +5,7 @@ def start_browesr(dockerized=True,headless=False,selenium_host="host.docker.inte
   from selenium.webdriver.chrome.service import Service
 
   chrome_options = webdriver.ChromeOptions()
-  chrome_options.add_extension('extension')  
+  chrome_options.add_extension('extension.zip')  
 
   chrome_options.add_argument('--no-sandbox')
   chrome_options.add_argument('--lang=en')
