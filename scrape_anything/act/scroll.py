@@ -5,7 +5,7 @@ class ScrollDown(ToolInterface):
 
     name:str = "Scroll Down"
     description:str = "Scroll down the web page by half the screen height, no input."
-    example_script:str  = "scroll_down.js"
+    example_script:str  = "scroll_down"
 
     def use(self, web_driver: object) -> None:
         # Get the height of the web page
@@ -26,7 +26,7 @@ class ScrollUp(ToolInterface):
 
     name:str = "Scroll Up"
     description:str = "Scroll up the web page by half the screen height, no input."
-    example_script:str  = "scroll_up.js"
+    example_script:str  = "scroll_up"
 
     def use(self, web_driver: object) -> None:
         # Get the height of the viewport
@@ -43,7 +43,7 @@ class ScrollRight(ToolInterface):
 
     name :str= "Scroll Right"
     description:str = "Scroll the web page to the right by half the screen width, no input"
-    example_script:str  = "scroll_right.js"
+    example_script:str  = "scroll_right"
     
     def use(self, web_driver: object) -> None:
         # Get the width of the viewport

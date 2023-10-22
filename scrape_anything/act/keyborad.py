@@ -8,7 +8,7 @@ class HitAKey(ToolInterface):
 
     name:str = "Hit A Key"
     description:str = "Hit on of the keys,  Input format: {{\"text\":\"esc\"}} or {{\"text\":\"enter\"}}"
-    example_script:str = "show_text.js"
+    example_script:str = "keyborad_action"
 
     def use(self, web_driver: object, text: str) -> None:
         if text.lower() == "esc":
@@ -23,5 +23,5 @@ class HitAKey(ToolInterface):
       return {
         "x":kwarg['x'],
         "y":kwarg['y'],
-        "text":f"you should hit {key}"
+        "text":key
       }
