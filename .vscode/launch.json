@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "examples/chrome.py",
             "console": "integratedTerminal",
-            "justMyCode": true,
+            "justMyCode": false,
             "env": {
                 "PYTHONPATH": "${workspaceFolder}",
                 //"OPENAI_API": "sk"

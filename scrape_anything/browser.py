@@ -5,7 +5,7 @@ def start_browesr(dockerized=True,headless=False,selenium_host="host.docker.inte
   from selenium.webdriver.chrome.service import Service
 
   chrome_options = webdriver.ChromeOptions()
-  chrome_options.add_extension('extension.zip')  
+  chrome_options.add_extension('extension.crx')  
 
   chrome_options.add_argument('--no-sandbox')
   chrome_options.add_argument('--lang=en')
@@ -19,16 +19,23 @@ def start_browesr(dockerized=True,headless=False,selenium_host="host.docker.inte
   return webdriver.Chrome(service=service,options=chrome_options)
 
 def simulate_user_call(wd,objective_text):
-    objective_element = wd.find_element_by_id('objective')
-    objective_element.send_keys(objective_text)
+    from selenium.webdriver.common.by import By
+
+    # get the extension id
+    wd.get('Chrome://extensions')
+    extension_id = wd.execute_script("return chrome.management.getAll();")[0]['id']
+
+    # 1. Add objective
+    wd.get(f"chrome-extension://{extension_id}/main.html")
+    wd.find_element(By.ID,"objective").send_keys(objective_text) 
 
     # 2. Toggle on the 'switch'
-    switch_element = wd.find_element_by_css_selector('.switch input[type="checkbox"]')
+    switch_element = wd.find_element(By.CSS_SELECTOR,'.switch')
     if not switch_element.is_selected():
         switch_element.click()
 
     # 3. Click 'submit'
-    submit_button = wd.find_element_by_id('submit')
+    submit_button = wd.find_element(By.ID,'submit')
     submit_button.click()
 
 def clear_sessions(selenium_host="host.docker.internal",session_id=None):
