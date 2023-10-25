@@ -18,8 +18,16 @@ def start_browesr(dockerized=True,headless=False,selenium_host="host.docker.inte
   service = Service(executable_path=r'/usr/bin/chromedriver')
   return webdriver.Chrome(service=service,options=chrome_options)
 
-def simulate_user_call(wd,objective_text):
+def simulate_user_call(wd,url,objective_text):
     from selenium.webdriver.common.by import By
+    from selenium.webdriver.common.keys import Keys
+
+
+    wd.get(url)
+    
+    # open new window
+    wd.execute_script("window.open('');") 
+    wd.switch_to.window(wd.window_handles[1])
 
     # get the extension id
     wd.get('Chrome://extensions')
