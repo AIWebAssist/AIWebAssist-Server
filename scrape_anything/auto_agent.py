@@ -48,7 +48,7 @@ class Agent(BaseModel):
         return generated, tool, parse_json(tool_input)
 
     def run_parallel(self,controller: Controller):
-        thread = threading.Thread(target=self.run,args=(controller))
+        thread = threading.Thread(target=self.run,args=(controller,))
         thread.start()
 
         return thread

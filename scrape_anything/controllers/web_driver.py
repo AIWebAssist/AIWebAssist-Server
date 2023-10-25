@@ -11,7 +11,7 @@ class WebDriverController(Controller):
 
 
     def __init__(self,url,user_task:str,cache_to_pickle=False) -> None:
-        super(user_task)
+        super(WebDriverController,self).__init__(user_task)
         try:
             clear_sessions(selenium_host="selenium-chrome")
             self.web_driver = start_browesr(selenium_host="selenium-chrome")

@@ -11,7 +11,7 @@ from queue import Queue
 class RemoteFeedController(Controller):
 
     def __init__(self,incoming_data_queue:Queue,outgoing_data_queue:Queue,user_task:str) -> None:
-        super(user_task)
+        super(RemoteFeedController,self).__init__(user_task)
         self.incoming_data_queue = incoming_data_queue
         self.outgoing_data_queue = outgoing_data_queue
 
