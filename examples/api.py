@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import threading
 
 app = Flask(__name__)
 
@@ -53,10 +54,12 @@ def init_and_process(session_id,user_task,params):
     return process_request(params,session_id)
     
 
-
-if __name__ == '__main__':
+def start_server():
     try:
-        app.run(debug=True)
+        threading.Thread(target=lambda: app.run(host="scrape_anything", port=3000, debug=True, use_reloader=False)).start()
     finally:
         for t in THREADS.values():
             t.stop()
+
+if __name__ == '__main__':
+    start_server()

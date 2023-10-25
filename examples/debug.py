@@ -1,5 +1,5 @@
 from scrape_anything.browser import simulate_user_call,clear_sessions,start_browesr
-
+from examples.api import start_server
 
 def simulate_client_click(url,user_task):
     clear_sessions(selenium_host="selenium-chrome")
@@ -7,4 +7,5 @@ def simulate_client_click(url,user_task):
     simulate_user_call(web_driver,url,user_task)
 
 
+start_server()
 simulate_client_click("https://www.google.com","I need help!")
