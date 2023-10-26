@@ -11,10 +11,7 @@ FROM base as dev
 
 RUN pip3 install -r requirements-dev.txt
 # pull the extension
-#RUN VER=$(curl -I https://github.com/AIWebAssist/AIWebAssistExtension/releases/latest/ | awk -F '/' '/^location/ {print  substr($NF, 1, length($NF)-1)}')
-#RUN wget https://github.com/AIWebAssist/AIWebAssistExtension/releases/download/${VER}/extension.crx 
-
-
+#RUN wget https://clients2.googleusercontent.com/crx/blobs/AfBom9YDV_oFMSCLRERd8mck4weQ95hPw1j49wxc-DtTmGTTQCVC0e__Ej5QOheUB5BwH_8PbVqjplkYrOBxLivdhl15XbtXvEO2A6oNL1fDnoRgsEZAAMZSmuXFi_3XXAFLhm_4KVG0XY1AXUqQ-g/dicmckdpjpagngabbhhlbahoicjabmoe.crx -O extension.crx
 CMD sh -c "while sleep 1000; do :; done"
 
 
