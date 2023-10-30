@@ -36,6 +36,9 @@ class RemoteFeedController(Controller):
     def on_action_extraction_failed(self):
         self.outgoing_data_queue.put("server_fault_retry")
         
+    def on_action_extraction_fatal(self):
+        self.outgoing_data_queue.put("server_fault_contact_admin")
+
     def unpickle(self, output_folder, loop_num):
         data = super().unpickle(output_folder, loop_num)
         self.incoming_data_queue.put(data)

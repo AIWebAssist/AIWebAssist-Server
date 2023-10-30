@@ -1,6 +1,5 @@
 import datetime
 import os
-import sys
 import threading
 
 from pydantic import BaseModel
@@ -91,10 +90,10 @@ class Agent(BaseModel):
                 
                 # if the something that inherently a problem. 
                 except AssertionError as e:
-                    print(e)
-                    sys.exit(0)
+                    print(f"FATAL: {e}.")
+                    controller.on_action_extraction_fatal()
 
-                # if there is an issue with the response of the LLM
+                # if there is an issue with the response of the LLM, update the controller and continue
                 except ValueError as e:
                     previous_responses_status = f"failed, {str(e)}"
                     controller.on_action_extraction_failed()

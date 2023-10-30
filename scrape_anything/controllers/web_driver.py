@@ -6,6 +6,7 @@ from .controller import Controller
 from .data_types import IncommingData
 from selenium.common.exceptions import WebDriverException
 import time
+import sys
 
 class WebDriverController(Controller):
 
@@ -67,6 +68,10 @@ class WebDriverController(Controller):
 
     def on_action_extraction_failed(self):
         pass
+
+    def on_action_extraction_fatal(self):
+        sys.exit(1)
+        
 
     def close(self):
         try:
