@@ -16,7 +16,7 @@ class Controller(ABC):
 
     def process_screen_data(self,incoming_data,output_folder,loop_num,file_name_png=None,file_name_html=None):
 
-        raw_on_screen, viewpointscroll,viewportHeight,scroll_width,scroll_height = incoming_data.raw_on_screen,incoming_data.viewpointscroll,incoming_data.viewportHeight,incoming_data.scroll_width,incoming_data.scroll_height
+        raw_on_screen, viewpointscroll,viewportHeight,scroll_width,scroll_height = self.elements_to_table(incoming_data.raw_on_screen),incoming_data.viewpointscroll,incoming_data.viewportHeight,incoming_data.scroll_width,incoming_data.scroll_height
         width = incoming_data.width
         height = incoming_data.height
         url = incoming_data.url
@@ -33,6 +33,14 @@ class Controller(ABC):
 
         return on_screen,viewpointscroll,viewportHeight,screen_size,file_name_png,file_name_html,scroll_ratio,url,self.user_task
     
+    def elements_to_table(self,logs):
+        import pandas as pd
+        import io
+        try:
+            return pd.read_csv(io.StringIO(logs), sep=",")
+        except Exception as e:
+            raise Exception("Can't parse script output.")
+
     def pickle(self,output_folder,loop_num,data):
         import pickle
 

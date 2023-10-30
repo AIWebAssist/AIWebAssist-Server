@@ -11,14 +11,10 @@ def screen_to_window_dim(wd):
 
     return viewpointscroll,viewportHeight
 
-def screen_to_table(wd):
-  import pandas as pd
-  import io
-  logs = extract_with_js_code(wd,os.path.join(CURRENT_PATH,"elements.js"))
-  try:
-     return pd.read_csv(io.StringIO("\n".join(logs)), sep=",")
-  except Exception as e:
-    raise Exception("Can't parse script output.")
+def screen_to_elements(wd):
+    logs = extract_with_js_code(wd,os.path.join(CURRENT_PATH,"elements.js"))
+    return "\n".join(logs)
+
 
 
 # def get_scroll_height(web_driver):
