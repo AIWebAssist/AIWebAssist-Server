@@ -53,6 +53,8 @@ def process_request(data,session_id):
                                        height=data['height'],
                                        raw_on_screen=data['raw_on_screen']))
     response:OutGoingData = feed_from_agent.get()
+    if isinstance(response,str):
+        raise ValueError(response)
     return json.dumps(response)
 
 

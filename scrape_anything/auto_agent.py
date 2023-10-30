@@ -1,5 +1,6 @@
 import datetime
 import os
+import sys
 import threading
 
 from pydantic import BaseModel
@@ -87,11 +88,17 @@ class Agent(BaseModel):
                     tool_executor = self.tool_box.get_tool(tool, tool_input)
                     controller.take_action(tool_executor, tool_input,num_loops,output_folder)
                     previous_responses_status = "successful."
-                    
+                
+                # if the something that inherently a problem. 
+                except AssertionError as e:
+                    print(e)
+                    sys.exit(0)
+
+                # if there is an issue with the response of the LLM
                 except ValueError as e:
                     previous_responses_status = f"failed, {str(e)}"
+                    controller.on_action_extraction_failed()
                     print(f"WARNINGS: {str(e)}")
-                
                 finally:
                      on_screen,_,_,\
                      screen_size,_, _,\

@@ -65,6 +65,9 @@ class WebDriverController(Controller):
         if need_to_wait:
             wait_for_page_load(self.web_driver)
 
+    def on_action_extraction_failed(self):
+        pass
+
     def close(self):
         try:
             if self.web_driver != None:
