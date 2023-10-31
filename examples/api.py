@@ -57,7 +57,7 @@ def process_request(data,session_id):
         if response.is_fatel:
             SOME_DB.pop(session_id)
         raise ValueError(response.error_message)
-    return json.dumps(response)
+    return json.dumps(response.__dict__)
 
 
 def init_and_process(session_id,user_task,params):

@@ -29,9 +29,10 @@ class RemoteFeedController(Controller):
 
     def take_action(self,tool_executor:ToolInterface,tool_input,num_loops:int,output_folder:str):
 
-        self.outgoing_data_queue.put(OutGoingData(description=tool_executor.description,
-                                                  tool_enum=EnabledActions.get_tool_enum(tool_executor),
-                                                  example_script=tool_executor.example_script,
+        self.outgoing_data_queue.put(OutGoingData(
+                                                  #description=tool_executor.description,
+                                                  #tool_enum=EnabledActions.get_tool_enum(tool_executor),
+                                                  script=tool_executor.example_script,
                                                   tool_input=tool_executor.process_tool_arg(**tool_input)))
 
     def on_action_extraction_failed(self):

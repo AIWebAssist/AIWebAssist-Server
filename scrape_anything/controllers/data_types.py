@@ -43,10 +43,8 @@ class EnabledActions(Enum):
     
 class OutGoingData:
 
-    def __init__(self,description:str,tool_enum:str, example_script:str,tool_input) -> None:
-        self.example_script = example_script
-        self.description = description
-        self.tool_enum = tool_enum
+    def __init__(self, script:str,tool_input) -> None:
+        self.script = script
         self.tool_input = tool_input
    
 
