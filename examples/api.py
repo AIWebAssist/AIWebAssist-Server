@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,Response
 import threading
 
 app = Flask(__name__)
@@ -10,8 +10,7 @@ def process_json():
         if data is not None or "session_id" not in data or "user_task" not in data:
             user_task = data["user_task"]
             session_id = data.pop("session_id")
-            response_data = init_and_process(session_id,user_task,data)
-            return jsonify(response_data)
+            return init_and_process(session_id,user_task,data)
         else:
             return jsonify({'error': 'Invalid JSON input'}), 400
     except Exception as e:
@@ -38,9 +37,11 @@ def init_agent(user_task,session_id):
     THREADS[session_id] = agnet.run_parallel(controller)
     SOME_DB[session_id] = (feed_from_chrome,feed_from_agent)
 
+def clean_session(session_id):
+    SOME_DB.pop(session_id)
+
 def process_request(data,session_id):
     from scrape_anything import OutGoingData,IncommingData,Error
-    import json
 
     (feed_from_chrome,feed_from_agent) = SOME_DB[session_id]
     feed_from_chrome.put(IncommingData(url=data['url'],
@@ -55,9 +56,9 @@ def process_request(data,session_id):
     response:OutGoingData = feed_from_agent.get()
     if isinstance(response,Error):
         if response.is_fatel:
-            SOME_DB.pop(session_id)
-        raise ValueError(response.error_message)
-    return json.dumps(response.__dict__)
+            clean_session(session_id)
+        return jsonify(response.__dict__),500
+    return jsonify(response.__dict__),200
 
 
 def init_and_process(session_id,user_task,params):
