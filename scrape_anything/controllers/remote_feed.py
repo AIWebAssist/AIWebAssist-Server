@@ -14,6 +14,7 @@ class RemoteFeedController(Controller):
         super(RemoteFeedController,self).__init__(user_task)
         self.incoming_data_queue = incoming_data_queue
         self.outgoing_data_queue = outgoing_data_queue
+        self.is_closed = False
 
     def fetch_infomration_on_screen(self,output_folder:str,loop_num:int):
 
@@ -38,10 +39,12 @@ class RemoteFeedController(Controller):
         
     def on_action_extraction_fatal(self):
         self.outgoing_data_queue.put(Error(error_message="server_fault_contact_admin",is_fatel=True))
+        self.is_closed = True
 
     def unpickle(self, output_folder, loop_num):
         data = super().unpickle(output_folder, loop_num)
         self.incoming_data_queue.put(data)
         
     def close(self):
-        self.outgoing_data_queue.put(Error(error_message="server_limit_reach",is_fatel=True))
+        if not self.is_closed:
+            self.outgoing_data_queue.put(Error(error_message="server_limit_reach",is_fatel=True))
