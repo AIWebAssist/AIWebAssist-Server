@@ -87,17 +87,13 @@ class Agent(BaseModel):
                     tool_executor = self.tool_box.get_tool(tool, tool_input)
                     controller.take_action(tool_executor, tool_input,num_loops,output_folder)
                     previous_responses_status = "successful."
-                
-                # if the something that inherently a problem. 
-                except AssertionError as e:
-                    print(f"FATAL: {e}.")
-                    controller.on_action_extraction_fatal()
 
                 # if there is an issue with the response of the LLM, update the controller and continue
-                except ValueError as e:
+                except (ValueError,KeyError) as e:
                     previous_responses_status = f"failed, {str(e)}"
                     controller.on_action_extraction_failed()
                     print(f"WARNINGS: {str(e)}")
+
                 finally:
                      on_screen,_,_,\
                      screen_size,_, _,\
@@ -105,6 +101,7 @@ class Agent(BaseModel):
 
                 previous_responses.append(f"\n\nPrevious {num_loops} response:\n{self.clean_empty_lines(generated)}\nexecution status:{previous_responses_status}")
         except Exception as e:
+            controller.on_action_extraction_fatal()
             raise e
         finally:
             controller.close()

@@ -39,7 +39,7 @@ def init_agent(user_task,session_id):
     SOME_DB[session_id] = (feed_from_chrome,feed_from_agent)
 
 def process_request(data,session_id):
-    from scrape_anything import OutGoingData,IncommingData
+    from scrape_anything import OutGoingData,IncommingData,Error
     import json
 
     (feed_from_chrome,feed_from_agent) = SOME_DB[session_id]
@@ -53,8 +53,10 @@ def process_request(data,session_id):
                                        height=data['height'],
                                        raw_on_screen=data['raw_on_screen']))
     response:OutGoingData = feed_from_agent.get()
-    if isinstance(response,str):
-        raise ValueError(response)
+    if isinstance(response,Error):
+        if response.is_fatel:
+            SOME_DB.pop(session_id)
+        raise ValueError(response.error_message)
     return json.dumps(response)
 
 

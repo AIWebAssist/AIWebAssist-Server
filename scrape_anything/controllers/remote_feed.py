@@ -3,7 +3,7 @@ from ..view import *
 from ..think import *
 from ..act import *
 from .controller import Controller
-from .data_types import IncommingData,OutGoingData,EnabledActions
+from .data_types import IncommingData,OutGoingData,EnabledActions,Error
 from queue import Queue
 
 
@@ -34,15 +34,14 @@ class RemoteFeedController(Controller):
                                                   tool_input=tool_executor.process_tool_arg(**tool_input)))
 
     def on_action_extraction_failed(self):
-        self.outgoing_data_queue.put("server_fault_retry")
+        self.outgoing_data_queue.put(Error(error_message="server_fault_retry",user_should_retry=True))
         
     def on_action_extraction_fatal(self):
-        self.outgoing_data_queue.put("server_fault_contact_admin")
+        self.outgoing_data_queue.put(Error(error_message="server_fault_contact_admin",is_fatel=True))
 
     def unpickle(self, output_folder, loop_num):
         data = super().unpickle(output_folder, loop_num)
         self.incoming_data_queue.put(data)
         
-
     def close(self):
-        pass
+        self.outgoing_data_queue.put(Error(error_message="server_limit_reach",is_fatel=True))

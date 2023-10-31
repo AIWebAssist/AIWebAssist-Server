@@ -49,3 +49,10 @@ class OutGoingData:
         self.tool_enum = tool_enum
         self.tool_input = tool_input
    
+
+class Error:
+
+    def __init__(self, error_message, is_fatel=False,user_should_retry=False) -> None:
+        self.error_message = error_message
+        self.is_fatel = is_fatel
+        self.user_should_retry = user_should_retry
