@@ -37,7 +37,8 @@ class Controller(ABC):
         import pandas as pd
         import io
         try:
-            return pd.read_csv(io.StringIO(logs), sep=",")
+            df = pd.read_csv(io.StringIO(logs), sep=",",lineterminator="\n")
+            return df.replace("<comma>",",").replace("<new_line>","\n")
         except Exception as e:
             raise Exception("Can't parse script output.")
 
