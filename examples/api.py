@@ -19,7 +19,7 @@ def process_json():
 
 SOME_DB = dict()
 THREADS = dict()
-def init_agent(user_task,session_id):
+def init_agent(user_task,session_id,max_message=1):
     from scrape_anything import Agent
     from scrape_anything import ChatLLM
     from scrape_anything import RemoteFeedController
@@ -32,8 +32,9 @@ def init_agent(user_task,session_id):
         incoming_data_queue=feed_from_chrome,
         outgoing_data_queue=feed_from_agent,
         user_task=user_task,
-        ) 
-    agnet = Agent(llm=ChatLLM(),max_loops=1)
+        max_loops=max_message
+    ) 
+    agnet = Agent(llm=ChatLLM(),max_loops=max_message)
     THREADS[session_id] = agnet.run_parallel(controller)
     SOME_DB[session_id] = (feed_from_chrome,feed_from_agent)
 
@@ -54,11 +55,13 @@ def process_request(data,session_id):
                                        height=data['height'],
                                        raw_on_screen=data['raw_on_screen']))
     response:OutGoingData = feed_from_agent.get()
-    if isinstance(response,Error):
-        if response.is_fatel:
-            clean_session(session_id)
+    if isinstance(response,Error) and (response.is_fatel or response.session_closed):
+        clean_session(session_id)
         return jsonify(response.__dict__),500
-    return jsonify(response.__dict__),200
+    elif isinstance(response,IncommingData):
+        if response.session_closed:
+            clean_session(session_id)
+        return jsonify(response.__dict__),200
 
 
 def init_and_process(session_id,user_task,params):

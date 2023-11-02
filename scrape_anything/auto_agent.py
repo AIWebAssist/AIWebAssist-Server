@@ -67,7 +67,7 @@ class Agent(BaseModel):
             screen_size,_, _,\
                 scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
             
-            while num_loops < self.max_loops or self.max_loops == -1:
+            while True:
                 num_loops += 1
                 print(f"--- Iteration {num_loops} ---")
                 
@@ -95,9 +95,13 @@ class Agent(BaseModel):
                     print(f"WARNINGS: {str(e)}")
 
                 finally:
-                     on_screen,_,_,\
-                     screen_size,_, _,\
-                     scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
+                    # if there is not other itreation
+                    if num_loops >= self.max_loops or self.max_loops == -1: #
+                        break
+
+                    on_screen,_,_,\
+                    screen_size,_, _,\
+                    scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
 
                 previous_responses.append(f"\n\nPrevious {num_loops} response:\n{self.clean_empty_lines(generated)}\nexecution status:{previous_responses_status}")
         except Exception as e:

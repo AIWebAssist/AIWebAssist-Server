@@ -59,5 +59,9 @@ class Controller(ABC):
         pass
 
     @abstractmethod
+    def is_closed(self):
+        pass
+    
+    @abstractmethod
     def close(self):
         pass

@@ -72,6 +72,8 @@ class WebDriverController(Controller):
     def on_action_extraction_fatal(self):
         sys.exit(1)
         
+    def is_closed(self):
+        return (self.web_driver != None) or (self.web_driver.is_closed())
 
     def close(self):
         try:

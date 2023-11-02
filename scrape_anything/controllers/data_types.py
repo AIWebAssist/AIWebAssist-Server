@@ -43,14 +43,16 @@ class EnabledActions(Enum):
     
 class OutGoingData:
 
-    def __init__(self, script:str,tool_input) -> None:
+    def __init__(self, script:str,tool_input,session_closed:bool) -> None:
         self.script = script
         self.tool_input = tool_input
+        self.session_closed = session_closed
    
 
 class Error:
 
-    def __init__(self, error_message, is_fatel=False,user_should_retry=False) -> None:
+    def __init__(self, error_message, is_fatel=False,user_should_retry=False,session_closed=False) -> None:
         self.error_message = error_message
         self.is_fatel = is_fatel
         self.user_should_retry = user_should_retry
+        self.session_closed = session_closed
