@@ -21,10 +21,10 @@ def enrich_base_on_vision(df,filename):
 
 def minimize_and_enrich_page_data(df,viewpointscroll,viewportHeight,screenshot_filename=None,using_vision=False):
     can_use_vision = screenshot_filename is not None and using_vision is True
+    df = minimize_page_data(df,viewpointscroll,viewportHeight,using_vision=using_vision)
     if can_use_vision:
-        df = minimize_page_data(df,viewpointscroll,viewportHeight,using_vision=using_vision)
         df = enrich_base_on_vision(df,screenshot_filename)
-    df.drop(columns=['parent_xpath','height','width','top','bottom','left','right'],inplace=True)
+        df.drop(columns=['parent_xpath','height','width','top','bottom','left','right'],inplace=True)
     return df.fillna("")
 
 
