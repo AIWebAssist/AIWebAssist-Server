@@ -8,4 +8,4 @@ def simulate_client_click(url,user_task):
 
 
 start_server()
-simulate_client_click("https://www.google.com","I Need to search my name in google, my name is 'sefi'")
+simulate_client_click("https://www.google.com/?hl=en","I Need to search my name in google, my name is 'sefi'")
