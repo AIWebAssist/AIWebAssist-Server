@@ -77,7 +77,7 @@ class Agent(BaseModel):
                     tool_names=self.tool_box.tool_names,
                     task_to_accomplish=task_to_accomplish,
                     previous_responses="\n".join(previous_responses),
-                    on_screen_data=on_screen.to_string(),
+                    on_screen_data=on_screen.rename_axis("index").to_csv(),
                     screen_size=screen_size,scroll_ratio=scroll_ratio,
                 )
                 
