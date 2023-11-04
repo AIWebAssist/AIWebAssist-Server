@@ -38,7 +38,10 @@ class Controller(ABC):
         import io
         try:
             df = pd.read_csv(io.StringIO(logs), sep=",",lineterminator="\n")
-            return df.replace("<comma>",",").replace("<new_line>","\n")
+            for column in df.columns:
+                if hasattr(df[column],'str'):
+                    df[column] = df[column].str.replace("<comma>",",").replace("<new_line>","\n")
+            return df
         except Exception as e:
             raise Exception("Can't parse script output.")
 
