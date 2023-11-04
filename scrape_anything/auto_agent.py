@@ -41,7 +41,7 @@ class Agent(BaseModel):
         return f"{datetime_str}x{uuid_str}"
 
     def make_a_decide_on_next_action(self, prompt: str,num_loops:int, output_folder:str,tool_box:ToolBox) -> str:        
-        generated = self.llm.generate(prompt,output_folder,num_loops)
+        generated = self.llm.generate(prompt,output_folder,num_loops).replace("N/A","")
 
         tool, tool_input = extract_tool_and_args(generated,tool_box.final_answer_token)
 
