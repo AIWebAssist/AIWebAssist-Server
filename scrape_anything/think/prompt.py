@@ -3,20 +3,20 @@ OBSERVATION_TOKEN = "Observation:"
 THOUGHT_TOKEN = "Thought:"
 
 PROMPT_TEMPLATE = """
-Today is {today}, the site i'm looking on is {site_url}.
+Today is {today}, the site you're looking on is {site_url}.
 
-Here is a representation of what is see on my screen in a table shape:
+Here is a representation of the valuable elements existing on the screen:
 {on_screen_data}
 
-Current screen size: 
+Current screen dimensions: 
 {screen_size}
 
 Scroll Options: 
 {scroll_ratio}
 
-You should guide the user to complete the task given to you as best as you can using the following tools:
-
+You should guide the user to complete the task given to you using the following tools:
 {tool_description}
+
 --
 Use the following format:
 
