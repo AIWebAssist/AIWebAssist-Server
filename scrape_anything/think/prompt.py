@@ -14,25 +14,21 @@ Current screen size:
 Scroll Options: 
 {scroll_ratio}
 
-You should accomplish the task given to you as best as you can using the following tools:
+You should guide the user to complete the task given to you as best as you can using the following tools:
 
 {tool_description}
 --
 Use the following format:
 
-Question: the input question you must answer.
-Thought: comment on what you want to do next.
-Input Field: The coordinates and the values of elements that accept input on screen.
-Input Field Thought: comment on what are the Input Field are used for.
-Buttons: The coordinates of the buttons on screen. what there are used for?
-Buttons Thought: comment on what are the Buttons are used for.
-Execution Status: comment on if the your previous executions what is successful.
-Action: the action to take, exactly one element of [{tool_names}]
-Action Input: the input to the action
-Observation: the result of the action
-... (this Thought/Action/Action Input/Observation repeats N times, use it until you are sure of the answer)
-Thought: I now know the final answer
-Final Answer: your final answer to the original input question 
+Question: The input question you must answer.
+Thought: Comment on what you want to do next.
+Input Field: The coordinates and the values of elements that accept input on screen and What there are used for? if None return ""
+Buttons: The coordinates of the buttons on screen and what they are used for? if None return ""
+Links: The coordinate of the links on the screen and what they are used for? if None return ""
+Execution Status: Comment on if the your previous executions what is successful.
+Action: The action to take, exactly one element of [{tool_names}]
+Action Input: The input to the action
+Observation: The change you expect to see after the action is executed.
 
 Begin!
 --

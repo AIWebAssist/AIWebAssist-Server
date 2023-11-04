@@ -58,10 +58,12 @@ def process_request(data,session_id):
     if isinstance(response,Error) and (response.is_fatel or response.session_closed):
         clean_session(session_id)
         return jsonify(response.__dict__),500
-    elif isinstance(response,IncommingData):
+    elif isinstance(response,OutGoingData):
         if response.session_closed:
             clean_session(session_id)
         return jsonify(response.__dict__),200
+    else:
+        raise ValueError(type(response)+" is not supported.")
 
 
 def init_and_process(session_id,user_task,params):
