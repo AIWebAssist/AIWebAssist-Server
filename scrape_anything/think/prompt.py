@@ -22,9 +22,8 @@ Use the following format:
 
 Question: The input question you must answer.
 Thought: Comment on what you want to do next.
-Input Field: The coordinates and the values of elements that accept input on screen and What there are used for? 
-Buttons: The coordinates of the buttons on screen and what they are used for? 
-Links: The coordinate of the links on the screen and what they are used for?
+Input Field: For every element representing an input field 1.the element index 2.the coordinates 3.the value this the element already contains  4.what there are used for? 
+Buttons: For every element representing a button 1.the element index 2.the coordinates 3.what they are used for? 
 Execution Status: Comment on if the your previous executions what is successful.
 Action: The action to take, exactly one element of [{tool_names}]
 Action Input: The input to the action
