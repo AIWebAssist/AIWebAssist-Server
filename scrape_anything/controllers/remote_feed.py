@@ -40,8 +40,7 @@ class RemoteFeedController(Controller):
                                                   script=tool_executor.example_script,
                                                   tool_input=tool_executor.process_tool_arg(**tool_input)))
         
-        reponse = self.status_queue.get()
-        execution_status = reponse['execution_status']
+        execution_status = self.status_queue.get()
         if type(execution_status) is str:
             raise ValueError(f"execution failed: {execution_status}")
 

@@ -4,7 +4,7 @@ import threading
 app = Flask(__name__)
 
 @app.route('/process', methods=['POST'])
-def process_json():
+def process():
     try:
         data = request.get_json()
         if data is not None or "session_id" not in data or "user_task" not in data:
@@ -17,12 +17,12 @@ def process_json():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/status', methods=['POST'])
-def process_json():
+def status():
     try:
         data = request.get_json()
         if data is not None or "session_id" not in data:
             session_id = data.pop("session_id")
-            return init_and_process(session_id,user_task,data,max_message=-1)
+            return process_status(session_id,data)
         else:
             return jsonify({'error': 'Invalid JSON input'}), 400
     except Exception as e:
@@ -49,20 +49,23 @@ def init_agent(user_task,session_id,max_message=1):
     ) 
     agnet = Agent(llm=ChatLLM(),max_loops=max_message)
     THREADS[session_id] = agnet.run_parallel(controller)
-    SOME_DB[session_id] = (feed_from_chrome,feed_from_agent)
+    SOME_DB[session_id] = (feed_from_chrome,feed_from_agent,status_feed_queue)
 
 def clean_session(session_id):
     SOME_DB.pop(session_id)
 
-def process_status(data,session_id):
-    (feed_from_chrome,feed_from_agent) = SOME_DB[session_id]
-    status = data['status']
+def process_status(session_id,data):
+    (feed_from_chrome,feed_from_agent,status_queue) = SOME_DB[session_id]
+    status = data['execution_status']
+    status_queue.put(status)
+
+    return jsonify({}), 200
 
 
 def process_request(data,session_id):
     from scrape_anything import OutGoingData,IncommingData,Error
 
-    (feed_from_chrome,feed_from_agent) = SOME_DB[session_id]
+    (feed_from_chrome,feed_from_agent,status_feed_queue) = SOME_DB[session_id]
     feed_from_chrome.put(IncommingData(url=data['url'],
                                        task=data['user_task'],
                                        viewpointscroll=data['viewpointscroll'],
@@ -89,9 +92,6 @@ def init_and_process(session_id,user_task,params,max_message=-1):
         init_agent(user_task,session_id,max_message=max_message)
     return process_request(params,session_id)
 
-def report_response(session_id,user_task,params,max_message=-1):
-    return process_status(params,session_id)
-    
 
 def start_server():
     try:
