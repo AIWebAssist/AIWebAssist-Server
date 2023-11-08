@@ -96,7 +96,7 @@ class Agent(BaseModel):
 
                 finally:
                     # if there is not other itreation
-                    if num_loops >= self.max_loops or self.max_loops == -1: #
+                    if num_loops >= self.max_loops and self.max_loops != -1: #
                         break
 
                     on_screen,_,_,\

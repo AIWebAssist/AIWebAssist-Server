@@ -10,12 +10,23 @@ def process_json():
         if data is not None or "session_id" not in data or "user_task" not in data:
             user_task = data["user_task"]
             session_id = data.pop("session_id")
-            return init_and_process(session_id,user_task,data)
+            return init_and_process(session_id,user_task,data,max_message=-1)
         else:
             return jsonify({'error': 'Invalid JSON input'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/status', methods=['POST'])
+def process_json():
+    try:
+        data = request.get_json()
+        if data is not None or "session_id" not in data:
+            session_id = data.pop("session_id")
+            return init_and_process(session_id,user_task,data,max_message=-1)
+        else:
+            return jsonify({'error': 'Invalid JSON input'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 SOME_DB = dict()
 THREADS = dict()
@@ -27,10 +38,12 @@ def init_agent(user_task,session_id,max_message=1):
 
     feed_from_chrome = Queue(maxsize=1)
     feed_from_agent = Queue(maxsize=1)
+    status_feed_queue = Queue(maxsize=1)
 
     controller = RemoteFeedController(
         incoming_data_queue=feed_from_chrome,
         outgoing_data_queue=feed_from_agent,
+        status_queue=status_feed_queue,
         user_task=user_task,
         max_loops=max_message
     ) 
@@ -40,6 +53,11 @@ def init_agent(user_task,session_id,max_message=1):
 
 def clean_session(session_id):
     SOME_DB.pop(session_id)
+
+def process_status(data,session_id):
+    (feed_from_chrome,feed_from_agent) = SOME_DB[session_id]
+    status = data['status']
+
 
 def process_request(data,session_id):
     from scrape_anything import OutGoingData,IncommingData,Error
@@ -66,10 +84,13 @@ def process_request(data,session_id):
         raise ValueError(type(response)+" is not supported.")
 
 
-def init_and_process(session_id,user_task,params):
+def init_and_process(session_id,user_task,params,max_message=-1):
     if session_id not in SOME_DB:
-        init_agent(user_task,session_id)
+        init_agent(user_task,session_id,max_message=max_message)
     return process_request(params,session_id)
+
+def report_response(session_id,user_task,params,max_message=-1):
+    return process_status(params,session_id)
     
 
 def start_server():

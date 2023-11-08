@@ -11,7 +11,7 @@ FROM base as dev
 
 RUN pip3 install -r requirements-dev.txt
 # pull the extension
-#RUN rm extension.crx && wget https://clients2.googleusercontent.com/crx/blobs/AfBom9YCKxkFqzR6sv8X7cDlgO5V4XOkxiVBrY2sLmMAQpdLuFIRMIPUD9QlCRGf3jLSnn9vTC-jnX6jKY_XQ7hbO8ZipDS2Js1wOQ_mQAltVfTk2GaGAMZSmuWo8NlbnyEvWtAi79bKdC8RrnI1yg/dicmckdpjpagngabbhhlbahoicjabmoe.crx -O extension.crx
+#RUN rm extension.crx && wget https://clients2.googleusercontent.com/crx/blobs/AfBom9a5UM6m5Sg3lkK6tzSL0gTC9NNqBwlNNqhT6z1igs4rjPpsUPmRs-dd2y2z0lE4m67sfkrr-OryoZuamk4mqpcWlpAppHAkMwuXxUtMD95IW_TTAMZSmuWkYPeXzUUn9eiR4DjoEdDI8ZuAlQ/dicmckdpjpagngabbhhlbahoicjabmoe.crx -O extension.crx
 #                             
 CMD sh -c "while sleep 1000; do :; done"
 

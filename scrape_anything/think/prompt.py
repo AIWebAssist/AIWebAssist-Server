@@ -38,6 +38,7 @@ Then describe:
 Question: The input question you must answer.
 Thought: Comment on what you want to do next.
 Execution Status: Comment on if the your previous executions what is successful.
+Current Task: comment on given the task and the past execution, what it your current goal.
 Action: The action to take, exactly one element of [{tool_names}]
 Action Input: The input to the action
 Observation: The change you expect to see after the action is executed.

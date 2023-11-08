@@ -10,10 +10,11 @@ from queue import Queue
 
 class RemoteFeedController(Controller):
 
-    def __init__(self,incoming_data_queue:Queue,outgoing_data_queue:Queue,user_task:str,max_loops:int) -> None:
+    def __init__(self,incoming_data_queue:Queue,outgoing_data_queue:Queue,status_queue:Queue,user_task:str,max_loops:int) -> None:
         super(RemoteFeedController,self).__init__(user_task)
         self.incoming_data_queue = incoming_data_queue
         self.outgoing_data_queue = outgoing_data_queue
+        self.status_queue = status_queue
         self.is_closed = False
         self.max_loops = max_loops
         self.message_count = 0
@@ -38,6 +39,11 @@ class RemoteFeedController(Controller):
                                                   session_closed=self.count_and_close(),
                                                   script=tool_executor.example_script,
                                                   tool_input=tool_executor.process_tool_arg(**tool_input)))
+        
+        reponse = self.status_queue.get()
+        execution_status = reponse['execution_status']
+        if type(execution_status) is str:
+            raise ValueError(f"execution failed: {execution_status}")
 
     def on_action_extraction_failed(self):
         self.outgoing_data_queue.put(Error(
