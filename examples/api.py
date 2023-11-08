@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify,Response
+from flask import Flask, request, jsonify
 import threading
 
 app = Flask(__name__)
@@ -65,7 +65,7 @@ def process_status(session_id,data):
 def process_request(data,session_id):
     from scrape_anything import OutGoingData,IncommingData,Error
 
-    (feed_from_chrome,feed_from_agent,status_feed_queue) = SOME_DB[session_id]
+    (feed_from_chrome,feed_from_agent,_) = SOME_DB[session_id]
     feed_from_chrome.put(IncommingData(url=data['url'],
                                        task=data['user_task'],
                                        viewpointscroll=data['viewpointscroll'],
