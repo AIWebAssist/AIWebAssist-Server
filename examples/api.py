@@ -55,7 +55,7 @@ def clean_session(session_id):
     SOME_DB.pop(session_id)
 
 def process_status(session_id,data):
-    (feed_from_chrome,feed_from_agent,status_queue) = SOME_DB[session_id]
+    (_,_,status_queue) = SOME_DB[session_id]
     status = data['execution_status']
     status_queue.put(status)
 
