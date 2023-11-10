@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from scrape_anything.act.tool import ToolInterface
 from ..view import *
-
+import csv
 
 
 class Controller(ABC):
@@ -24,15 +24,23 @@ class Controller(ABC):
         scroll_ratio = f"On the Width Axis, {scroll_width}. On the Height Axis, {scroll_height}"
         screen_size = f"width={width},height={height}"
         # store the raw elements before processing
-        raw_on_screen.to_csv(f"{output_folder}/step_{loop_num+1}_raw.csv")
+        self.dataframe_to_csv(raw_on_screen,f"{output_folder}/step_{loop_num+1}_raw.csv") 
+
 
         # minimize the data sent to the llm + enrich
         on_screen = minimize_and_enrich_page_data(raw_on_screen,viewpointscroll,viewportHeight,file_name_png)
-        # store the minimized elements 
-        on_screen.to_csv(f"{output_folder}/step_{loop_num+1}_minimized.csv",index=False)
+        # store the minimized elements
+        self.dataframe_to_csv(on_screen,f"{output_folder}/step_{loop_num+1}_minimized.csv") 
 
         return on_screen,viewpointscroll,viewportHeight,screen_size,file_name_png,file_name_html,scroll_ratio,url,self.user_task
     
+    def dataframe_to_csv(self,df,csv_filename):
+        _df = df.copy()
+        for column in _df.columns:
+            if hasattr(_df[column],'str'):
+                    _df[column] = _df[column].str.replace(",","<comma>").str.replace("\n","<new_line>")
+        _df.to_csv(csv_filename,index=False,)
+
     def elements_to_table(self,logs):
         import pandas as pd
         import io
@@ -40,7 +48,7 @@ class Controller(ABC):
             df = pd.read_csv(io.StringIO(logs), sep=",",lineterminator="\n")
             for column in df.columns:
                 if hasattr(df[column],'str'):
-                    df[column] = df[column].str.replace("<comma>",",").replace("<new_line>","\n")
+                    df[column] = df[column].str.replace("<comma>",",").str.replace("<new_line>","\n")
             return df
         except Exception as e:
             raise Exception("Can't parse script output.")
