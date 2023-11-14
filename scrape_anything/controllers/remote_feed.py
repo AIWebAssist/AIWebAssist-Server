@@ -23,10 +23,9 @@ class RemoteFeedController(Controller):
 
         incoming_data:IncommingData = self.incoming_data_queue.get()
         # compute the elements on screen, current + change
-        file_name_png = None
         file_name_html = None
 
-        return self.process_screen_data(incoming_data,output_folder,loop_num,file_name_png=file_name_png,file_name_html=file_name_html)
+        return self.process_screen_data(incoming_data,output_folder,loop_num,file_name_html=file_name_html)
 
     
     def count_and_close(self):

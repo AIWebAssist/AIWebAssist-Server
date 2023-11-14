@@ -32,7 +32,10 @@ class WebDriverController(Controller):
         width,height = get_screen_size(self.web_driver)
         url = get_url(self.web_driver)
 
-        screen_data = IncommingData(url=url,task="{task}",viewpointscroll=viewpointscroll,viewportHeight=viewportHeight,scroll_width=scroll_width,scroll_height=scroll_height,width=width,height=height,raw_on_screen=raw_on_screen)
+        file_name_png = web_driver_to_image(self.web_driver,f"{output_folder}/step_{loop_num+1}")
+        screenshot = encode_image(file_name_png)
+
+        screen_data = IncommingData(url=url,task="{task}",viewpointscroll=viewpointscroll,viewportHeight=viewportHeight,scroll_width=scroll_width,scroll_height=scroll_height,width=width,height=height,raw_on_screen=raw_on_screen,screenshot=screenshot)
         if self.cache_to_pickle:
             self.pickle(
                 output_folder=output_folder,
@@ -40,10 +43,10 @@ class WebDriverController(Controller):
                 data=screen_data
                 )
 
-        file_name_png = web_driver_to_image(self.web_driver,f"{output_folder}/step_{loop_num+1}")
+        
         file_name_html = web_driver_to_html(self.web_driver,f"{output_folder}/step_{loop_num+1}")
 
-        return self.process_screen_data(screen_data,output_folder,loop_num,file_name_png=file_name_png,file_name_html=file_name_html)
+        return self.process_screen_data(screen_data,output_folder,loop_num,file_name_html=file_name_html)
     
 
     def take_action(self,tool_executor:ToolInterface,tool_input:str,num_loops:int,output_folder:str):

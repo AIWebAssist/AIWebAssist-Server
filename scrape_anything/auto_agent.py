@@ -64,7 +64,7 @@ class Agent(BaseModel):
             num_loops = 0
      
             on_screen,_,_,\
-            screen_size,_, _,\
+            screen_size,screenshot_png, _,\
                 scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
             
             while True:

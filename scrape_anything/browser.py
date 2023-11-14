@@ -96,7 +96,19 @@ def action_with_js_code(wd,filepath,**kwarg):
   {script}
   """)
 
+def encode_image(file_path):
+    import base64
+    with open(file_path, 'rb') as image_file:
+        # Read the binary image data
+        binary_data = image_file.read()
 
+        # Encode the binary data in base64
+        base64_encoded = base64.b64encode(binary_data).decode('utf-8')
+
+        # Construct the data URL
+        data_url = f'data:image/png;base64,{base64_encoded}'
+
+    return data_url
 def web_driver_to_image(wd,file_name):
   full_path = f"{file_name}.png"
   wd.save_screenshot(full_path)

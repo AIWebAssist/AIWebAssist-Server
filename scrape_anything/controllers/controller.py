@@ -14,12 +14,13 @@ class Controller(ABC):
         pass
 
 
-    def process_screen_data(self,incoming_data,output_folder,loop_num,file_name_png=None,file_name_html=None):
+    def process_screen_data(self,incoming_data,output_folder,loop_num,file_name_html=None):
 
         raw_on_screen, viewpointscroll,viewportHeight,scroll_width,scroll_height = self.elements_to_table(incoming_data.raw_on_screen),incoming_data.viewpointscroll,incoming_data.viewportHeight,incoming_data.scroll_width,incoming_data.scroll_height
         width = incoming_data.width
         height = incoming_data.height
         url = incoming_data.url
+        screenshot_path =  self.bytes_to_file(incoming_data.screenshot)
 
         scroll_ratio = f"On the Width Axis, {scroll_width}. On the Height Axis, {scroll_height}"
         screen_size = f"width={width},height={height}"
@@ -28,11 +29,25 @@ class Controller(ABC):
 
 
         # minimize the data sent to the llm + enrich
-        on_screen = minimize_and_enrich_page_data(raw_on_screen,viewpointscroll,viewportHeight,file_name_png)
+        on_screen = minimize_and_enrich_page_data(raw_on_screen,viewpointscroll,viewportHeight,screenshot_path)
         # store the minimized elements
         self.dataframe_to_csv(on_screen,f"{output_folder}/step_{loop_num+1}_minimized.csv") 
+        
+        
+        return on_screen,viewpointscroll,viewportHeight,screen_size,screenshot_path,file_name_html,scroll_ratio,url,self.user_task
+    
+    def bytes_to_file(self,screenshot_data,file_path):
+        if not file_path.endswith(".png"):
+            raise ValueError("must be a png.")
 
-        return on_screen,viewpointscroll,viewportHeight,screen_size,file_name_png,file_name_html,scroll_ratio,url,self.user_task
+        import base64
+        screenshot_binary = base64.b64decode(screenshot_data.split(',')[1])
+
+        # Save the binary image to a file or process it as needed
+        with open(file_path, 'wb') as f:
+            f.write(screenshot_binary)
+        
+        return file_path
     
     def dataframe_to_csv(self,df,csv_filename):
         _df = df.copy()

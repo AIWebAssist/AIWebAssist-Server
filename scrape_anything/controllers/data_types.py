@@ -10,8 +10,9 @@ class IncommingData:
 
     # data from the screen
     raw_on_screen:list
-
-    def __init__(self,url,task,viewpointscroll,viewportHeight,scroll_width,scroll_height,width,height,raw_on_screen) -> None:
+    screenshot:str
+    
+    def __init__(self,url,task,viewpointscroll,viewportHeight,scroll_width,scroll_height,width,height,raw_on_screen,screenshot) -> None:
         self.viewpointscroll = viewpointscroll
         self.viewportHeight = viewportHeight
         self.scroll_width = scroll_width
@@ -21,6 +22,7 @@ class IncommingData:
         self.raw_on_screen = raw_on_screen
         self.url = url
         self.task = task
+        self.screenshot = screenshot
 
 
 from enum import Enum
