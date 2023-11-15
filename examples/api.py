@@ -75,7 +75,7 @@ def process_request(data,session_id):
                                        width=data['width'],
                                        height=data['height'],
                                        raw_on_screen=data['raw_on_screen'],
-                                       screenshot=data['screenshot']))
+                                       screenshot=data.pop('screenshot',None)))
     response:OutGoingData = feed_from_agent.get()
     if isinstance(response,Error) and (response.is_fatel or response.session_closed):
         clean_session(session_id)
