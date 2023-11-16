@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from scrape_anything.act.tool import ToolInterface
 from ..view import *
-import csv
+import os
 
 
 class Controller(ABC):
@@ -20,7 +20,7 @@ class Controller(ABC):
         width = incoming_data.width
         height = incoming_data.height
         url = incoming_data.url
-        screenshot_path =  self.bytes_to_file(incoming_data.screenshot)
+        screenshot_path =  self.bytes_to_file(incoming_data.screenshot,os.path.join(output_folder,f"screenshot_{loop_num}.png"))
 
         scroll_ratio = f"On the Width Axis, {scroll_width}. On the Height Axis, {scroll_height}"
         screen_size = f"width={width},height={height}"
