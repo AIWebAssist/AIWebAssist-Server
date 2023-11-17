@@ -16,4 +16,6 @@ class DevRemoteFeedController(RemoteFeedController):
         incoming_data.screenshot = encode_image("temp_patch.png")
         os.remove("temp_patch.png")
 
-        super(RemoteFeedController,self).fetch_infomration_on_screen(output_folder,loop_num)
+        self.incoming_data_queue.put(incoming_data)
+
+        return super(DevRemoteFeedController,self).fetch_infomration_on_screen(output_folder,loop_num)
