@@ -8,9 +8,6 @@ class GoToURL(ToolInterface):
   click_on_screen:str = True
   example_script:str = "go_to_url"
 
-  def use(self, web_driver:object, url: str)-> None:
-      web_driver.get(url)
-
 
   def process_tool_arg(self,**kwarg):
     url = kwarg['url']

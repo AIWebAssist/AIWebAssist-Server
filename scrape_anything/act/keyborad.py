@@ -10,13 +10,6 @@ class HitAKey(ToolInterface):
     description:str = "Hit on of the keys,  Input format: {{\"text\":\"esc\"}} or {{\"text\":\"enter\"}}"
     example_script:str = "keyborad_action"
 
-    def use(self, web_driver: object, text: str) -> None:
-        if text.lower() == "esc":
-            webdriver.ActionChains(web_driver).send_keys(Keys.ESCAPE).perform()
-
-        elif text.lower() == "enter":
-            webdriver.ActionChains(web_driver).send_keys(Keys.ESCAPE).perform()
-
 
     def process_tool_arg(self,**kwarg):
       key = kwarg['key']

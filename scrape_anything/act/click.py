@@ -8,13 +8,6 @@ class ClickOnCoordinates(ToolInterface):
   click_on_screen:bool = True
   example_script:str = "click_coordinates"
 
-  def use(self,web_driver:object, x: float, y:float) -> str:
-      js_script = f"return document.elementFromPoint({x}, {y})"
-      input_field = web_driver.execute_script(js_script)
-      # Enter the text into the input field
-      input_field.click()
-
-
   def process_tool_arg(self,**kwarg):
       return {
         "x":kwarg['x'],
@@ -29,14 +22,6 @@ class EnterText(ToolInterface):
     description:str = "Click on a field and enter text, Input format: {{\"text\":\"<text_to_enter>\",\"x\": <place_num_here>,\"y\":<place_num_here>}}"
     click_on_screen:bool = True
     example_script:str = "click_coordinates_add_text"
-
-    def use(self, web_driver: object, x:float ,y:float, text: str) -> None:
-        js_script = f"return document.elementFromPoint({x}, {y})"
-        input_field = web_driver.execute_script(js_script)
-
-        # Enter the text into the input field
-        input_field.click()
-        input_field.send_keys(text)
 
     def process_tool_arg(self,**kwarg):
       text = kwarg['text']
