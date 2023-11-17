@@ -40,13 +40,6 @@ class Agent(BaseModel):
         # Combine the UUID and datetime
         return f"{datetime_str}x{uuid_str}"
 
-    def make_a_decide_on_next_action(self, prompt: str,num_loops:int, output_folder:str,tool_box:ToolBox) -> str:        
-        generated = self.llm.generate(prompt,output_folder,num_loops).replace("N/A","")
-
-        tool, tool_input = extract_tool_and_args(generated,tool_box.final_answer_token)
-
-        return generated, tool, parse_json(tool_input)
-
     def run_parallel(self,controller: Controller):
         thread = threading.Thread(target=self.run,args=(controller,))
         thread.start()
@@ -73,17 +66,21 @@ class Agent(BaseModel):
             
                 generated = "parsing generation failed"
                 try:
-                    curr_prompt = format_prompt(today = datetime.date.today(),
+                    generated, tool, tool_input, final_answer_token = self.llm.make_a_decide_on_next_action(
+                        num_loops,
+                        output_folder,
+                        today = datetime.date.today(),
                         site_url=url,
                         tool_description=self.tool_box.tool_description,
                         tool_names=self.tool_box.tool_names,
                         task_to_accomplish=task_to_accomplish,
                         previous_responses="\n".join(previous_responses),
                         on_screen_data=on_screen.rename_axis("index").to_csv(),
-                        screen_size=screen_size,scroll_ratio=scroll_ratio,
-                    )   
-                    generated, tool, tool_input = self.make_a_decide_on_next_action(curr_prompt,num_loops,output_folder,self.tool_box)
-                    tool_executor = self.tool_box.get_tool(tool, tool_input)
+                        screen_size=screen_size,
+                        scroll_ratio=scroll_ratio,
+                        screenshot_png=screenshot_png
+                    )
+                    tool_executor = self.tool_box.get_tool(tool, tool_input,final_answer_token)
                     controller.take_action(tool_executor, tool_input,num_loops,output_folder)
                     previous_responses_status = "successful."
 

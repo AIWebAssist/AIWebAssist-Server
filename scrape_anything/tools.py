@@ -3,15 +3,12 @@ from pydantic import BaseModel
 
 from scrape_anything.browser import *
 from scrape_anything.view import *
-from scrape_anything.think import get_stop_patterns,get_final_answer_token
 from scrape_anything.act import *
 from scrape_anything.controllers import EnabledActions
 
 class ToolBox(BaseModel):
-    final_answer_token:str = get_final_answer_token()
     supoorted_tools: List[ToolInterface] = [ClickOnCoordinates(),EnterText(),GoBack(),ScrollRight(),ScrollUp(),ScrollDown(),Refresh(),HitAKey()]
     tools: List[ToolInterface] = EnabledActions.filter_enabled(supoorted_tools)
-    stop_pattern: List[str] = get_stop_patterns()
     
 
     @property
@@ -27,8 +24,8 @@ class ToolBox(BaseModel):
         return {tool.name: tool for tool in self.tools}
 
 
-    def get_tool(self,tool:str, tool_input:str) -> ToolInterface:
-        if tool == self.final_answer_token:
+    def get_tool(self,tool:str, tool_input:str, final_answer_token:str) -> ToolInterface:
+        if tool == final_answer_token:
             return tool_input
 
         if tool not in self.tool_by_names:

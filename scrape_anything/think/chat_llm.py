@@ -3,13 +3,16 @@ import os
 
 from pydantic import BaseModel
 from typing import List
-from ..io import to_text_file
-from .prompt import get_stop_patterns
+from .io import to_text_file
+from .prompt import get_stop_patterns,get_final_answer_token,format_prompt
+from .response import extract_tool_and_args,parse_json
 
 class ChatLLM(BaseModel):
     model: str = 'gpt-3.5-turbo'
     temperature: float = 0
     api_key:str= os.getenv("OPENAI_API") 
+    stop_pattern: List[str] = get_stop_patterns()
+    final_answer_token:str = get_final_answer_token()
 
     def _generate(self, prompt: str):
         assert self.api_key != None, "please provide API key"
@@ -19,7 +22,7 @@ class ChatLLM(BaseModel):
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             temperature=self.temperature,
-            stop=get_stop_patterns()
+            stop=self.stop_pattern
         )
         return response.choices[0].message.content
     
@@ -30,3 +33,11 @@ class ChatLLM(BaseModel):
 
         to_text_file(generated,f"{output_folder}/step_{str(num_loops)}_response.txt")
         return generated
+    
+    def make_a_decide_on_next_action(self,num_loops:int, output_folder:str,**prompt_params) -> str:     
+        prompt = format_prompt(**prompt_params)      
+        generated = self.generate(prompt,output_folder,num_loops).replace("N/A","")
+
+        tool, tool_input = extract_tool_and_args(generated,self.final_answer_token)
+
+        return generated, tool, parse_json(tool_input), self.final_answer_token
