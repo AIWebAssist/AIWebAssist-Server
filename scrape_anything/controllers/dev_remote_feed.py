@@ -6,8 +6,6 @@ import os
 # TODO: remove patch
 class DevRemoteFeedController(RemoteFeedController):
 
-
-
     def fetch_infomration_on_screen(self,output_folder:str,loop_num:int):
 
         incoming_data:IncommingData = self.incoming_data_queue.get()
