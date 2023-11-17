@@ -70,19 +70,18 @@ class Agent(BaseModel):
             while True:
                 num_loops += 1
                 print(f"--- Iteration {num_loops} ---")
-                
-                curr_prompt = format_prompt(today = datetime.date.today(),
-                    site_url=url,
-                    tool_description=self.tool_box.tool_description,
-                    tool_names=self.tool_box.tool_names,
-                    task_to_accomplish=task_to_accomplish,
-                    previous_responses="\n".join(previous_responses),
-                    on_screen_data=on_screen.rename_axis("index").to_csv(),
-                    screen_size=screen_size,scroll_ratio=scroll_ratio,
-                )
-                
+            
                 generated = "parsing generation failed"
                 try:
+                    curr_prompt = format_prompt(today = datetime.date.today(),
+                        site_url=url,
+                        tool_description=self.tool_box.tool_description,
+                        tool_names=self.tool_box.tool_names,
+                        task_to_accomplish=task_to_accomplish,
+                        previous_responses="\n".join(previous_responses),
+                        on_screen_data=on_screen.rename_axis("index").to_csv(),
+                        screen_size=screen_size,scroll_ratio=scroll_ratio,
+                    )   
                     generated, tool, tool_input = self.make_a_decide_on_next_action(curr_prompt,num_loops,output_folder,self.tool_box)
                     tool_executor = self.tool_box.get_tool(tool, tool_input)
                     controller.take_action(tool_executor, tool_input,num_loops,output_folder)
