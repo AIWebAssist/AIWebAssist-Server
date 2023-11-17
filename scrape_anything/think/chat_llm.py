@@ -4,7 +4,7 @@ import os
 from pydantic import BaseModel
 from typing import List
 from .io import to_text_file
-from .prompt import TaskExtractionTextBasePrompt
+from .prompts.text_base_task_extraction import TaskExtractionTextBasePrompt
 from .response import extract_tool_and_args,parse_json
 
 class ChatLLM(BaseModel):
