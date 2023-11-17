@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import threading
 
 app = Flask(__name__)
+DEV = False # TODO: remove patch
 
 @app.route('/process', methods=['POST'])
 def process():
@@ -33,14 +34,14 @@ THREADS = dict()
 def init_agent(user_task,session_id,max_message=1):
     from scrape_anything import Agent
     from scrape_anything import ChatLLM
-    from scrape_anything import RemoteFeedController
+    from scrape_anything import DevRemoteFeedController
     from queue import Queue
 
     feed_from_chrome = Queue(maxsize=1)
     feed_from_agent = Queue(maxsize=1)
     status_feed_queue = Queue(maxsize=1)
 
-    controller = RemoteFeedController(
+    controller = DevRemoteFeedController(
         incoming_data_queue=feed_from_chrome,
         outgoing_data_queue=feed_from_agent,
         status_queue=status_feed_queue,
@@ -75,7 +76,7 @@ def process_request(data,session_id):
                                        width=data['width'],
                                        height=data['height'],
                                        raw_on_screen=data['raw_on_screen'],
-                                       screenshot=data['screenshot']))
+                                       screenshot= None if DEV else data['screenshot'])) # TODO: remove patch
     response:OutGoingData = feed_from_agent.get()
     if isinstance(response,Error) and (response.is_fatel or response.session_closed):
         clean_session(session_id)
@@ -94,7 +95,9 @@ def init_and_process(session_id,user_task,params,max_message=-1):
     return process_request(params,session_id)
 
 
-def start_server():
+def start_server(dev=True):
+    global DEV 
+    DEV = dev
     try:
         threading.Thread(target=lambda: app.run(host="scrape_anything", port=3000, debug=True, use_reloader=False)).start()
     finally:
@@ -102,4 +105,4 @@ def start_server():
             t.stop()
 
 if __name__ == '__main__':
-    start_server()
+    start_server(dev=False)
