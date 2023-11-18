@@ -1,5 +1,5 @@
 from scrape_anything import Agent
-from scrape_anything import ChatLLM
+from scrape_anything import TextOnlyLLM
 from scrape_anything import RemoteFeedController
 from queue import Queue
 
@@ -17,7 +17,7 @@ controller = RemoteFeedController(
     ) 
 controller.unpickle(experiment,0)
 
-agnet = Agent(llm=ChatLLM(),max_loops=1)
+agnet = Agent(llm=TextOnlyLLM(),max_loops=1)
 thread = agnet.run_parallel(controller)
 
 call_to_action = feed_from_agent.get()

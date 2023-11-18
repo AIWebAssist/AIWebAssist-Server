@@ -14,12 +14,11 @@ from scrape_anything.tools import ToolBox
 
 
 class Agent(BaseModel):
-    llm: ChatLLM
+    llm: LLMInterface
     max_loops: int = 1
     tool_box : ToolBox = ToolBox()
     
 
-    
     @staticmethod
     def clean_empty_lines(generated:str):
         return "\n".join(list(filter(lambda x: len(x.strip())>0,generated.split("\n"))))
