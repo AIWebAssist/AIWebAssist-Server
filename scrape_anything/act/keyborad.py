@@ -7,7 +7,7 @@ class HitAKey(ToolInterface):
     """Click on a field and enter text"""
 
     name:str = "Hit A Key"
-    description:str = "Hit on of the keys,  Input format: {{\"text\":\"esc\"}} or {{\"text\":\"enter\"}}"
+    description:str = "Hit on of the keys,  Input format: {{\"key\":\"esc\"}} or {{\"key\":\"enter\"}}"
     example_script:str = "keyborad_action"
 
 
