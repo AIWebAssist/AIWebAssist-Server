@@ -4,7 +4,7 @@ class ClickOnCoordinates(ToolInterface):
   """Click on certain coordinate on the screen """
 
   name :str = "Click on coordinates on the screen"
-  description:str = "click on x,y coordinates in order to move to the next screen. Input format: {{\"x\": <place_num_here>,\"y\":<place_num_here>}}"
+  description:str = "click on the horizontal axis and the vertical axis, x is horizontal,y is vertical. Input format: {{\"x\": <place_num_here>,\"y\":<place_num_here>}}"
   click_on_screen:bool = True
   example_script:str = "click_coordinates"
 

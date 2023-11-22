@@ -9,8 +9,9 @@ class TaskExtractionVisionBasePrompt(BaseModel):
     prompt_template:str = """
     Today is {today}, the site you're looking on is {site_url}.
 
-    Your user instraction is: "{task_to_accomplish}", attacted is the screen the user see.   
-
+    Your user instraction is: "{task_to_accomplish}", attacted is the screen the user see and here are the relevent elements:
+    {on_screen_data}
+    
     You should guide the user to complete the task given to you using the following tools:
     {tool_description}
 
