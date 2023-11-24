@@ -16,5 +16,5 @@ class HitAKey(ToolInterface):
       return {
         "x":kwarg['x'],
         "y":kwarg['y'],
-        "text":key
+        "key":key
       }

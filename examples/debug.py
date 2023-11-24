@@ -5,7 +5,6 @@ def simulate_client_click(url,user_task,num_of_iteration=1):
     clear_sessions(selenium_host="selenium-chrome")
     web_driver = start_browesr(selenium_host="selenium-chrome")
     simulate_user_call(web_driver,url,user_task,num_of_iteration=num_of_iteration)
-    #simulate_user_call(web_driver,url,user_task)
 
 
 start_server()
