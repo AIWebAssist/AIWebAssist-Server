@@ -37,7 +37,7 @@ class RemoteFeedController(Controller):
         self.outgoing_data_queue.put(OutGoingData(
                                                   session_closed=self.count_and_close(),
                                                   script=tool_executor.example_script,
-                                                  tool_input=tool_executor.process_tool_arg(**tool_input)))
+                                                  tool_input=tool_input))
         
         execution_status = self.status_queue.get()
         if type(execution_status) is str:
