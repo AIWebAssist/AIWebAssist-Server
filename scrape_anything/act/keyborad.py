@@ -14,7 +14,5 @@ class HitAKey(ToolInterface):
     def process_tool_arg(self,**kwarg):
       key = kwarg['key']
       return {
-        "x":kwarg['x'],
-        "y":kwarg['y'],
         "key":key
       }
