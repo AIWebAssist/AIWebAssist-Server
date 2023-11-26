@@ -77,9 +77,7 @@ class Agent(BaseModel):
                         screenshot_png=screenshot_png
                     )
                     # try to grab tool
-                    tool_executor = self.tool_box.get_tool(tool,final_answer_token)
-                    # compare tool to tool input
-                    tool_input = tool_executor.process_tool_arg(**tool_input)
+                    tool_executor,tool_input = self.tool_box.extract(tool,tool_input,final_answer_token)
                     # mark tool is well foramted
                     parsing_status = True
                     # use the tool

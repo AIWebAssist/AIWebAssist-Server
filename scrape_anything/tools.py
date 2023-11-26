@@ -10,6 +10,7 @@ class ToolBox(BaseModel):
     supoorted_tools: List[ToolInterface] = [ClickOnCoordinates(),EnterText(),GoBack(),ScrollRight(),ScrollUp(),ScrollDown(),Refresh(),HitAKey()]
     tools: List[ToolInterface] = EnabledActions.filter_enabled(supoorted_tools)
     
+    # tools that are abstracted from the agent
     final_answer_tool:ToolInterface = FinalAnswer
 
 
@@ -26,11 +27,15 @@ class ToolBox(BaseModel):
         return {tool.name: tool for tool in self.tools}
 
 
-    def get_tool(self, tool:str, final_answer_token:str) -> ToolInterface:
+    def extract(self, tool:str, tool_input,  final_answer_token:str) -> ToolInterface:
         if tool == final_answer_token:
-            return FinalAnswer
+            return FinalAnswer, {"message":tool_input}
 
         if tool not in self.tool_by_names:
             raise ValueError(f"unknown tool:{tool}")
-
-        return self.tool_by_names[tool]
+        
+        # grub the tool
+        tool_executor =  self.tool_by_names[tool]
+        # compare tool to tool input
+        tool_input = tool_executor.process_tool_arg(**tool_input)
+        return tool_executor, tool_input

@@ -33,5 +33,5 @@ class FinalAnswer(ToolInterface):
     example_script:str  = "final_guidance"
 
     def process_tool_arg(self,**kwarg):
-      return {}
+      return {"message":kwarg['message']}
 
