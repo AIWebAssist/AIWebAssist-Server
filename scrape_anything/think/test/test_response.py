@@ -59,3 +59,18 @@ def test_if_llm_provids_not_action_input_no_failure():
 
     assert tool == "Go Back"
     assert json.loads(tool_input) == {}
+
+
+def test_if_llm_provide_provide_final_answer():
+    sample = """
+    Thought: The previous action was to close the cookie settings dialogue and it was successful. Now that the screen is clear and accessible, I will proceed to search for the name 'sefi' by entering the text into the search bar.
+
+    Action: Enter Text
+    Action Input: {{"text":"sefi","x": 498.5,"y":400.5}}
+    Observation: I expect to see the name 'sefi' appear in the Google search bar, indicating that the text has been successfully entered.
+    Final Answer: You should see the result in this page
+    """
+    tool,tool_input = response.extract_tool_and_args(sample,"Final Answer")
+
+    assert tool == "Final Answer"
+    assert json.loads(tool_input) == {"text":"You should see the result in this page"}

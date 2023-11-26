@@ -23,3 +23,15 @@ class Refresh(ToolInterface):
 
     def process_tool_arg(self,**kwarg):
       return {}
+    
+
+class FinalAnswer(ToolInterface):
+    """the tool to use in the final answer"""
+
+    name:str = "Final Guidance"
+    description:str = "present on the screen final guidance to the user, Input format: {{\"text\":\"<text to present to the user>\"}} "
+    example_script:str  = "final_guidance"
+
+    def process_tool_arg(self,**kwarg):
+      return {}
+

@@ -10,6 +10,8 @@ class ToolBox(BaseModel):
     supoorted_tools: List[ToolInterface] = [ClickOnCoordinates(),EnterText(),GoBack(),ScrollRight(),ScrollUp(),ScrollDown(),Refresh(),HitAKey()]
     tools: List[ToolInterface] = EnabledActions.filter_enabled(supoorted_tools)
     
+    final_answer_tool:ToolInterface = FinalAnswer
+
 
     @property
     def tool_description(self) -> str:
@@ -24,9 +26,9 @@ class ToolBox(BaseModel):
         return {tool.name: tool for tool in self.tools}
 
 
-    def get_tool(self,tool:str, tool_input:str, final_answer_token:str) -> ToolInterface:
+    def get_tool(self, tool:str, final_answer_token:str) -> ToolInterface:
         if tool == final_answer_token:
-            return tool_input
+            return FinalAnswer
 
         if tool not in self.tool_by_names:
             raise ValueError(f"unknown tool:{tool}")

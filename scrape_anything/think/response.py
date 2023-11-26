@@ -6,7 +6,7 @@ from typing import Tuple
 
 def extract_tool_and_args(generated: str, final_answer_token:str) -> Tuple[str, str]:
     if final_answer_token in generated:
-        return "Final Answer", generated.split(final_answer_token)[-1].strip()
+        return final_answer_token, generated.split(final_answer_token+":")[-1].strip()
 
     if "Action Input" in generated:
         regex = r"Action: [\[]?(.*?)[\]]?[\n]*Action Input:[\[]?(.*?)[\]]?[\n]"

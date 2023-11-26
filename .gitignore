@@ -15,3 +15,4 @@ extension.zip
 extension.zip.1
 extension.crx
 shared
+*.pyc
