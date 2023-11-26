@@ -55,6 +55,7 @@ def simulate_user_call(wd,url,objective_text,num_of_iteration=1):
         # sleep 10 seconds before next itration
         time.sleep(10)
         current_index+=1
+    print("Exit simulation.")
 
 
 def clear_sessions(selenium_host="host.docker.internal",session_id=None):
