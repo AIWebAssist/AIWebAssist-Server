@@ -30,7 +30,7 @@ class FinalAnswer(ToolInterface):
 
     name:str = "Final Guidance"
     description:str = "present on the screen final guidance to the user, Input format: {{\"message\":\"<text to present to the user>\"}} "
-    example_script:str  = "final_guidance"
+    example_script:str  = "show_guidance"
 
     def process_tool_arg(self,**kwarg):
       return {"message":kwarg['message']}
