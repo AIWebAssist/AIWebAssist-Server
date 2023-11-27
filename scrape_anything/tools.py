@@ -5,8 +5,7 @@ from scrape_anything.util.browser import *
 from scrape_anything.view import *
 from scrape_anything.act import *
 from scrape_anything.controllers import EnabledActions
-from scrape_anything.think.response import parse_json
-from scrape_anything.util import Logger
+from scrape_anything.util import Logger,parse_json
 
 class ToolBox(BaseModel):
     supoorted_tools: List[ToolInterface] = [ClickOnCoordinates(),EnterText(),GoBack(),ScrollRight(),ScrollUp(),ScrollDown(),Refresh(),HitAKey()]

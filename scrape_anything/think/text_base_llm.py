@@ -3,7 +3,7 @@ import openai
 from .base_llm import LLMInterface
 from .io import to_text_file
 from .prompts.text_base_task_extraction import TaskExtractionTextBasePrompt
-from .response import extract_tool_and_args,parse_json
+from ..util import extract_tool_and_args
 
 class TextOnlyLLM(LLMInterface):
     model: str = 'gpt-3.5-turbo'

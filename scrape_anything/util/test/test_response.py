@@ -1,4 +1,4 @@
-from scrape_anything.think import response
+from scrape_anything.util import response
 import json
 import pytest
 
