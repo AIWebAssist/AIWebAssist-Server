@@ -3,9 +3,9 @@ import base64
 
 
 from .base_llm import LLMInterface
-from .io import to_text_file
+from ..util.io import to_text_file
 from .prompts.vision_base_task_extraction import TaskExtractionVisionBasePrompt
-from ..util import extract_tool_and_args
+from ..util import extract_tool_and_args,Logger
 
 class VisionBaseLLM(LLMInterface):
     model: str = 'gpt-4-vision-preview'
@@ -50,14 +50,24 @@ class VisionBaseLLM(LLMInterface):
         with open(image_path, "rb") as image_file:
             return base64.b64encode(image_file.read()).decode('utf-8')
         
-    def make_a_decide_on_next_action(self,num_loops:int, output_folder:str,**prompt_params):     
+    def make_a_decide_on_next_action(self,num_loops:int, output_folder:str,**prompt_params):
+        Logger.info("calling make a decision.")
+        # foramt prompt         
         prompt = self.prompt_manager.format_prompt(**prompt_params)
         final_answer_token = self.prompt_manager.get_final_answer_token()
 
+        # store prompt
         to_text_file(prompt,f"{output_folder}/step_{str(num_loops)}_prompt.txt")
+
+        Logger.info("calling LLM.")
         generated = self.generate(prompt,prompt_params.pop("screenshot_png")).replace("N/A","")
+        Logger.info("got response from LLM.")
+
+        # store reponse
         to_text_file(generated,f"{output_folder}/step_{str(num_loops)}_response.txt")
 
+        Logger.info(f"extracting tool from = {generated}")
         tool, tool_input = extract_tool_and_args(generated,final_answer_token)
-
+        Logger.info(f"extracted tools are tool={tool} and tool_input={tool_input}")
+        
         return generated, tool, tool_input, final_answer_token
