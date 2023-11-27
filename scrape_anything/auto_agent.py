@@ -87,7 +87,7 @@ class Agent(BaseModel):
                 # if there is an issue with the response of the LLM, update the controller and continue
                 except (ValueError,KeyError) as e:
                     error_message = f"failed, error: {str(e)}"
-                    controller.on_action_extraction_failed()
+                    controller.on_action_extraction_failed() # add call
                     print(f"WARNINGS: {str(e)}")
 
                 finally:
