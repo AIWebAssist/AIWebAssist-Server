@@ -121,6 +121,20 @@ def encode_image(file_path):
         data_url = f'data:image/png;base64,{base64_encoded}'
 
     return data_url
+
+def bytes_to_file(screenshot_data,file_path):
+    if not file_path.endswith(".png"):
+        raise ValueError("must be a png.")
+
+    import base64
+    screenshot_binary = base64.b64decode(screenshot_data.split(',')[1])
+
+    # Save the binary image to a file or process it as needed
+    with open(file_path, 'wb') as f:
+        f.write(screenshot_binary)
+    
+    return file_path
+    
 def web_driver_to_image(wd,file_name):
   full_path = f"{file_name}.png"
   wd.save_screenshot(full_path)
@@ -136,7 +150,18 @@ def web_driver_to_html(wd,file_name):
       f.write(html_content)
   return full_path
 
-
+def elements_to_table(logs):
+    import pandas as pd
+    import io
+    try:
+        df = pd.read_csv(io.StringIO(logs), sep=",",lineterminator="\n")
+        for column in df.columns:
+            if hasattr(df[column],'str'):
+                df[column] = df[column].str.replace("<comma>",",").str.replace("<new_line>","\n")
+        return df
+    except Exception as e:
+        raise Exception("Can't parse script output.")
+    
 def draw_on_screen(webdriver,filename,x,y,**kwarg):
   from PIL import Image, ImageDraw,ImageFont
   # Perform mouse click at X and Y coordinates

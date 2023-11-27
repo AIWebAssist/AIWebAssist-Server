@@ -1,4 +1,4 @@
-from ..util.browser import *
+from ..util import *
 from ..view import *
 from ..think import *
 from ..act import *
@@ -9,7 +9,6 @@ import time
 import sys
 
 class WebDriverController(Controller):
-
 
     def __init__(self,url,user_task:str,cache_to_pickle=False) -> None:
         super(WebDriverController,self).__init__(user_task)

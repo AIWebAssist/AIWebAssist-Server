@@ -27,7 +27,6 @@ class RemoteFeedController(Controller):
 
         return self.process_screen_data(incoming_data,output_folder,loop_num,file_name_html=file_name_html)
 
-    
     def count_and_close(self):
         self.message_count=+1;
         return self.message_count == self.max_loops
@@ -70,11 +69,9 @@ class RemoteFeedController(Controller):
     def is_closed(self):
         self.is_closed
 
-    def unpickle(self, output_folder, loop_num):
-        data = super().unpickle(output_folder, loop_num)
+    def from_pickle(self, output_folder, loop_num):
+        data = unpickle(output_folder, loop_num)
         self.incoming_data_queue.put(data)
         
     def close(self):
         self.is_closed = True
-        # if not self.is_closed:
-        #     self.outgoing_data_queue.put(Error(error_message="server_limit_reach",is_fatel=True))
