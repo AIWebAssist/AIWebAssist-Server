@@ -68,7 +68,7 @@ def minimize_page_data(df,viewpointscroll,viewportHeight,using_vision=False):
     _df = pd.concat([_df,clickable_df])
     if not using_vision:
         _df.drop(columns=['parent_xpath','height','width','top','bottom','left','right'],inplace=True)
-    _df.drop(columns=['cursor','onclick_no_null','clickable'],inplace=True)
+    _df.drop(columns=['cursor','onclick_no_null'],inplace=True)
     # 
     return _df
 

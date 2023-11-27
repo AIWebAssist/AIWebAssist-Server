@@ -6,13 +6,14 @@ from .controller import Controller
 from .data_types import IncommingData
 from selenium.common.exceptions import WebDriverException
 import time
+import sys
 
 class WebDriverController(Controller):
 
 
-    def __init__(self,url,cache_to_pickle=False) -> None:
+    def __init__(self,url,user_task:str,cache_to_pickle=False) -> None:
+        super(WebDriverController,self).__init__(user_task)
         try:
-
             clear_sessions(selenium_host="selenium-chrome")
             self.web_driver = start_browesr(selenium_host="selenium-chrome")
             self.web_driver.set_window_size(1024, 768)
@@ -31,7 +32,10 @@ class WebDriverController(Controller):
         width,height = get_screen_size(self.web_driver)
         url = get_url(self.web_driver)
 
-        screen_data = IncommingData(url=url,task="{task}",viewpointscroll=viewpointscroll,viewportHeight=viewportHeight,scroll_width=scroll_width,scroll_height=scroll_height,width=width,height=height,raw_on_screen=raw_on_screen)
+        file_name_png = web_driver_to_image(self.web_driver,f"{output_folder}/step_{loop_num+1}")
+        screenshot = encode_image(file_name_png)
+
+        screen_data = IncommingData(url=url,task="{task}",viewpointscroll=viewpointscroll,viewportHeight=viewportHeight,scroll_width=scroll_width,scroll_height=scroll_height,width=width,height=height,raw_on_screen=raw_on_screen,screenshot=screenshot)
         if self.cache_to_pickle:
             self.pickle(
                 output_folder=output_folder,
@@ -39,10 +43,10 @@ class WebDriverController(Controller):
                 data=screen_data
                 )
 
-        file_name_png = web_driver_to_image(self.web_driver,f"{output_folder}/step_{loop_num+1}")
+        
         file_name_html = web_driver_to_html(self.web_driver,f"{output_folder}/step_{loop_num+1}")
 
-        return self.process_screen_data(screen_data,output_folder,loop_num,file_name_png=file_name_png,file_name_html=file_name_html)
+        return self.process_screen_data(screen_data,output_folder,loop_num,file_name_html=file_name_html)
     
 
     def take_action(self,tool_executor:ToolInterface,tool_input:str,num_loops:int,output_folder:str):
@@ -64,6 +68,15 @@ class WebDriverController(Controller):
         # if the tool worked, wait and sample the site again. 
         if need_to_wait:
             wait_for_page_load(self.web_driver)
+
+    def on_action_extraction_failed(self):
+        pass
+
+    def on_action_extraction_fatal(self):
+        sys.exit(1)
+        
+    def is_closed(self):
+        return (self.web_driver != None) or (self.web_driver.is_closed())
 
     def close(self):
         try:

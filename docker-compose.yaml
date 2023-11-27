@@ -23,6 +23,7 @@ services:
     environment:
       - SE_NODE_MAX_SESSIONS=10       
       - SE_NODE_SESSION_TIMEOUT=30000 
+      - HOST=scrape_anything
     shm_size: "2g"
     # define Selenium stable 'Healthy' only after it's accessible.
     healthcheck: 

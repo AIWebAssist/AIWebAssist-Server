@@ -1,5 +1,5 @@
 from .dom.filters import minimize_page_data
-from .dom.java_script import screen_to_table,screen_to_window_dim,get_scroll_options
+from .dom.java_script import screen_to_window_dim,get_scroll_options,screen_to_elements
 from .vision.ocr import get_text_with_confidence
 
 def enrich_base_on_vision(df,filename):
@@ -21,17 +21,18 @@ def enrich_base_on_vision(df,filename):
 
 def minimize_and_enrich_page_data(df,viewpointscroll,viewportHeight,screenshot_filename=None,using_vision=False):
     can_use_vision = screenshot_filename is not None and using_vision is True
+    df = minimize_page_data(df,viewpointscroll,viewportHeight,using_vision=using_vision)
     if can_use_vision:
-        df = minimize_page_data(df,viewpointscroll,viewportHeight,using_vision=using_vision)
         df = enrich_base_on_vision(df,screenshot_filename)
-    df.drop(columns=['parent_xpath','height','width','top','bottom','left','right'],inplace=True)
+        df.drop(columns=['parent_xpath','height','width','top','bottom','left','right'],inplace=True)
     return df.fillna("")
 
 
 def get_screen_information(web_driver):
-    all_elements_on_screen  = screen_to_table(web_driver)
+    #
+    all_elements_on_screen = screen_to_elements(web_driver)
 
-    if all_elements_on_screen.empty:
+    if all_elements_on_screen is None or len(all_elements_on_screen) == 0:
         raise Exception("wasn't able to see anything on screen.")
     
     viewpointscroll,viewportHeight = screen_to_window_dim(web_driver)

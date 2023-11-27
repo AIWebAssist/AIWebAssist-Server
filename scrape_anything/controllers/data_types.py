@@ -10,8 +10,9 @@ class IncommingData:
 
     # data from the screen
     raw_on_screen:list
-
-    def __init__(self,url,task,viewpointscroll,viewportHeight,scroll_width,scroll_height,width,height,raw_on_screen) -> None:
+    screenshot:str
+    
+    def __init__(self,url,task,viewpointscroll,viewportHeight,scroll_width,scroll_height,width,height,raw_on_screen,screenshot) -> None:
         self.viewpointscroll = viewpointscroll
         self.viewportHeight = viewportHeight
         self.scroll_width = scroll_width
@@ -21,6 +22,7 @@ class IncommingData:
         self.raw_on_screen = raw_on_screen
         self.url = url
         self.task = task
+        self.screenshot = screenshot
 
 
 from enum import Enum
@@ -43,9 +45,16 @@ class EnabledActions(Enum):
     
 class OutGoingData:
 
-    def __init__(self,description:str,tool_enum:str, example_script:str,tool_input) -> None:
-        self.example_script = example_script
-        self.description = description
-        self.tool_enum = tool_enum
+    def __init__(self, script:str,tool_input,session_closed:bool) -> None:
+        self.script = script
         self.tool_input = tool_input
+        self.session_closed = session_closed
    
+
+class Error:
+
+    def __init__(self, error_message, is_fatel=False,user_should_retry=False,session_closed=False) -> None:
+        self.error_message = error_message
+        self.is_fatel = is_fatel
+        self.user_should_retry = user_should_retry
+        self.session_closed = session_closed
