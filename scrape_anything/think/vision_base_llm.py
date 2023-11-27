@@ -5,7 +5,7 @@ import base64
 from .base_llm import LLMInterface
 from .io import to_text_file
 from .prompts.vision_base_task_extraction import TaskExtractionVisionBasePrompt
-from .response import extract_tool_and_args,parse_json
+from .response import extract_tool_and_args
 
 class VisionBaseLLM(LLMInterface):
     model: str = 'gpt-4-vision-preview'
@@ -60,4 +60,4 @@ class VisionBaseLLM(LLMInterface):
 
         tool, tool_input = extract_tool_and_args(generated,final_answer_token)
 
-        return generated, tool, parse_json(tool_input), final_answer_token
+        return generated, tool, tool_input, final_answer_token

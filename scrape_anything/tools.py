@@ -5,6 +5,7 @@ from scrape_anything.browser import *
 from scrape_anything.view import *
 from scrape_anything.act import *
 from scrape_anything.controllers import EnabledActions
+from scrape_anything.think.response import parse_json
 
 class ToolBox(BaseModel):
     supoorted_tools: List[ToolInterface] = [ClickOnCoordinates(),EnterText(),GoBack(),ScrollRight(),ScrollUp(),ScrollDown(),Refresh(),HitAKey()]
@@ -27,7 +28,7 @@ class ToolBox(BaseModel):
         return {tool.name: tool for tool in self.tools}
 
 
-    def extract(self, tool:str, tool_input,  final_answer_token:str) -> ToolInterface:
+    def extract(self, tool:str, tool_input:str,  final_answer_token:str) -> ToolInterface:
         if tool == final_answer_token:
             return FinalAnswer, {"message":tool_input}
 
@@ -35,7 +36,7 @@ class ToolBox(BaseModel):
             raise ValueError(f"unknown tool:{tool}")
         
         # grub the tool
-        tool_executor =  self.tool_by_names[tool]
+        tool_executor = self.tool_by_names[tool]
         # compare tool to tool input
-        tool_input = tool_executor.process_tool_arg(**tool_input)
+        tool_input = tool_executor.process_tool_arg(**parse_json(tool_input))
         return tool_executor, tool_input

@@ -32,4 +32,4 @@ class TextOnlyLLM(LLMInterface):
 
         tool, tool_input = extract_tool_and_args(generated,final_answer_token)
 
-        return generated, tool, parse_json(tool_input), final_answer_token
+        return generated, tool, tool_input, final_answer_token
