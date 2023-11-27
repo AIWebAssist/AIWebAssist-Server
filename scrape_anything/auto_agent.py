@@ -5,7 +5,7 @@ import threading
 from pydantic import BaseModel
 
 
-from scrape_anything.browser import *
+from scrape_anything.util import *
 from scrape_anything.view import *
 from scrape_anything.think import *
 from scrape_anything.act import *
@@ -43,7 +43,8 @@ class Agent(BaseModel):
     def run(self, controller: Controller):
         output_folder = os.path.join("outputs",self.get_output_folder())
         os.makedirs(output_folder)
-        
+
+        Logger.info(f"starting new agent of {type(controller)}, output_folder={output_folder}")
         on_screen = None
         try:
             previous_responses = []
@@ -55,13 +56,14 @@ class Agent(BaseModel):
             
             while True:
                 num_loops += 1
-                print(f"--- Iteration {num_loops} ---")
+                Logger.info(f"starting iteration number {num_loops}")
             
                 parsing_status = False
                 execution_status = False
                 error_message = ""
                 try:
-                                        
+
+                    Logger.info(f"calling llm of type {type(self.llm)}")                    
                     raw, tool, tool_input, final_answer_token = self.llm.make_a_decide_on_next_action(
                         num_loops,
                         output_folder,
@@ -76,23 +78,35 @@ class Agent(BaseModel):
                         scroll_ratio=scroll_ratio,
                         screenshot_png=screenshot_png
                     )
+
                     # try to grab tool
+                    Logger.info(f"trying to extract tool '{tool}' and tool inputs '{tool_input}' using final token '{final_answer_token}' ")
                     tool_executor,tool_input = self.tool_box.extract(tool,tool_input,final_answer_token)
                     # mark tool is well foramted
                     parsing_status = True
+                    Logger.info(f"Extract tool '{type(tool_executor)}' and tool inputs '{tool_input}'.")
+
                     # use the tool
-                    controller.take_action(tool_executor, tool_input,num_loops,output_folder)
+                    Logger.info("calling controller action.")
+                    controller.take_action(tool_executor, tool_input, num_loops, output_folder)
                     execution_status = True
+                    Logger.info(f"execution completed successfully.")
                     
                 # if there is an issue with the response of the LLM, update the controller and continue
-                except (ValueError,KeyError) as e:
+                except (ValueError,KeyError,ExecutionError) as e:
                     error_message = f"failed, error: {str(e)}"
-                    controller.on_action_extraction_failed() # add call
-                    print(f"WARNINGS: {str(e)}")
+
+                    # if the error doesn't sources from the end client, report failure.
+                    if not isinstance(e,ExecutionError):
+                        Logger.error("reporting failure to controller.")
+                        controller.on_action_extraction_failed() 
+
+                    Logger.error(f"cycle failed parsing_status={parsing_status},execution_status={execution_status} error = {error_message}")
 
                 finally:
                     # if there is not other itreation
                     if num_loops >= self.max_loops and self.max_loops != -1: #
+                        Logger.info("closeing agent.")
                         break
 
                     on_screen,_,_,\
@@ -108,8 +122,10 @@ class Agent(BaseModel):
                 else:
                     message+= f"execution successful. Tool used: {tool}, Tool input: {tool_input}"
 
+                Logger.info(f"exection number {num_loops} completed, message = {message}")
                 previous_responses.append(message)
         except Exception as e:
+            Logger.error(f"reporting fatel to controler, reason={str(e)}")
             controller.on_action_extraction_fatal()
             raise e
         finally:

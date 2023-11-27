@@ -1,6 +1,6 @@
 from .remote_feed import RemoteFeedController
 from .data_types import IncommingData
-from ..browser import *
+from ..util.browser import *
 import os
 
 # TODO: remove patch

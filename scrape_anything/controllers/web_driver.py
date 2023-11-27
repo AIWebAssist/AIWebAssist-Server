@@ -1,4 +1,4 @@
-from ..browser import *
+from ..util.browser import *
 from ..view import *
 from ..think import *
 from ..act import *
@@ -69,10 +69,10 @@ class WebDriverController(Controller):
         if need_to_wait:
             wait_for_page_load(self.web_driver)
 
-    def on_action_extraction_failed(self):
+    def on_action_extraction_failed(self,loop_num:int):
         pass
 
-    def on_action_extraction_fatal(self):
+    def on_action_extraction_fatal(self,loop_num:int):
         sys.exit(1)
         
     def is_closed(self):

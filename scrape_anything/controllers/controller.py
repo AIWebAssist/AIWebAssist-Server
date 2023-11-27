@@ -13,6 +13,13 @@ class Controller(ABC):
     def fetch_infomration_on_screen(self,output_folder:str,loop_num:int):
         pass
 
+    @abstractmethod
+    def on_action_extraction_failed(self,loop_num:int):
+        pass
+
+    @abstractmethod
+    def on_action_extraction_fatal(self,loop_num:int):
+        pass
 
     def process_screen_data(self,incoming_data,output_folder,loop_num,file_name_html=None):
 
