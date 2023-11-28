@@ -122,6 +122,11 @@ def encode_image(file_path):
 
     return data_url
 
+def file_to_bytes(image_path):
+    import base64
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
+        
 def bytes_to_file(screenshot_data,file_path):
     if not file_path.endswith(".png"):
         raise ValueError("must be a png.")

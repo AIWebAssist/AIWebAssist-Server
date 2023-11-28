@@ -1,11 +1,9 @@
 import requests
-import base64
-
 
 from .base_llm import LLMInterface
 from ..util.io import to_text_file
 from .prompts.vision_base_task_extraction import TaskExtractionVisionBasePrompt
-from ..util import extract_tool_and_args,Logger
+from ..util import extract_tool_and_args,Logger,file_to_bytes
 
 class VisionBaseLLM(LLMInterface):
     model: str = 'gpt-4-vision-preview'
@@ -19,7 +17,7 @@ class VisionBaseLLM(LLMInterface):
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}"
         }
-        base64_image = self.encode_image(screenshot)
+        base64_image = file_to_bytes(screenshot)
 
         payload = {
             "model": "gpt-4-vision-preview",
@@ -46,9 +44,6 @@ class VisionBaseLLM(LLMInterface):
 
         return response['choices'][0]['message']['content']
     
-    def encode_image(self,image_path):
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode('utf-8')
         
     def make_a_decide_on_next_action(self,num_loops:int, output_folder:str,**prompt_params):
         Logger.info("calling make a decision.")
