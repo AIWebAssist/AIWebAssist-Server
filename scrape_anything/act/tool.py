@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from scrape_anything.browser import action_with_js_code
+from scrape_anything.util.browser import action_with_js_code
 import os
 
 

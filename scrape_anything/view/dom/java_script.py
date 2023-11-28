@@ -1,4 +1,4 @@
-from scrape_anything.browser import extract_with_js_code
+from scrape_anything.util.browser import extract_with_js_code
 import os
 
 CURRENT_PATH = os.path.join(os.getcwd(),"shared","extract")

@@ -1,4 +1,4 @@
-from ..browser import *
+from ..util import *
 from ..view import *
 from ..think import *
 from ..act import *
@@ -9,7 +9,6 @@ import time
 import sys
 
 class WebDriverController(Controller):
-
 
     def __init__(self,url,user_task:str,cache_to_pickle=False) -> None:
         super(WebDriverController,self).__init__(user_task)
@@ -69,10 +68,10 @@ class WebDriverController(Controller):
         if need_to_wait:
             wait_for_page_load(self.web_driver)
 
-    def on_action_extraction_failed(self):
+    def on_action_extraction_failed(self,loop_num:int):
         pass
 
-    def on_action_extraction_fatal(self):
+    def on_action_extraction_fatal(self,loop_num:int):
         sys.exit(1)
         
     def is_closed(self):

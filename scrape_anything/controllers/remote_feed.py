@@ -1,9 +1,9 @@
-from ..browser import *
+from ..util import *
 from ..view import *
 from ..think import *
 from ..act import *
 from .controller import Controller
-from .data_types import IncommingData,OutGoingData,EnabledActions,Error
+from .data_types import IncommingData,OutGoingData,Error
 from queue import Queue
 
 
@@ -27,46 +27,51 @@ class RemoteFeedController(Controller):
 
         return self.process_screen_data(incoming_data,output_folder,loop_num,file_name_html=file_name_html)
 
-    
     def count_and_close(self):
         self.message_count=+1;
         return self.message_count == self.max_loops
     
-    def take_action(self,tool_executor:ToolInterface,tool_input,num_loops:int,output_folder:str):
-
+    def take_action(self,tool_executor:ToolInterface,tool_input,loop_num:int,output_folder:str):
+        Logger.info(f"itration number {loop_num}: putting response.")
         self.outgoing_data_queue.put(OutGoingData(
                                                   session_closed=self.count_and_close(),
                                                   script=tool_executor.example_script,
                                                   tool_input=tool_input))
         
+        Logger.info(f"itration number {loop_num}: waiting for feedback from client.")
         execution_status = self.status_queue.get()
-        if type(execution_status) is str:
-            raise ValueError(f"execution failed: {execution_status}")
 
-    def on_action_extraction_failed(self):
+        Logger.info(f"itration number {loop_num}: response from client is {execution_status}")
+        if type(execution_status) is str:
+            raise ExecutionError(f"execution failed: {execution_status}")
+
+    def on_action_extraction_failed(self,loop_num:int):
+        Logger.info(f"itration number {loop_num}: putting failed response on recoverable error.")
         self.outgoing_data_queue.put(Error(
             error_message="server_fault_retry",
             user_should_retry=True,
             session_closed=self.count_and_close(),
             )
         )
+        Logger.info(f"itration number {loop_num}: after putting failed response on recoverable error.")
         
-    def on_action_extraction_fatal(self):
+    def on_action_extraction_fatal(self,loop_num:int):
+        Logger.info(f"itration number {loop_num}: putting failed response on non-recoverable error.")
         self.outgoing_data_queue.put(Error(
             error_message="server_fault_contact_admin",
             is_fatel=True,
             session_closed=self.count_and_close()
             )
         )
+        Logger.info(f"itration number {loop_num}: after putting failed response on non-recoverable error.")
+
 
     def is_closed(self):
         self.is_closed
 
-    def unpickle(self, output_folder, loop_num):
-        data = super().unpickle(output_folder, loop_num)
+    def from_pickle(self, output_folder, loop_num):
+        data = unpickle(output_folder, loop_num)
         self.incoming_data_queue.put(data)
         
     def close(self):
         self.is_closed = True
-        # if not self.is_closed:
-        #     self.outgoing_data_queue.put(Error(error_message="server_limit_reach",is_fatel=True))
