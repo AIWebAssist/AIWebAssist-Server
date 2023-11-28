@@ -37,6 +37,11 @@ class ToolBox(BaseModel):
             return FinalAnswer, {"message":tool_input}
 
         if tool not in self.tool_by_names:
+            # when the tool is not in the set of tools and the final answer token exists.
+            # consider it at the last answer.
+            if tool == final_answer_token:
+                return FinalAnswer, {"message":tool_input}
+            
             Logger.error(f"tool={tool}, is not in {self.tool_by_names}")
             raise ValueError(f"unknown tool:{tool}")
         

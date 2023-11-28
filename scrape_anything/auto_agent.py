@@ -102,7 +102,9 @@ class Agent(BaseModel):
                         controller.on_action_extraction_failed() 
 
                     Logger.error(f"cycle failed parsing_status={parsing_status},execution_status={execution_status} error = {error_message}")
-
+                except Exception as e:
+                    Logger.error(f"unknown execption {str(e)}")
+                    raise e
                 finally:
                     # if there is not other itreation
                     if num_loops >= self.max_loops and self.max_loops != -1: #
