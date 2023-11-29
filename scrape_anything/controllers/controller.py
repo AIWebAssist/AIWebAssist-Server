@@ -28,7 +28,7 @@ class Controller(ABC):
         width = incoming_data.width
         height = incoming_data.height
         url = incoming_data.url
-        screenshot_path = bytes_to_file(incoming_data.screenshot,os.path.join(output_folder,f"screenshot_{loop_num+1}.png"))
+        screenshot_path = bytes_to_file(incoming_data.screenshot,os.path.join(output_folder,f"step_{loop_num+1}_screenshot.png"))
 
         scroll_ratio = f"On the Width Axis, {scroll_width}. On the Height Axis, {scroll_height}"
         screen_size = f"width={width},height={height}"
