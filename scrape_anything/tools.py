@@ -12,7 +12,7 @@ class ToolBox(BaseModel):
     tools: List[ToolInterface] = EnabledActions.filter_enabled(supoorted_tools)
     
     # tools that are abstracted from the agent
-    final_answer_tool:ToolInterface = FinalAnswer
+    final_answer_tool:ToolInterface = FinalAnswer()
 
 
     @property
@@ -34,14 +34,9 @@ class ToolBox(BaseModel):
         if tool == final_answer_token:
 
             Logger.info("final answer detected.")
-            return FinalAnswer, {"message":tool_input}
+            return self.final_answer_tool, {"message":tool_input}
 
-        if tool not in self.tool_by_names:
-            # when the tool is not in the set of tools and the final answer token exists.
-            # consider it at the last answer.
-            if tool == final_answer_token:
-                return FinalAnswer, {"message":tool_input}
-            
+        if tool not in self.tool_by_names:            
             Logger.error(f"tool={tool}, is not in {self.tool_by_names}")
             raise ValueError(f"unknown tool:{tool}")
         

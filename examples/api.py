@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-import threading
+from multiprocessing import Process
 
 app = Flask(__name__)
 DEV = False # TODO: remove patch
@@ -97,12 +97,18 @@ def init_and_process(session_id,user_task,params,max_message=-1):
 
 def start_server(dev=True):
     global DEV 
+    global SERVER_THREAD
     DEV = dev
     try:
-        threading.Thread(target=lambda: app.run(host="scrape_anything", port=3000, debug=True, use_reloader=False)).start()
+        SERVER_THREAD = Process(target=app.run,kwargs={"host":"scrape_anything", "port":3000, "debug":True, "use_reloader":False})
+        SERVER_THREAD.start()
     finally:
         for t in THREADS.values():
             t.stop()
+
+def stop_server():
+    SERVER_THREAD.terminate()
+    SERVER_THREAD.join()
 
 if __name__ == '__main__':
     start_server(dev=False)

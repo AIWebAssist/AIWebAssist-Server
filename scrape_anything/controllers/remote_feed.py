@@ -20,7 +20,6 @@ class RemoteFeedController(Controller):
         self.message_count = 0
 
     def fetch_infomration_on_screen(self,output_folder:str,loop_num:int):
-
         incoming_data:IncommingData = self.incoming_data_queue.get()
         # compute the elements on screen, current + change
         file_name_html = None
@@ -33,10 +32,11 @@ class RemoteFeedController(Controller):
     
     def take_action(self,tool_executor:ToolInterface,tool_input,loop_num:int,output_folder:str):
         Logger.info(f"itration number {loop_num}: putting response.")
-        self.outgoing_data_queue.put(OutGoingData(
-                                                  session_closed=self.count_and_close(),
+        response = OutGoingData(session_closed=self.count_and_close(),
                                                   script=tool_executor.example_script,
-                                                  tool_input=tool_input))
+                                                  tool_input=tool_input)
+        DataBase.store_server_response(response,session_id=output_folder,call_in_seassion=loop_num)
+        self.outgoing_data_queue.put(response)
         
         Logger.info(f"itration number {loop_num}: waiting for feedback from client.")
         execution_status = self.status_queue.get()
@@ -70,7 +70,7 @@ class RemoteFeedController(Controller):
         self.is_closed
 
     def from_pickle(self, output_folder, loop_num):
-        data = unpickle(output_folder, loop_num)
+        data = unpickle(f"{output_folder}/data_{loop_num}.pkl") 
         self.incoming_data_queue.put(data)
         
     def close(self):

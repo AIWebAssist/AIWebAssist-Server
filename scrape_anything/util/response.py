@@ -6,20 +6,22 @@ from typing import Tuple
 
 def extract_tool_and_args(generated: str, final_answer_token:str) -> Tuple[str, str]:
     
-    if "Action Input" in generated: # try to get actions with inputs
-        regex = r"Action: [\[]?(.*?)[\]]?[\n]*Action Input:[\[]?(.*?)[\]]?[\n]"
-        match = re.search(regex, generated, re.DOTALL)
-        if not match:
-            raise ValueError(f"the output `{generated}` is not matching the expected format.")
-        tool = match.group(1).strip()
-        tool_input = match.group(2)
-    elif "Action" in generated: # if not, try to get actions that have no input
-        tool = generated.split("Action:")[-1].split("\n")[0].strip()
-        tool_input = "{}"
-    elif final_answer_token in generated: # if not, try to get final answer
-        return final_answer_token, generated.split(final_answer_token+":")[-1].strip()
+    if final_answer_token not in generated:
+        if "Action Input" in generated: # try to get actions with inputs
+            regex = r"Action: [\[]?(.*?)[\]]?[\n]*Action Input:[\[]?(.*?)[\]]?[\n]"
+            match = re.search(regex, generated, re.DOTALL)
+            if not match:
+                raise ValueError(f"the output `{generated}` is not matching the expected format.")
+            tool = match.group(1).strip()
+            tool_input = match.group(2)
+        elif "Action" in generated: # if not, try to get actions that have no input
+            tool = generated.split("Action:")[-1].split("\n")[0].strip()
+            tool_input = "{}"
+        else:
+            raise ValueError(f"you should provide one of the following: ('Action Input' and 'Action') or (only 'Action') or (\"{final_answer_token}\")")
     else:
-        raise ValueError(f"you should provide one of the following: ('Action Input' and 'Action') or (only 'Action') or (\"{final_answer_token}\")")
+        return final_answer_token, generated.split(final_answer_token+":")[-1].strip()
+
     return strip_tool(tool), strip_characther_in_args(tool_input)
 
 def strip_tool(string:str):

@@ -3,7 +3,7 @@ import requests
 from .base_llm import LLMInterface
 from ..util.io import to_text_file
 from .prompts.vision_base_task_extraction import TaskExtractionVisionBasePrompt
-from ..util import extract_tool_and_args,Logger,file_to_bytes
+from ..util import extract_tool_and_args,Logger,file_to_bytes,DataBase
 
 class VisionBaseLLM(LLMInterface):
     model: str = 'gpt-4-vision-preview'
@@ -52,17 +52,17 @@ class VisionBaseLLM(LLMInterface):
         final_answer_token = self.prompt_manager.get_final_answer_token()
 
         # store prompt
-        to_text_file(prompt,f"{output_folder}/step_{str(num_loops)}_prompt.txt")
+        DataBase.store_prompt(prompt,call_in_seassion=num_loops, session_id=output_folder)
 
         Logger.info("calling LLM.")
-        generated = self.generate(prompt,prompt_params.pop("screenshot_png")).replace("N/A","")
+        generated = self.generate(prompt,prompt_params.pop("screenshot_png"))
         Logger.info("got response from LLM.")
 
         # store reponse
-        to_text_file(generated,f"{output_folder}/step_{str(num_loops)}_response.txt")
+        DataBase.store_response(generated,call_in_seassion=num_loops, session_id=output_folder)
 
         Logger.info(f"extracting tool from = {generated}")
-        tool, tool_input = extract_tool_and_args(generated,final_answer_token)
+        tool, tool_input = extract_tool_and_args(generated.replace("N/A",""),final_answer_token)
         Logger.info(f"extracted tools are tool={tool} and tool_input={tool_input}")
         
         return generated, tool, tool_input, final_answer_token

@@ -14,15 +14,15 @@ def dataframe_to_csv(df,csv_filename):
                 _df[column] = _df[column].str.replace(",","<comma>").str.replace("\n","<new_line>")
     _df.to_csv(csv_filename,index=False)
 
-def pickle(output_folder,loop_num,data):
+def pickle(data,filename): 
     import pickle
 
     # Pickle the dictionary and save it to a file
-    with open(f"{output_folder}/data_{loop_num}.pkl", 'wb') as file:
+    with open(filename, 'wb') as file:
         pickle.dump(data, file)
 
-def unpickle(output_folder,loop_num):
+def unpickle(file_name):
     import pickle
-    with open(f"{output_folder}/data_{loop_num}.pkl", 'rb') as file:
+    with open(file_name, 'rb') as file:
         return pickle.load(file)
     
