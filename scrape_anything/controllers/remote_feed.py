@@ -20,7 +20,6 @@ class RemoteFeedController(Controller):
         self.message_count = 0
 
     def fetch_infomration_on_screen(self,output_folder:str,loop_num:int):
-
         incoming_data:IncommingData = self.incoming_data_queue.get()
         # compute the elements on screen, current + change
         file_name_html = None
