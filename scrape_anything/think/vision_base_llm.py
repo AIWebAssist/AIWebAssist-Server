@@ -52,14 +52,14 @@ class VisionBaseLLM(LLMInterface):
         final_answer_token = self.prompt_manager.get_final_answer_token()
 
         # store prompt
-        DataBase.store_prompt(prompt,num_loops=num_loops, session_id=output_folder)
+        DataBase.store_prompt(prompt,call_in_seassion=num_loops, session_id=output_folder)
 
         Logger.info("calling LLM.")
         generated = self.generate(prompt,prompt_params.pop("screenshot_png"))
         Logger.info("got response from LLM.")
 
         # store reponse
-        DataBase.store_response(generated,num_loops=num_loops, session_id=output_folder)
+        DataBase.store_response(generated,call_in_seassion=num_loops, session_id=output_folder)
 
         Logger.info(f"extracting tool from = {generated}")
         tool, tool_input = extract_tool_and_args(generated.replace("N/A",""),final_answer_token)
