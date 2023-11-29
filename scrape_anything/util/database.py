@@ -15,7 +15,7 @@ class DataBase:
 
     @staticmethod
     def store_client_raw_request(obj,session_id:str,call_in_seassion:int):
-        pickle(obj,loop_num=call_in_seassion,output_folder=session_id)
+        pickle(obj,f"{session_id}/step_{call_in_seassion}_raw_request.pkl")
 
     @staticmethod
     def store_html_elements(raw_on_screen,session_id:str,call_in_seassion:int):

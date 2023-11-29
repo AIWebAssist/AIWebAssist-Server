@@ -130,7 +130,7 @@ class Agent(BaseModel):
                     
         except Exception as e:
             Logger.error(f"reporting fatel to controler, reason={str(e)}")
-            controller.on_action_extraction_fatal()
+            controller.on_action_extraction_fatal(num_loops)
             raise e
         finally:
             controller.close()

@@ -34,7 +34,7 @@ class Controller(ABC):
 
 
     def process_screen_data(self,incoming_data,output_folder,loop_num,file_name_html=None):
-        DataBase.store_client_raw_request(raw_on_screen,session_id=output_folder,call_in_seassion=loop_num)
+        DataBase.store_client_raw_request(incoming_data,session_id=output_folder,call_in_seassion=loop_num)
 
         raw_on_screen, viewpointscroll,viewportHeight,scroll_width,scroll_height = elements_to_table(incoming_data.raw_on_screen),incoming_data.viewpointscroll,incoming_data.viewportHeight,incoming_data.scroll_width,incoming_data.scroll_height
         width = incoming_data.width
