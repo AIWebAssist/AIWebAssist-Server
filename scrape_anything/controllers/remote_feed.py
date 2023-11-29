@@ -33,10 +33,11 @@ class RemoteFeedController(Controller):
     
     def take_action(self,tool_executor:ToolInterface,tool_input,loop_num:int,output_folder:str):
         Logger.info(f"itration number {loop_num}: putting response.")
-        self.outgoing_data_queue.put(OutGoingData(
-                                                  session_closed=self.count_and_close(),
+        response = OutGoingData(session_closed=self.count_and_close(),
                                                   script=tool_executor.example_script,
-                                                  tool_input=tool_input))
+                                                  tool_input=tool_input)
+        DataBase.store_server_response(response,session_id=output_folder,call_in_seassion=loop_num)
+        self.outgoing_data_queue.put(response)
         
         Logger.info(f"itration number {loop_num}: waiting for feedback from client.")
         execution_status = self.status_queue.get()
