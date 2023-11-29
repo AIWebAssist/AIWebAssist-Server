@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from scrape_anything.act.tool import ToolInterface
 from ..view import *
-from ..util import dataframe_to_csv,bytes_to_file,elements_to_table
+from ..util import dataframe_to_csv,bytes_to_file,elements_to_table,DataBase
 import os
 
 
@@ -22,25 +22,31 @@ class Controller(ABC):
     def on_action_extraction_fatal(self,loop_num:int):
         pass
 
+
+    def process_elements(self,raw_on_screen,output_folder,loop_num,viewpointscroll,viewportHeight,screenshot_path):
+        DataBase.store_html_elements(raw_on_screen,output_folder,loop_num)
+        # minimize the data sent to the llm + enrich
+        on_screen = minimize_and_enrich_page_data(raw_on_screen,viewpointscroll,viewportHeight,screenshot_path)
+        # store the minimized elements
+        DataBase.store_filltered_html_elements(on_screen,output_folder,loop_num)
+
+        return on_screen
+
+
     def process_screen_data(self,incoming_data,output_folder,loop_num,file_name_html=None):
+        DataBase.store_client_raw_request(raw_on_screen)
 
         raw_on_screen, viewpointscroll,viewportHeight,scroll_width,scroll_height = elements_to_table(incoming_data.raw_on_screen),incoming_data.viewpointscroll,incoming_data.viewportHeight,incoming_data.scroll_width,incoming_data.scroll_height
         width = incoming_data.width
         height = incoming_data.height
         url = incoming_data.url
-        screenshot_path = bytes_to_file(incoming_data.screenshot,os.path.join(output_folder,f"step_{loop_num+1}_screenshot.png"))
+        screenshot_path = DataBase.store_screenshot(incoming_data.screenshot,session_id=output_folder,call_in_seassion=loop_num)
 
         scroll_ratio = f"On the Width Axis, {scroll_width}. On the Height Axis, {scroll_height}"
         screen_size = f"width={width},height={height}"
-        # store the raw elements before processing
-        dataframe_to_csv(raw_on_screen,f"{output_folder}/step_{loop_num+1}_raw.csv") 
-
-
-        # minimize the data sent to the llm + enrich
-        on_screen = minimize_and_enrich_page_data(raw_on_screen,viewpointscroll,viewportHeight,screenshot_path)
-        # store the minimized elements
-        dataframe_to_csv(on_screen,f"{output_folder}/step_{loop_num+1}_minimized.csv") 
         
+        # process the elements   
+        on_screen = self.process_elements(raw_on_screen,output_folder,loop_num,viewpointscroll,viewportHeight,screenshot_path)
         
         return on_screen,viewpointscroll,viewportHeight,screen_size,screenshot_path,file_name_html,scroll_ratio,url,self.user_task
 

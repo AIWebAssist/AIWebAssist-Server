@@ -115,17 +115,19 @@ class Agent(BaseModel):
                     screen_size,screenshot_png, _,\
                     scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
 
-                # foramt a message
-                message = f"Itreation number {num_loops} \n"
-                if not parsing_status: # if parsing failed
-                    message+= f"parsing failed. The raw response = {raw}. Error message = {error_message}"
-                elif not execution_status: # exection failed
-                    message+= f"execution failed. Error message = {error_message}"
-                else:
-                    message+= f"execution successful. Tool used: {tool}, Tool input: {tool_input}"
+                    # foramt a message
+                    message = f"Itreation number {num_loops} \n"
+                    if not parsing_status: # if parsing failed
+                        message+= f"parsing failed. The raw response = {raw}. Error message = {error_message}"
+                    elif not execution_status: # exection failed
+                        message+= f"execution failed. Error message = {error_message}"
+                    else:
+                        message+= f"execution successful. Tool used: {tool}, Tool input: {tool_input}"
 
-                Logger.info(f"exection number {num_loops} completed, message = {message}")
-                previous_responses.append(message)
+                    Logger.info(f"exection number {num_loops} completed, message = {message}")
+                    DataBase.store_exection_status(message,session_id=output_folder,call_in_seassion=num_loops)
+                    previous_responses.append(message)
+                    
         except Exception as e:
             Logger.error(f"reporting fatel to controler, reason={str(e)}")
             controller.on_action_extraction_fatal()
