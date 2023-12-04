@@ -9,15 +9,16 @@ def simulate_user_call(wd,url,objective_text,num_of_iteration=1):
     wd.get(url)
 
     # open extension
-    wd.execute_script("window.open('');") 
-    wd.switch_to.window(wd.window_handles[1])
+    #wd.execute_script("window.open('');") 
+    #wd.switch_to.window(wd.window_handles[1])
 
     # get the extension id
-    wd.get('Chrome://extensions')
-    extension_id = wd.execute_script("return chrome.management.getAll();")[0]['id']
+    #wd.get('Chrome://extensions')
+    #extension_id = wd.execute_script("return chrome.management.getAll();")[0]['id']
 
     # 1. Add objective
-    wd.get(f"chrome-extension://{extension_id}/main.html")
+    #wd.get(f"chrome-extension://{extension_id}/main.html")
+    wd.find_element(By.ID,"ai-assistance-circle").click()
     wd.find_element(By.ID,"objective").send_keys(objective_text) 
 
     # 2. Toggle on the 'switch'
