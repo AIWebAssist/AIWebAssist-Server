@@ -18,7 +18,7 @@ class TextOnlyLLM(LLMInterface):
             temperature=self.temperature,
             stop=self.prompt_manager.get_stop_patterns()
         )
-        return response.choices[0].message.content
+        return self.safe_extract_response(response,'choices',0,'message','content')
     
     
     def make_a_decide_on_next_action(self,num_loops:int, output_folder:str, **prompt_params):

@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
 from multiprocessing import Process
+from flask_cors import cross_origin
 
 app = Flask(__name__)
 DEV = False # TODO: remove patch
 
 @app.route('/process', methods=['POST'])
+@cross_origin()
 def process():
     try:
         data = request.get_json()
@@ -18,6 +20,7 @@ def process():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/status', methods=['POST'])
+@cross_origin()
 def status():
     try:
         data = request.get_json()
@@ -100,7 +103,7 @@ def start_server(dev=True):
     global SERVER_THREAD
     DEV = dev
     try:
-        SERVER_THREAD = Process(target=app.run,kwargs={"host":"scrape_anything", "port":3000, "debug":True, "use_reloader":False})
+        SERVER_THREAD = Process(target=app.run,kwargs={"host":"scrape_anything", "port":3000, "debug":True, "use_reloader":False,"ssl_context":"adhoc"})
         SERVER_THREAD.start()
     finally:
         for t in THREADS.values():

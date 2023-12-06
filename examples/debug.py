@@ -18,7 +18,10 @@ def simulate_user_call(wd,url,objective_text,num_of_iteration=1):
 
     # 1. Add objective
     #wd.get(f"chrome-extension://{extension_id}/main.html")
+    time.sleep(2)
     wd.find_element(By.ID,"ai-assistance-circle").click()
+    time.sleep(1)
+    wd.find_element(By.ID,"objective").click()
     wd.find_element(By.ID,"objective").send_keys(objective_text) 
 
     # 2. Toggle on the 'switch'
@@ -28,11 +31,11 @@ def simulate_user_call(wd,url,objective_text,num_of_iteration=1):
 
     current_index = 0
     while current_index < num_of_iteration:
-        wd.switch_to.window(wd.window_handles[0])
+        
         web_driver_to_image(wd,"temp_patch") # TODO: remove patch
         
+        time.sleep(2)
         # switch to extension
-        wd.switch_to.window(wd.window_handles[1])
         submit_button = wd.find_element(By.ID,'submit')
         submit_button.click()
 

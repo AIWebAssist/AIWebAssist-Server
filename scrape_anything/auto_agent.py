@@ -93,7 +93,7 @@ class Agent(BaseModel):
                     Logger.info(f"execution completed successfully.")
                     
                 # if there is an issue with the response of the LLM, update the controller and continue
-                except (ValueError,KeyError,ExecutionError) as e:
+                except (ValueError,KeyError,ExecutionError,LlmProviderError) as e:
                     error_message = f"failed, error: {str(e)}"
 
                     # if the error doesn't sources from the end client, report failure.
