@@ -40,7 +40,7 @@ def simulate_user_call(wd,url,objective_text,num_of_iteration=1):
         submit_button.click()
 
         # sleep until the button is re-enabled
-        while not submit_button.is_enabled():
+        while not wd.find_element(By.ID,'submit').is_enabled():
           time.sleep(2)
         current_index+=1
 

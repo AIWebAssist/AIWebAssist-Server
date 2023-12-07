@@ -11,7 +11,7 @@ FROM base as dev
 
 RUN pip3 install -r requirements-dev.txt
 # pull the extension
-#RUN rm extension.crx && wget https://clients2.googleusercontent.com/crx/blobs/AfBom9Z9R-PzAXUsvcwW01VdWEvfxE6fJB61idXcDWSycW7a6IrY3TNj9jXBkSN27Xa0YVoTjajBQ-iWGzb3YUzV7uWW1UymyuMLs-iodME2lJkDCYETAMZSmuV8NXVpvYS5-XKTNYyhytT0zvEWKg/dicmckdpjpagngabbhhlbahoicjabmoe.crx -O extension.crx
+#RUN rm extension.crx && wget https://clients2.googleusercontent.com/crx/blobs/AfBom9YZFmozp4ge6I1WlU19n8rg-lBFHtQ0Rcwsc5ALCi8Hczz8b57UAofeojG-B9R8iV6FxeH3Rll4Pt9tWjCSlWOI3a1HhjdchNs6YsR319x2I_HjAMZSmuXNT_SJHl0_x41gAzsVHvhdsARzIQ/dicmckdpjpagngabbhhlbahoicjabmoe.crx -O extension.crx
 
 RUN VER=$(curl -I https://github.com/AIWebAssist/AIWebAssistExtension/releases/latest/ | awk -F '/' '/^location/ {print  substr($NF, 1, length($NF)-1)}')
 RUN wget https://github.com/AIWebAssist/AIWebAssistExtension/releases/download/${VER}/extension.zip

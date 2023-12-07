@@ -18,7 +18,7 @@ class TextOnlyLLM(LLMInterface):
             temperature=self.temperature,
             stop=self.prompt_manager.get_stop_patterns()
         )
-        return self.safe_extract_response(response,'choices',0,'message','content')
+        return self.safe_extract_response(response.to_dict(),'choices',0,'message','content')
     
     
     def make_a_decide_on_next_action(self,num_loops:int, output_folder:str, **prompt_params):
@@ -28,7 +28,7 @@ class TextOnlyLLM(LLMInterface):
         final_answer_token = self.prompt_manager.get_final_answer_token()
 
         # store prompt
-        DataBase.store_prompt(prompt,num_loops=num_loops, session_id=output_folder)
+        DataBase.store_prompt(prompt,call_in_seassion=num_loops, session_id=output_folder)
 
         # call LLM
         Logger.info("calling LLM.")
@@ -36,7 +36,7 @@ class TextOnlyLLM(LLMInterface):
         Logger.info("got response from LLM.")
 
         # store reponse
-        DataBase.store_response(generated,num_loops=num_loops, session_id=output_folder)
+        DataBase.store_response(generated,call_in_seassion=num_loops, session_id=output_folder)
 
         Logger.info(f"extracting tool from = {generated}")
         tool, tool_input = extract_tool_and_args(generated.replace("N/A",""),final_answer_token)
