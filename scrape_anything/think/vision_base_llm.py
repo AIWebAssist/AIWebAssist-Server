@@ -42,7 +42,7 @@ class VisionBaseLLM(LLMInterface):
         }
         response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload).json()
 
-        return response['choices'][0]['message']['content']
+        return self.safe_extract_response(response,'choices',0,'message','content')
     
         
     def make_a_decide_on_next_action(self,num_loops:int, output_folder:str,**prompt_params):
