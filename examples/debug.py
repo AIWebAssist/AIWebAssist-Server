@@ -8,23 +8,17 @@ def simulate_user_call(wd,url,objective_text,num_of_iteration=1):
     # open site
     wd.get(url)
 
-    # open extension
-    #wd.execute_script("window.open('');") 
-    #wd.switch_to.window(wd.window_handles[1])
-
-    # get the extension id
-    #wd.get('Chrome://extensions')
-    #extension_id = wd.execute_script("return chrome.management.getAll();")[0]['id']
-
-    # 1. Add objective
+    # 1. Open the menu
     #wd.get(f"chrome-extension://{extension_id}/main.html")
     time.sleep(2)
     wd.find_element(By.ID,"ai-assistance-circle").click()
     time.sleep(1)
+
+    # 2. Add objective
     wd.find_element(By.ID,"objective").click()
     wd.find_element(By.ID,"objective").send_keys(objective_text) 
 
-    # 2. Toggle on the 'switch'
+    # 3. Toggle on the 'switch'
     switch_element = wd.find_element(By.CSS_SELECTOR,'.switch')
     if not switch_element.is_selected():
         switch_element.click()
@@ -34,6 +28,7 @@ def simulate_user_call(wd,url,objective_text,num_of_iteration=1):
         
         web_driver_to_image(wd,"temp_patch") # TODO: remove patch
         
+        # 4. we assume the objective and switch status are preserved 
         time.sleep(2)
         # switch to extension
         submit_button = wd.find_element(By.ID,'submit')
