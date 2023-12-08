@@ -5,27 +5,45 @@ from flask_cors import cross_origin
 app = Flask(__name__)
 DEV = False # TODO: remove patch
 
-@app.route('/process', methods=['POST'])
+@app.route('/process', methods=['POST', 'OPTIONS'])
 @cross_origin()
 def process():
+    if request.method == 'POST':
+        return handle_process_request()
+    elif request.method == 'OPTIONS':
+        response = jsonify({})
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        return response, 200
+
+@app.route('/status', methods=['POST', 'OPTIONS'])
+@cross_origin()
+def status():
+    if request.method == 'POST':
+        return handle_status_request()
+    elif request.method == 'OPTIONS':
+        response = jsonify({})
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        return response, 200
+    
+
+def handle_process_request():
     try:
         data = request.get_json()
         if data is not None or "session_id" not in data or "user_task" not in data:
             user_task = data["user_task"]
-            session_id = data.pop("session_id")
+            session_id = str(data.pop("session_id"))
             return init_and_process(session_id,user_task,data,max_message=-1)
         else:
             return jsonify({'error': 'Invalid JSON input'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/status', methods=['POST'])
-@cross_origin()
-def status():
+
+def handle_status_request():
     try:
         data = request.get_json()
         if data is not None or "session_id" not in data:
-            session_id = data.pop("session_id")
+            session_id = str(data.pop("session_id"))
             return process_status(session_id,data)
         else:
             return jsonify({'error': 'Invalid JSON input'}), 400
