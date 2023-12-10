@@ -115,10 +115,8 @@ def init_and_process(session_id,user_task,params,max_message=-1):
     return process_request(params,session_id)
 
 
-def start_server(dev=True):
-    global DEV 
+def start_server():
     global SERVER_THREAD
-    DEV = dev
     try:
         SERVER_THREAD = Process(target=app.run,kwargs={"host":"scrape_anything", "port":3000, "debug":True, "use_reloader":False,"ssl_context":"adhoc"})
         SERVER_THREAD.start()
@@ -131,4 +129,4 @@ def stop_server():
     SERVER_THREAD.join()
 
 if __name__ == '__main__':
-    start_server(dev=False)
+    start_server()
