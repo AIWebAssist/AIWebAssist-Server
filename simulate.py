@@ -1,5 +1,6 @@
 from scrape_anything.util.browser import clear_sessions,start_browesr
 from main import start_server,stop_server
+import shutil
 
 def simulate_user_call(wd,url,objective_text,num_of_iteration=1):
     from selenium.webdriver.common.by import By
@@ -43,9 +44,21 @@ def simulate_client_click(url,user_task,num_of_iteration=1):
     simulate_user_call(web_driver,url,user_task,num_of_iteration=num_of_iteration)
 
 
-# start the server
-start_server()
-# start calling the extension
-simulate_client_click("https://www.google.com/?hl=en","I Need to search my name in google, my name is 'sefi'",num_of_iteration=10)
-# stop the server
-stop_server()
+
+def simulate(url,task_description):
+    # start the server
+    start_server()
+    # start calling the extension
+    simulate_client_click(url,task_description,num_of_iteration=10)
+    # stop the server
+    stop_server()
+
+
+scenarios = [
+    {"url":"https://www.google.com/?hl=en","task_description":"I need to search my name in google, my name is 'sefi'"},
+    {"url":"https://www.google.com/?hl=en","task_description":"help my signin my facebook account."},
+    {"url":"https://www.google.com/?hl=en","task_description":"i need to read my emails i've an account on gmail."},
+    {"url":"https://www.google.com/?hl=en","task_description":"help me find the latest twitte of elon musk?"},
+]
+for scenario in scenarios:
+    simulate(**scenario)
