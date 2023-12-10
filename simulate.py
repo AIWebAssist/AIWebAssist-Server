@@ -1,5 +1,5 @@
 from scrape_anything.util.browser import clear_sessions,start_browesr
-from examples.api import start_server,stop_server
+from main import start_server,stop_server
 
 def simulate_user_call(wd,url,objective_text,num_of_iteration=1):
     from selenium.webdriver.common.by import By
