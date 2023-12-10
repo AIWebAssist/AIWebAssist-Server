@@ -25,9 +25,7 @@ def simulate_user_call(wd,url,objective_text,num_of_iteration=1):
 
     current_index = 0
     while current_index < num_of_iteration:
-        
-        web_driver_to_image(wd,"temp_patch") # TODO: remove patch
-        
+                
         # 4. we assume the objective and switch status are preserved 
         time.sleep(2)
         # switch to extension

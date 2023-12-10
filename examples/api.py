@@ -3,7 +3,6 @@ from multiprocessing import Process
 from flask_cors import cross_origin
 
 app = Flask(__name__)
-DEV = False # TODO: remove patch
 
 @app.route('/process', methods=['POST', 'OPTIONS'])
 @cross_origin()
@@ -55,14 +54,14 @@ THREADS = dict()
 def init_agent(user_task,session_id,max_message=1):
     from scrape_anything import Agent
     from scrape_anything import TextOnlyLLM,VisionBaseLLM
-    from scrape_anything import DevRemoteFeedController
+    from scrape_anything import RemoteFeedController
     from queue import Queue
 
     feed_from_chrome = Queue(maxsize=1)
     feed_from_agent = Queue(maxsize=1)
     status_feed_queue = Queue(maxsize=1)
 
-    controller = DevRemoteFeedController(
+    controller = RemoteFeedController(
         incoming_data_queue=feed_from_chrome,
         outgoing_data_queue=feed_from_agent,
         status_queue=status_feed_queue,
@@ -97,7 +96,7 @@ def process_request(data,session_id):
                                        width=data['width'],
                                        height=data['height'],
                                        raw_on_screen=data['raw_on_screen'],
-                                       screenshot= None if DEV else data['screenshot'])) # TODO: remove patch
+                                       screenshot=data['screenshot'])) 
     response:OutGoingData = feed_from_agent.get()
     if isinstance(response,Error) and (response.is_fatel or response.session_closed):
         clean_session(session_id)
