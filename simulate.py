@@ -51,4 +51,4 @@ df['run_status'] = False
 for index, row in df.iterrows():
     row['run_status'] = simulate(row['uuid'], row['url'], row['task_description'], row['max_num_of_iteration'])
 
-df.to_csv(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + "_scenarios.csv")
+df.to_csv(os.path.join("outputs",datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + "_scenarios.csv"))
