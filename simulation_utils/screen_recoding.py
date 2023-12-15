@@ -40,12 +40,14 @@ class ScreenRecorder:
 
     def stop_recording(self):
         self.exit = True
-        self.final_lock.acquire()
-        if os.path.exists("temp") and len(os.listdir("temp")) > 0:
-            os.system(f"ffmpeg -r {self.fps} -i temp/tmp_%01d.png -vcodec mpeg4 -y {self.output_file}.mp4")
+        try:
+            self.final_lock.acquire()
+            if os.path.exists("temp") and len(os.listdir("temp")) > 0:
+                os.system(f"ffmpeg -r {self.fps} -i temp/tmp_%01d.png -vcodec mpeg4 -y {self.output_file}.mp4")
+                return True
+            else:
+                return False
+        finally:
             shutil.rmtree("temp")
-            return True
-        else:
-            return False
         
 
