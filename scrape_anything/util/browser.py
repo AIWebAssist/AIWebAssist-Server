@@ -10,7 +10,7 @@ def start_browesr(dockerized=True,headless=False,selenium_host="host.docker.inte
   chrome_options.add_argument('--no-sandbox')
   chrome_options.add_argument('--lang=en')
   chrome_options.add_argument('ignore-certificate-errors')
-
+  
   if headless:
     chrome_options.headless = True
     chrome_options.add_argument('--headless')

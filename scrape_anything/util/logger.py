@@ -1,7 +1,9 @@
 import logging
 import sys
+import os
+import shutil
 
-
+LOGGING_FILE = "logging.log"
 def build_logger():
     """create the logger instance"""
     # Define logger
@@ -18,7 +20,7 @@ def build_logger():
         console_handler.setFormatter(log_formatter)
         logger.addHandler(console_handler)
 
-        file_handler = logging.FileHandler("logging.log")
+        file_handler = logging.FileHandler(LOGGING_FILE)
         file_handler.setFormatter(log_formatter)
         logger.addHandler(file_handler)
 
@@ -62,3 +64,7 @@ class Logger:
         """log warning"""
         if cls.enabled:
             cls.logger.warning(msg, *args, **kwargs)
+
+    @classmethod
+    def copy_log_file(cls,uuid):
+        shutil.copy(LOGGING_FILE, os.path.join("outputs","logs",f"{uuid}_experiment.log"))

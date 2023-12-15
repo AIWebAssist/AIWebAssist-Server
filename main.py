@@ -1,9 +1,8 @@
 from flask import Flask, request, jsonify
 from multiprocessing import Process
 from flask_cors import cross_origin
-
+import os
 app = Flask(__name__)
-DEV = False # TODO: remove patch
 
 @app.route('/process', methods=['POST', 'OPTIONS'])
 @cross_origin()
@@ -55,21 +54,27 @@ THREADS = dict()
 def init_agent(user_task,session_id,max_message=1):
     from scrape_anything import Agent
     from scrape_anything import TextOnlyLLM,VisionBaseLLM
-    from scrape_anything import DevRemoteFeedController
+    from scrape_anything import RemoteFeedController
+    from scrape_anything.util import DataBase
     from queue import Queue
 
     feed_from_chrome = Queue(maxsize=1)
     feed_from_agent = Queue(maxsize=1)
     status_feed_queue = Queue(maxsize=1)
+    uuid_str = os.environ.get("EXPRIMENT_UUID",None)
 
-    controller = DevRemoteFeedController(
+    controller = RemoteFeedController(
         incoming_data_queue=feed_from_chrome,
         outgoing_data_queue=feed_from_agent,
         status_queue=status_feed_queue,
         user_task=user_task,
         max_loops=max_message
     ) 
-    agnet = Agent(llm=VisionBaseLLM(),max_loops=max_message)
+    agnet = Agent(
+            llm=VisionBaseLLM(),
+            max_loops=max_message,
+            session_id=DataBase.get_session_id(uuid_str)
+        )
     THREADS[session_id] = agnet.run_parallel(controller)
     SOME_DB[session_id] = (feed_from_chrome,feed_from_agent,status_feed_queue)
 
@@ -97,7 +102,7 @@ def process_request(data,session_id):
                                        width=data['width'],
                                        height=data['height'],
                                        raw_on_screen=data['raw_on_screen'],
-                                       screenshot= None if DEV else data['screenshot'])) # TODO: remove patch
+                                       screenshot=data['screenshot'])) 
     response:OutGoingData = feed_from_agent.get()
     if isinstance(response,Error) and (response.is_fatel or response.session_closed):
         clean_session(session_id)
@@ -116,10 +121,8 @@ def init_and_process(session_id,user_task,params,max_message=-1):
     return process_request(params,session_id)
 
 
-def start_server(dev=True):
-    global DEV 
+def start_server():
     global SERVER_THREAD
-    DEV = dev
     try:
         SERVER_THREAD = Process(target=app.run,kwargs={"host":"scrape_anything", "port":3000, "debug":True, "use_reloader":False,"ssl_context":"adhoc"})
         SERVER_THREAD.start()
@@ -132,4 +135,4 @@ def stop_server():
     SERVER_THREAD.join()
 
 if __name__ == '__main__':
-    start_server(dev=False)
+    start_server()
