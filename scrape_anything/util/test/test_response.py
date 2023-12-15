@@ -92,3 +92,18 @@ def test_final_answer_is_ignored_if_llm_provide_action_with_it():
 
     assert tool == "Enter Text"
     assert json.loads(tool_input) == {"text":"sefi","x": 498.5,"y":400.5}
+
+
+def test_extract_tool():
+    sample = """
+    Thought: The user has entered "Elon Musk twitter" into the Google search bar. The next step is to initiate the search by either clicking on the "Google Search" button or pressing the "enter" key.
+
+    Action: Hit A Key
+    Action Input: {"key":"enter"}
+    Observation: After hitting the "enter" key, I expect to see a Google search results page, with possible links to Elon Musk's Twitter profile or his latest tweets.
+    Final Answer: If this action leads to the search results page as intended, I would let the user know to look for the most recent tweet from Elon Musk's Twitter profile in the search results.
+    """
+
+    tool,tool_input = response.extract_tool_and_args(sample,"Final Answer")
+    assert tool == "Hit A Key"
+    assert json.loads(tool_input) == {"key":"enter"}
