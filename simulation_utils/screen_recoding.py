@@ -7,8 +7,9 @@ class ScreenRecorder:
     def __init__(self, output_file, driver):
         self.driver = driver
 
-        if not os.path.exists(os.path.sep.join(output_file.split(os.path.sep)[:-1])):
-            raise ValueError("please create path")
+        path = os.path.sep.join(output_file.split(os.path.sep)[:-1])
+        if not os.path.exists(path):
+            os.makedirs(path)
 
         self.output_file = output_file
         self.exit = False
