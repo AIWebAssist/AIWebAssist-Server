@@ -47,7 +47,7 @@ class Agent(BaseModel):
                 try:
 
                     Logger.info(f"calling llm of type {type(self.llm)}")                    
-                    raw, tool, tool_input, final_answer_token = self.llm.make_a_decide_on_next_action(
+                    raw, tool, tool_input = self.llm.make_a_decide_on_next_action(
                         num_loops,
                         self.session_id,
                         today = datetime.date.today(),
@@ -63,8 +63,8 @@ class Agent(BaseModel):
                     )
 
                     # try to grab tool
-                    Logger.info(f"trying to extract tool '{tool}' and tool inputs '{tool_input}' using final token '{final_answer_token}' ")
-                    tool_executor,tool_input = self.tool_box.extract(tool,tool_input,final_answer_token)
+                    Logger.info(f"trying to extract tool '{tool}' and tool inputs '{tool_input}' ")
+                    tool_executor,tool_input = self.tool_box.extract(tool,tool_input)
                     # mark tool is well foramted
                     parsing_status = True
                     Logger.info(f"Extract tool '{type(tool_executor)}' and tool inputs '{tool_input}'.")

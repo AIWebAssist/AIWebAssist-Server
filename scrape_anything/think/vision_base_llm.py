@@ -49,7 +49,6 @@ class VisionBaseLLM(LLMInterface):
         Logger.info("calling make a decision.")
         # foramt prompt         
         prompt = self.prompt_manager.format_prompt(**prompt_params)
-        final_answer_token = self.prompt_manager.get_final_answer_token()
 
         # store prompt
         DataBase.store_prompt(prompt,call_in_seassion=num_loops, session_id=output_folder)
@@ -62,7 +61,7 @@ class VisionBaseLLM(LLMInterface):
         DataBase.store_response(generated,call_in_seassion=num_loops, session_id=output_folder)
 
         Logger.info(f"extracting tool from = {generated}")
-        tool, tool_input = extract_tool_and_args(generated.replace("N/A",""),final_answer_token)
+        tool, tool_input = extract_tool_and_args(generated.replace("N/A",""))
         Logger.info(f"extracted tools are tool={tool} and tool_input={tool_input}")
         
-        return generated, tool, tool_input, final_answer_token
+        return generated, tool, tool_input
