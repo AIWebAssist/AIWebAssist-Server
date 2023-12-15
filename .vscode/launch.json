@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Test",
+            "name": "Simulate",
             "type": "python",
             "request": "launch",
-            "program": "examples/debug.py",
+            "program": "simulate.py",
             "console": "integratedTerminal",
             "justMyCode": false,
             "env": {
