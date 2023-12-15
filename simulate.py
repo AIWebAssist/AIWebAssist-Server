@@ -2,7 +2,9 @@ from scrape_anything.util.browser import clear_sessions,start_browesr
 from main import start_server,stop_server
 from simulation_utils.screen_recoding import ScreenRecorder
 from simulation_utils.extension_executor import simulate_user_call
-import uuid,os
+import uuid
+import os
+import shutil
 import pandas as pd
 import datetime
 from scrape_anything.util.logger import Logger
@@ -38,10 +40,10 @@ def simulate(experiment_uuid,url,task_description,max_num_of_iteration):
 
 
 scenarios = [
-    {"url":"https://www.google.com/?hl=en","task_description":"I need to search my name in google, my name is 'sefi'","max_num_of_iteration":5},
-    {"url":"https://www.google.com/?hl=en","task_description":"help my signin my facebook account.","max_num_of_iteration":5},
-    {"url":"https://www.google.com/?hl=en","task_description":"i need to read my emails i've an account on gmail.","max_num_of_iteration":5},
-    {"url":"https://www.google.com/?hl=en","task_description":"help me find the latest twitte of elon musk?","max_num_of_iteration":5},
+    {"url":"https://www.google.com/?hl=en","task_description":"I need to search my name in google, my name is 'sefi'","max_num_of_iteration":1},
+    {"url":"https://www.google.com/?hl=en","task_description":"help my signin my facebook account.","max_num_of_iteration":1},
+    {"url":"https://www.google.com/?hl=en","task_description":"i need to read my emails i've an account on gmail.","max_num_of_iteration":1},
+    {"url":"https://www.google.com/?hl=en","task_description":"help me find the latest twitte of elon musk?","max_num_of_iteration":1},
 ]
 
 df = pd.DataFrame(scenarios)
@@ -51,4 +53,6 @@ df['run_status'] = False
 for index, row in df.iterrows():
     row['run_status'] = simulate(row['uuid'], row['url'], row['task_description'], row['max_num_of_iteration'])
 
-df.to_csv(os.path.join("outputs",datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + "_scenarios.csv"))
+experiment_date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+df.to_csv(os.path.join("outputs",experiment_date + "_scenarios.csv"))
+shutil.make_archive(experiment_date+".zip", 'zip', "outputs")

@@ -67,5 +67,11 @@ class Logger:
 
     @classmethod
     def copy_log_file(cls,uuid):
+        logging.shutdown()
+
+        if not os.path.exists("outputs/logs"):
+            os.makedirs("outputs/logs")
+        
         shutil.copy(LOGGING_FILE, os.path.join("outputs","logs",f"{uuid}_experiment.log"))
         os.remove(LOGGING_FILE)
+        Logger.logger = build_logger()
