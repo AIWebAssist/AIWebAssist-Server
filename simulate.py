@@ -38,10 +38,10 @@ def simulate(experiment_uuid,url,task_description,max_num_of_iteration):
 
 
 scenarios = [
-    {"url":"https://www.google.com/?hl=en","task_description":"I need to search my name in google, my name is 'sefi'","max_num_of_iteration":2},
-    # {"url":"https://www.google.com/?hl=en","task_description":"help my signin my facebook account.","max_num_of_iteration":10},
-    # {"url":"https://www.google.com/?hl=en","task_description":"i need to read my emails i've an account on gmail.","max_num_of_iteration":10},
-    # {"url":"https://www.google.com/?hl=en","task_description":"help me find the latest twitte of elon musk?","max_num_of_iteration":10},
+    {"url":"https://www.google.com/?hl=en","task_description":"I need to search my name in google, my name is 'sefi'","max_num_of_iteration":5},
+    {"url":"https://www.google.com/?hl=en","task_description":"help my signin my facebook account.","max_num_of_iteration":5},
+    {"url":"https://www.google.com/?hl=en","task_description":"i need to read my emails i've an account on gmail.","max_num_of_iteration":5},
+    {"url":"https://www.google.com/?hl=en","task_description":"help me find the latest twitte of elon musk?","max_num_of_iteration":5},
 ]
 
 df = pd.DataFrame(scenarios)

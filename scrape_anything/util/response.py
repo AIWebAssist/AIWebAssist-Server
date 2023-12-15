@@ -6,7 +6,7 @@ from typing import Tuple
 
 def extract_tool_and_args(generated: str, final_answer_token:str) -> Tuple[str, str]:
     
-    if final_answer_token not in generated:
+    if "Action" in generated or "Action Input" in generated:
         if "Action Input" in generated: # try to get actions with inputs
             regex = r"Action: [\[]?(.*?)[\]]?[\n]*Action Input:[\[]?(.*?)[\]]?[\n]"
             match = re.search(regex, generated, re.DOTALL)
@@ -19,8 +19,10 @@ def extract_tool_and_args(generated: str, final_answer_token:str) -> Tuple[str, 
             tool_input = "{}"
         else:
             raise ValueError(f"you should provide one of the following: ('Action Input' and 'Action') or (only 'Action') or (\"{final_answer_token}\")")
-    else:
+    elif final_answer_token in generated :
         return final_answer_token, generated.split(final_answer_token+":")[-1].strip()
+    else:
+        raise ValueError(f"you should provide one of the following: ('Action Input' and 'Action') or (only 'Action') or (\"{final_answer_token}\")")
 
     return strip_tool(tool), strip_characther_in_args(tool_input)
 

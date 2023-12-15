@@ -9,20 +9,8 @@ class FileSystemDataBase:
     @classmethod
     def get_session_id(cls,uuid_str=None):
         import uuid
-        import datetime
-
-        # Generate a UUID and replace dashes with underscores
-        uuid_str = uuid_str if uuid_str else str(uuid.uuid4()).replace("-", "_")
-
-        # Get the current date and time
-        current_datetime = datetime.datetime.now()
-
-        # Format the date and time as a string
-        datetime_str = current_datetime.strftime("%H_%M_%S_%Y_%m_%d")
-
-        # Combine the UUID and datetime
-        current = f"{datetime_str}x{uuid_str}"
-        output_folder = os.path.join("outputs","datebase",current)
+        
+        output_folder = os.path.join("outputs","datebase",uuid_str if uuid_str else str(uuid.uuid4()).replace("-", "_"))
         os.makedirs(output_folder)
         return output_folder
 
