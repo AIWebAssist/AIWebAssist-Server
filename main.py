@@ -55,6 +55,7 @@ def init_agent(user_task,session_id,max_message=1):
     from scrape_anything import Agent
     from scrape_anything import TextOnlyLLM,VisionBaseLLM
     from scrape_anything import RemoteFeedController
+    from scrape_anything.util import DataBase
     from queue import Queue
 
     feed_from_chrome = Queue(maxsize=1)
@@ -68,7 +69,11 @@ def init_agent(user_task,session_id,max_message=1):
         user_task=user_task,
         max_loops=max_message
     ) 
-    agnet = Agent(llm=VisionBaseLLM(),max_loops=max_message)
+    agnet = Agent(
+            llm=VisionBaseLLM(),
+            max_loops=max_message,
+            session_id=DataBase.get_session_id()
+        )
     THREADS[session_id] = agnet.run_parallel(controller)
     SOME_DB[session_id] = (feed_from_chrome,feed_from_agent,status_feed_queue)
 

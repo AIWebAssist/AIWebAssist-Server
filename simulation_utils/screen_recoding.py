@@ -12,6 +12,8 @@ class ScreenRecorder:
         self.fps = 25
 
     def record_screen_thread(self):
+        if os.path.exists("temp"):
+            shutil.rmtree("temp")
         os.mkdir("temp")
 
         index = 0

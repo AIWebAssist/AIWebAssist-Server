@@ -17,22 +17,8 @@ class Agent(BaseModel):
     llm: LLMInterface
     max_loops: int = 1
     tool_box : ToolBox = ToolBox()
+    session_id: str 
     
-    def get_output_folder(self):
-        import uuid
-        import datetime
-
-        # Generate a UUID and replace dashes with underscores
-        uuid_str = str(uuid.uuid4()).replace("-", "_")
-
-        # Get the current date and time
-        current_datetime = datetime.datetime.now()
-
-        # Format the date and time as a string
-        datetime_str = current_datetime.strftime("%H_%M_%S_%Y_%m_%d")
-
-        # Combine the UUID and datetime
-        return f"{datetime_str}x{uuid_str}"
 
     def run_parallel(self,controller: Controller):
         thread = threading.Thread(target=self.run,args=(controller,))
@@ -41,10 +27,7 @@ class Agent(BaseModel):
         return thread
         
     def run(self, controller: Controller):
-        output_folder = os.path.join("outputs",self.get_output_folder())
-        os.makedirs(output_folder)
-
-        Logger.info(f"starting new agent of {type(controller)}, output_folder={output_folder}")
+        Logger.info(f"starting new agent of {type(controller)}, session_id ={self.session_id}")
         on_screen = None
         try:
             previous_responses = []
@@ -52,7 +35,7 @@ class Agent(BaseModel):
      
             on_screen,_,_,\
             screen_size,screenshot_png, _,\
-                scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
+                scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(self.session_id,loop_num=num_loops)
             
             while True:
                 num_loops += 1
@@ -66,7 +49,7 @@ class Agent(BaseModel):
                     Logger.info(f"calling llm of type {type(self.llm)}")                    
                     raw, tool, tool_input, final_answer_token = self.llm.make_a_decide_on_next_action(
                         num_loops,
-                        output_folder,
+                        self.session_id,
                         today = datetime.date.today(),
                         site_url=url,
                         tool_description=self.tool_box.tool_description,
@@ -88,7 +71,7 @@ class Agent(BaseModel):
 
                     # use the tool
                     Logger.info("calling controller action.")
-                    controller.take_action(tool_executor, tool_input, num_loops, output_folder)
+                    controller.take_action(tool_executor, tool_input, num_loops, self.session_id)
                     execution_status = True
                     Logger.info(f"execution completed successfully.")
                     
@@ -101,7 +84,7 @@ class Agent(BaseModel):
                         Logger.error("reporting failure to controller.")
                         controller.on_action_extraction_failed() 
 
-                    Logger.error(f"cycle failed parsing_status={parsing_status},execution_status={execution_status} error = {error_message}")
+                    Logger.error(f"cycle failed parsing_status={parsing_status},session_id={self.session_id} error = {error_message}")
                 except Exception as e:
                     Logger.error(f"unknown execption {str(e)}")
                     raise e
@@ -113,7 +96,7 @@ class Agent(BaseModel):
 
                     on_screen,_,_,\
                     screen_size,screenshot_png, _,\
-                    scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(output_folder,loop_num=num_loops)
+                    scroll_ratio,url,task_to_accomplish = controller.fetch_infomration_on_screen(self.session_id,loop_num=num_loops)
 
                     # foramt a message
                     message = f"Itreation number {num_loops} \n"
@@ -125,7 +108,7 @@ class Agent(BaseModel):
                         message+= f"execution successful. Tool used: {tool}, Tool input: {tool_input}"
 
                     Logger.info(f"exection number {num_loops} completed, message = {message}")
-                    DataBase.store_exection_status(message,session_id=output_folder,call_in_seassion=num_loops)
+                    DataBase.store_exection_status(message,session_id=self.session_id,call_in_seassion=num_loops)
                     previous_responses.append(message)
                     
         except Exception as e:
