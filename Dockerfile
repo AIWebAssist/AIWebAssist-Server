@@ -17,6 +17,8 @@ RUN VER=$(curl -I https://github.com/AIWebAssist/AIWebAssistExtension/releases/l
 RUN wget https://github.com/AIWebAssist/AIWebAssistExtension/releases/download/${VER}/extension.zip
 RUN unzip extension.zip "extension/shared/*" -d shared/ && mv shared/extension/shared/* shared/ && rm -r shared/extension/
 
+# to cv2
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 CMD sh -c "while sleep 1000; do :; done"
 
 
