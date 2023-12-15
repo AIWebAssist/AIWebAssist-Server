@@ -55,4 +55,4 @@ for index, row in df.iterrows():
 
 experiment_date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 df.to_csv(os.path.join("outputs",experiment_date + "_scenarios.csv"))
-shutil.make_archive(experiment_date+".zip", 'zip', "outputs")
+shutil.make_archive(experiment_date, 'zip', "outputs")
