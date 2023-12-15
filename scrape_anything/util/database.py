@@ -7,12 +7,12 @@ import os
 class FileSystemDataBase:
 
     @classmethod
-    def get_session_id(cls):
+    def get_session_id(cls,uuid_str=None):
         import uuid
         import datetime
 
         # Generate a UUID and replace dashes with underscores
-        uuid_str = str(uuid.uuid4()).replace("-", "_")
+        uuid_str = uuid_str if uuid_str else str(uuid.uuid4()).replace("-", "_")
 
         # Get the current date and time
         current_datetime = datetime.datetime.now()
@@ -67,8 +67,8 @@ class DataBase:
     data_base = FileSystemDataBase()
 
     @classmethod
-    def get_session_id(cls):
-        return cls.data_base.get_session_id()
+    def get_session_id(cls,uuid_str=None):
+        return cls.data_base.get_session_id(uuid_str=uuid_str)
 
     # prompt call E2E
     @classmethod

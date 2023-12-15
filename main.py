@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from multiprocessing import Process
 from flask_cors import cross_origin
-
+import os
 app = Flask(__name__)
 
 @app.route('/process', methods=['POST', 'OPTIONS'])
@@ -61,6 +61,7 @@ def init_agent(user_task,session_id,max_message=1):
     feed_from_chrome = Queue(maxsize=1)
     feed_from_agent = Queue(maxsize=1)
     status_feed_queue = Queue(maxsize=1)
+    uuid_str = os.environ.get("EXPRIMENT_UUID",None)
 
     controller = RemoteFeedController(
         incoming_data_queue=feed_from_chrome,
@@ -72,7 +73,7 @@ def init_agent(user_task,session_id,max_message=1):
     agnet = Agent(
             llm=VisionBaseLLM(),
             max_loops=max_message,
-            session_id=DataBase.get_session_id()
+            session_id=DataBase.get_session_id(uuid_str)
         )
     THREADS[session_id] = agnet.run_parallel(controller)
     SOME_DB[session_id] = (feed_from_chrome,feed_from_agent,status_feed_queue)
