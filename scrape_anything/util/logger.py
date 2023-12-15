@@ -68,3 +68,4 @@ class Logger:
     @classmethod
     def copy_log_file(cls,uuid):
         shutil.copy(LOGGING_FILE, os.path.join("outputs","logs",f"{uuid}_experiment.log"))
+        os.remove(LOGGING_FILE)
