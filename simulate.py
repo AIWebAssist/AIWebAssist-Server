@@ -5,12 +5,13 @@ from simulation_utils.extension_executor import simulate_user_call
 import uuid,os
 import pandas as pd
 import datetime
+from scrape_anything.util.logger import Logger
 
 def simulate_client_click(url,user_task,recording_file,num_of_iteration=1):
     clear_sessions(selenium_host="selenium-chrome")
     web_driver = start_browesr(selenium_host="selenium-chrome")
 
-    screen_recorder = ScreenRecorder(os.path.join("Recordings",recording_file),web_driver)
+    screen_recorder = ScreenRecorder(os.path.join("outputs","recordings",recording_file),web_driver)
     simulate_completed = False
     try:
         screen_recorder.start_recording()
@@ -23,6 +24,7 @@ def simulate_client_click(url,user_task,recording_file,num_of_iteration=1):
 
 
 def simulate(experiment_uuid,url,task_description,max_num_of_iteration):
+    
     os.environ['EXPRIMENT_UUID'] = experiment_uuid
     # start the server
     start_server()
@@ -31,6 +33,7 @@ def simulate(experiment_uuid,url,task_description,max_num_of_iteration):
     # stop the server
     stop_server()
 
+    Logger.copy_log_file(experiment_uuid)
     return simulate_completed and recording_completed
 
 

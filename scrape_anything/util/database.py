@@ -22,7 +22,7 @@ class FileSystemDataBase:
 
         # Combine the UUID and datetime
         current = f"{datetime_str}x{uuid_str}"
-        output_folder = os.path.join("outputs",current)
+        output_folder = os.path.join("outputs","datebase",current)
         os.makedirs(output_folder)
         return output_folder
 
