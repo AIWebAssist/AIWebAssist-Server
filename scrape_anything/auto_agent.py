@@ -45,7 +45,7 @@ class Agent(BaseModel):
                 execution_status = False
                 error_message = ""
                 try:
-
+                    
                     Logger.info(f"calling llm of type {type(self.llm)}")                    
                     raw, tool, tool_input = self.llm.make_a_decide_on_next_action(
                         num_loops,
@@ -81,12 +81,13 @@ class Agent(BaseModel):
 
                     # if the error doesn't sources from the end client, report failure.
                     if not isinstance(e,ExecutionError):
-                        Logger.error("reporting failure to controller.")
-                        controller.on_action_extraction_failed() 
+                        Logger.error("reporting failure to controller.") 
+                        controller.on_action_extraction_failed(loop_num=num_loops) 
+                        Logger.error("failure reported to controller.")
 
                     Logger.error(f"cycle failed parsing_status={parsing_status},session_id={self.session_id} error = {error_message}")
                 except Exception as e:
-                    Logger.error(f"unknown execption {str(e)}")
+                    Logger.error(f"unknown execption {str(e)}") 
                     raise e
                 finally:
                     # if there is not other itreation
