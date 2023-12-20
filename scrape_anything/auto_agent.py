@@ -1,5 +1,4 @@
 import datetime
-import os
 import threading
 
 from pydantic import BaseModel
@@ -102,7 +101,8 @@ class Agent(BaseModel):
                     execution_status = True
                     Logger.info(f"execution completed successfully.")
 
-                # if there is an issue with the response of the LLM, update the controller and continue
+                # if there is an issue with the response of the LLM.
+                # update the controller and continue
                 except (ValueError, KeyError, ExecutionError, LlmProviderError) as e:
                     error_message = f"failed, error: {str(e)}"
 
@@ -113,7 +113,9 @@ class Agent(BaseModel):
                         Logger.error("failure reported to controller.")
 
                     Logger.error(
-                        f"cycle failed parsing_status={parsing_status},session_id={self.session_id} error = {error_message}"
+                        f"cycle failed parsing_status={parsing_status},
+                        session_id={self.session_id},
+                        error = {error_message}"
                     )
                 except Exception as e:
                     Logger.error(f"unknown execption {str(e)}")
