@@ -113,9 +113,9 @@ class Agent(BaseModel):
                         Logger.error("failure reported to controller.")
 
                     Logger.error(
-                        f"cycle failed parsing_status={parsing_status},
-                        session_id={self.session_id},
-                        error = {error_message}"
+                        f"cycle failed parsing_status={parsing_status}"
+                        f"session_id={self.session_id},"
+                        f"error = {error_message}"
                     )
                 except Exception as e:
                     Logger.error(f"unknown execption {str(e)}")

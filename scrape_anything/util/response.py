@@ -19,7 +19,8 @@ def extract_tool_and_args(generated: str) -> Tuple[str, str]:
             tool_input = "{}"
     else:
         raise ValueError(
-            f"you should provide one of the following: ('Action Input' and 'Action') or (only 'Action')"
+            f"you should provide one of the following: "
+            f"('Action Input' and 'Action') or (only 'Action')"
         )
 
     try:
@@ -45,5 +46,5 @@ def parse_json(tool_input: str):
     try:
         response = json.loads(tool_input)
     except Exception as e:
-        raise ValueError(f"the output `{tool_input}` is not a JSON, error = {e}")
+        raise ValueError(f"the output `{tool_input}` is not a JSON, error = {e}") from e
     return response
