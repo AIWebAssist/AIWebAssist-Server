@@ -2,7 +2,6 @@ from pydantic import BaseModel
 
 class TaskExtractionTextBasePrompt(BaseModel):
 
-    final_answer_token:str = "Final Answer"
     observation_token:str = "Observation"
     
 
@@ -46,14 +45,10 @@ class TaskExtractionTextBasePrompt(BaseModel):
     Action: The action to take, exactly one element of [{{tool_names}}]
     Action Input: The input to the action
     {observation_token}: The change you expect to see after the action is executed.
-    {final_answer_token}: Your final message to the user if you think there task was accomplished.
     """
 
     def get_stop_patterns(self):
         return [f'\n{self.observation_token}', f'\n\t{self.observation_token}']
-
-    def get_final_answer_token(self):
-        return self.final_answer_token
 
     def format_prompt(self,**kwrgs):
         return  self.prompt_template.format(**kwrgs)

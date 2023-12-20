@@ -47,7 +47,7 @@ class Agent(BaseModel):
                 try:
                     
                     Logger.info(f"calling llm of type {type(self.llm)}")                    
-                    raw, tool, tool_input = self.llm.make_a_decide_on_next_action(
+                    raw = self.llm.make_a_decide_on_next_action(
                         num_loops,
                         self.session_id,
                         today = datetime.date.today(),
@@ -61,6 +61,13 @@ class Agent(BaseModel):
                         scroll_ratio=scroll_ratio,
                         screenshot_png=screenshot_png
                     )
+
+                    # store reponse
+                    DataBase.store_response(raw,call_in_seassion=num_loops, session_id=self.session_id)
+
+                    Logger.info(f"extracting tool from = {raw}")
+                    tool, tool_input = extract_tool_and_args(raw.replace("N/A",""))
+                    Logger.info(f"extracted tools are tool={tool} and tool_input={tool_input}")
 
                     # try to grab tool
                     Logger.info(f"trying to extract tool '{tool}' and tool inputs '{tool_input}' ")
@@ -114,7 +121,7 @@ class Agent(BaseModel):
                     
         except Exception as e:
             Logger.error(f"reporting fatel to controler, reason={str(e)}")
-            controller.on_action_extraction_fatal(num_loops)
+            controller.on_action_extraction_fatal(num_loops)            
             raise e
         finally:
             controller.close()

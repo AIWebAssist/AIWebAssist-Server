@@ -109,3 +109,31 @@ def test_extract_tool():
     assert tool_input == {}
 
 
+def test_bad_format():
+    sample = """
+Describe all Input Field:
+1. Element Index: 93
+   Coordinates: (657.5, 401.5)
+   Current Value: None
+   Purpose: Search field for entering text.
+
+Describe all Buttons:
+1. Element Index: 234
+   Coordinates: (602.796875, 471.0)
+   Purpose: Google Search button.
+
+2. Element Index: 235
+   Coordinates: (749.640625, 471.0)
+   Purpose: I'm Feeling Lucky button.
+
+Question: What is your current goal?
+Thought: I need to enter the text 'sefi' in the search field and click on the Google Search button to search for my name.
+Execution Status: No previous executions.
+Current Task: Enter the text 'sefi' in the search field and click on the Google Search button.
+Action: Enter Text
+Action Input: { "text": "sefi", "x": 657.5, "y": 401.5 }
+    """
+
+    tool,tool_input = response.extract_tool_and_args(sample)
+    assert tool == "Enter Text"
+    assert tool_input == { "text": "sefi", "x": 657.5, "y": 401.5 }

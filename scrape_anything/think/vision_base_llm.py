@@ -57,11 +57,5 @@ class VisionBaseLLM(LLMInterface):
         generated = self.generate(prompt,prompt_params.pop("screenshot_png"))
         Logger.info("got response from LLM.")
 
-        # store reponse
-        DataBase.store_response(generated,call_in_seassion=num_loops, session_id=output_folder)
-
-        Logger.info(f"extracting tool from = {generated}")
-        tool, tool_input = extract_tool_and_args(generated.replace("N/A",""))
-        Logger.info(f"extracted tools are tool={tool} and tool_input={tool_input}")
         
-        return generated, tool, tool_input
+        return generated
