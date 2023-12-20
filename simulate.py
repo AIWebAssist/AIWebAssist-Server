@@ -12,6 +12,7 @@ from scrape_anything.util.logger import Logger
 def simulate_client_click(url,user_task,recording_file,num_of_iteration=1):
     clear_sessions(selenium_host="selenium-chrome")
     web_driver = start_browesr(selenium_host="selenium-chrome")
+    web_driver.maximize_window()
 
     screen_recorder = ScreenRecorder(os.path.join("outputs","recordings",recording_file),web_driver)
     simulate_completed = False
