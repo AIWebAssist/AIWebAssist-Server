@@ -1,11 +1,10 @@
 from pydantic import BaseModel
 
+
 class TaskExtractionTextBasePrompt(BaseModel):
+    observation_token: str = "Observation"
 
-    observation_token:str = "Observation"
-    
-
-    prompt_template:str = f"""
+    prompt_template: str = f"""
     Today is {{today}}, the site you're looking on is {{site_url}}.
 
     Here is a representation of the valuable elements existing on the screen:
@@ -48,7 +47,7 @@ class TaskExtractionTextBasePrompt(BaseModel):
     """
 
     def get_stop_patterns(self):
-        return [f'\n{self.observation_token}', f'\n\t{self.observation_token}']
+        return [f"\n{self.observation_token}", f"\n\t{self.observation_token}"]
 
-    def format_prompt(self,**kwrgs):
-        return  self.prompt_template.format(**kwrgs)
+    def format_prompt(self, **kwrgs):
+        return self.prompt_template.format(**kwrgs)

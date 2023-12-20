@@ -4,6 +4,8 @@ import os
 import shutil
 
 LOGGING_FILE = "logging.log"
+
+
 def build_logger():
     """create the logger instance"""
     # Define logger
@@ -66,12 +68,14 @@ class Logger:
             cls.logger.warning(msg, *args, **kwargs)
 
     @classmethod
-    def copy_log_file(cls,uuid):
+    def copy_log_file(cls, uuid):
         logging.shutdown()
 
         if not os.path.exists("outputs/logs"):
             os.makedirs("outputs/logs")
-        
-        shutil.copy(LOGGING_FILE, os.path.join("outputs","logs",f"{uuid}_experiment.log"))
+
+        shutil.copy(
+            LOGGING_FILE, os.path.join("outputs", "logs", f"{uuid}_experiment.log")
+        )
         os.remove(LOGGING_FILE)
         Logger.logger = build_logger()

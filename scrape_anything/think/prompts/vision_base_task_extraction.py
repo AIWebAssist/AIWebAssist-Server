@@ -1,12 +1,12 @@
 from pydantic import BaseModel
 
+
 class TaskExtractionVisionBasePrompt(BaseModel):
+    final_answer_token: str = "Final Answer"
+    observation_token: str = "Observation"
+    # THOUGHT_TOKEN = "Thought:"
 
-    final_answer_token:str = "Final Answer"
-    observation_token:str = "Observation"
-    #THOUGHT_TOKEN = "Thought:"
-
-    prompt_template:str = f"""
+    prompt_template: str = f"""
 Today is {{today}}, the site you're looking on is {{site_url}}.
 
 Your user instraction is: "{{task_to_accomplish}}", attacted is the screen the user see and here are the relevent elements:
@@ -28,7 +28,7 @@ Action Input: The input to the action
     """
 
     def get_stop_patterns(self):
-        return [f'\n{self.observation_token}', f'\n\t{self.observation_token}']
+        return [f"\n{self.observation_token}", f"\n\t{self.observation_token}"]
 
-    def format_prompt(self,**kwrgs):
-        return  self.prompt_template.format(**kwrgs)
+    def format_prompt(self, **kwrgs):
+        return self.prompt_template.format(**kwrgs)
