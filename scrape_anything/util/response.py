@@ -8,7 +8,7 @@ def extract_tool_and_args(generated: str) -> Tuple[str, str]:
     
     if "Action" in generated or "Action Input" in generated:
         if "Action Input" in generated: # try to get actions with inputs
-            regex = r"Action: [\[]?(.*?)[\]]?[\n]*Action Input:[\[]?(.*?)[\]]?[\n]"
+            regex = r"Action: [\[]?(.*?)[\]]?[\n]*Action Input:(.*?)?[\n]"
             match = re.search(regex, generated, re.DOTALL)
             if not match:
                 raise ValueError(f"the output `{generated}` is not matching the expected format.")
@@ -20,7 +20,12 @@ def extract_tool_and_args(generated: str) -> Tuple[str, str]:
     else:
         raise ValueError(f"you should provide one of the following: ('Action Input' and 'Action') or (only 'Action')")
 
-    return strip_tool(tool), strip_characther_in_args(tool_input)
+    try:
+        tool_input = strip_characther_in_args(tool_input)
+        tool_input = json.loads(tool_input)
+    except json.JSONDecodeError:
+        tool_input = {}
+    return strip_tool(tool), tool_input
 
 def strip_tool(string:str):
     return re.sub(r'[^a-zA-Z ]', '', string).strip(" ").strip('"')

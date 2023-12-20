@@ -39,8 +39,7 @@ class ToolBox(BaseModel):
         # grub the tool
         tool_executor = self.tool_by_names[tool]
         # compare tool to tool input
-        json_tool_input = parse_json(tool_input)
-        Logger.info(f"after processing tool inputs = {json_tool_input}")
+        Logger.info(f"after processing tool inputs = {tool_input}")
 
-        tool_input = tool_executor.process_tool_arg(**json_tool_input)
+        tool_input = tool_executor.process_tool_arg(**tool_input)
         return tool_executor, tool_input
