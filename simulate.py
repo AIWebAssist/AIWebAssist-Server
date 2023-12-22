@@ -1,5 +1,5 @@
 from scrape_anything.util.browser import clear_sessions,start_browesr
-from main import start_server,stop_server
+from simulation_utils.server_thread import ServerInAThread
 from simulation_utils.screen_recoding import ScreenRecorder
 from simulation_utils.extension_executor import simulate_user_call
 import uuid

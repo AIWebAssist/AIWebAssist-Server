@@ -1,13 +1,16 @@
-FROM python:3.8 as base
+FROM python:3.8 as prod
 
 WORKDIR /app
 
 COPY . .
 RUN pip3 install -r requirements.txt
+EXPOSE 3000
+ENV FLASK_APP=main.py
 
-CMD python main.py
+CMD ["flask", "run", "--host=0.0.0.0", "--port=3000"]
 
-FROM base as dev
+
+FROM prod as dev
 
 # install all dev requirements 
 RUN pip3 install -r requirements-dev.txt
