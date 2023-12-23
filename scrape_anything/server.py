@@ -1,5 +1,10 @@
 from flask import Flask, request, jsonify
-from flask_cors import cross_origin
+from flask_cors import CORS, cross_origin
+from scrape_anything import Agent
+from scrape_anything import TextOnlyLLM, VisionBaseLLM
+from scrape_anything import RemoteFeedController
+from scrape_anything.util import DataBase,Logger
+from queue import Queue
 import os
 
 
@@ -9,6 +14,8 @@ class Server:
 
     def __init__(self):
         self.app = Flask(__name__)
+        CORS(self.app)
+
         self.app.route("/process", methods=["POST", "OPTIONS"])(self.process)
         self.app.route("/status", methods=["POST", "OPTIONS"])(self.status)
 
@@ -33,35 +40,35 @@ class Server:
     def handle_process_request(self):
         try:
             data = request.get_json()
-            if data is not None or "session_id" not in data or "user_task" not in data:
-                user_task = data["user_task"]
-                session_id = str(data.pop("session_id"))
-                if session_id not in self.agents_queues:
-                    self.init_agent(user_task, session_id, max_message=-1)
-                return self.process_request(data, session_id)
-            else:
-                return jsonify({"error": "Invalid JSON input"}), 400
+            if data is None or "session_id" not in data or "user_task" not in data:
+                raise ValueError("Invalid JSON input or missing required fields")
+
+            user_task = data["user_task"]
+            session_id = str(data.pop("session_id"))
+
+            if session_id not in self.agents_queues:
+                self.init_agent(user_task, session_id, max_message=-1)
+
+            return self.process_request(data, session_id)
+
         except Exception as e:
+            Logger.error(f"Error processing request: {str(e)}")
             return jsonify({"error": str(e)}), 500
 
     def handle_status_request(self):
         try:
             data = request.get_json()
-            if data is not None or "session_id" not in data:
-                session_id = str(data.pop("session_id"))
-                return self.process_status(session_id, data)
-            else:
-                return jsonify({"error": "Invalid JSON input"}), 400
+            if data is None or "session_id" not in data:
+                raise ValueError("Invalid JSON input or missing required fields")
+
+            session_id = str(data.pop("session_id"))
+            return self.process_status(session_id, data)
+
         except Exception as e:
+            Logger.error(f"Error processing status request: {str(e)}")
             return jsonify({"error": str(e)}), 500
-
+        
     def init_agent(self, user_task, session_id, max_message=-1):
-        from scrape_anything import Agent
-        from scrape_anything import TextOnlyLLM, VisionBaseLLM
-        from scrape_anything import RemoteFeedController
-        from scrape_anything.util import DataBase
-        from queue import Queue
-
         feed_from_chrome = Queue(maxsize=1)
         feed_from_agent = Queue(maxsize=1)
         status_feed_queue = Queue(maxsize=1)

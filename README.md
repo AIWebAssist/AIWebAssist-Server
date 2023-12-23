@@ -2,7 +2,7 @@
 
 
 ''' docker build .  --target prod -t web_assists_prod '''
-''' docker run -it --rm web_assists_prod '''
+''' docker run -p 3000:3000 -it --rm web_assists_prod '''
 
 
 '''python3 -m venv env && source env/bin/activate '''

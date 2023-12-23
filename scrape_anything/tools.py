@@ -5,7 +5,7 @@ from scrape_anything.util.browser import *
 from scrape_anything.view import *
 from scrape_anything.act import *
 from scrape_anything.controllers import EnabledActions
-from scrape_anything.util import Logger, parse_json
+from scrape_anything.util import Logger
 
 
 class ToolBox(BaseModel):
