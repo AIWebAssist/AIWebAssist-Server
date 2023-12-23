@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 def start_browesr(
     dockerized=True, headless=False, selenium_host="host.docker.internal"
 ):
-    """ start browser """
+    """start browser"""
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_extension("extension.crx")
 
@@ -55,13 +55,13 @@ def clear_sessions(selenium_host="host.docker.internal", session_id=None):
 
 
 def load_script(filepath):
-    """ load script from file """
+    """load script from file"""
     with open(filepath, "r", encoding="utf-8") as f:
         return "".join(f.readlines())
 
 
 def extract_with_js_code(wd, filepath):
-    """ execute script on web driver"""
+    """execute script on web driver"""
     script = f"""
   var consoleLogs = [];
   var originalLog = console.log;
@@ -78,7 +78,7 @@ def extract_with_js_code(wd, filepath):
 
 
 def action_with_js_code(wd, filepath, **kwarg):
-    """ execute script on web driver"""
+    """execute script on web driver"""
     script = load_script(filepath)
     for key in kwarg:
         script = script.replace(f"{{{key}}}", str(kwarg[key]))
@@ -91,7 +91,7 @@ def action_with_js_code(wd, filepath, **kwarg):
 
 
 def encode_image(file_path):
-    """ convert file to byte array stream """
+    """convert file to byte array stream"""
     with open(file_path, "rb") as image_file:
         # Read the binary image data
         binary_data = image_file.read()
@@ -106,14 +106,14 @@ def encode_image(file_path):
 
 
 def file_to_bytes(image_path):
-    """ convert file to byte array """
+    """convert file to byte array"""
 
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode("utf-8")
 
 
 def bytes_to_file(screenshot_data, file_path):
-    """ convert byte array to file """
+    """convert byte array to file"""
     if not file_path.endswith(".png"):
         raise ValueError("must be a png.")
 
@@ -127,14 +127,14 @@ def bytes_to_file(screenshot_data, file_path):
 
 
 def web_driver_to_image(wd, file_name):
-    """ save screenshot of a web driver """
+    """save screenshot of a web driver"""
     full_path = f"{file_name}.png"
     wd.save_screenshot(full_path)
     return full_path
 
 
 def web_driver_to_html(wd, file_name):
-    """ extract html from web driver"""
+    """extract html from web driver"""
     # Get the page source HTML
     html_content = wd.page_source
     full_path = f"{file_name}.html"
@@ -150,15 +150,13 @@ def elements_to_table(logs):
     for column in df.columns:
         if hasattr(df[column], "str"):
             df[column] = (
-                df[column]
-                .str.replace("<comma>", ",")
-                .str.replace("<new_line>", "\n")
+                df[column].str.replace("<comma>", ",").str.replace("<new_line>", "\n")
             )
     return df
 
 
 def draw_on_screen(wd, filename, x, y, **kwarg):
-    """ draw x and y box in the screen """
+    """draw x and y box in the screen"""
 
     # Perform mouse click at X and Y coordinates
     # Open the screenshot image using Pillow

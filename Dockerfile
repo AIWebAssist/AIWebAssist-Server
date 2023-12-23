@@ -5,10 +5,8 @@ WORKDIR /app
 COPY . .
 RUN pip3 install -r requirements.txt
 EXPOSE 3000
-ENV FLASK_APP=main.py
 
-CMD ["flask", "run", "--host=0.0.0.0", "--port=3000"]
-
+CMD ["python", "main.py"]
 
 FROM prod as dev
 
@@ -20,6 +18,8 @@ RUN pip3 install -r requirements-dev.txt
 
 # need to convet frames intto video
 RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+
+# do nothing
 CMD sh -c "while sleep 1000; do :; done"
 
 
