@@ -1,13 +1,20 @@
 # AIWebAssist Server
 
 
-''' docker build .  --target prod -t web_assists_prod '''
-''' docker run -p 3000:3000 -it --rm web_assists_prod '''
+  ```bash
+    docker build .  --target prod -t web_assists_prod 
+  ```
+
+```bash 
+  docker run -p 3000:3000 -it --rm web_assists_prod 
+```
 
 
-'''python3 -m venv env && source env/bin/activate '''
+```bash
+   python3 -m venv env && source env/bin/activate
+```
 
-
+```bash
 curl --insecure -L -X POST \
   https://127.0.0.1:3000/status \
   -H 'Content-Type: application/json' \
@@ -15,8 +22,8 @@ curl --insecure -L -X POST \
     "execution_status": "response",
     "session_id": "session_id"
 }'
-
-
+```
+```bash
 curl --insecure -L  -X POST \
   https://127.0.0.1:3000/process \
   -H 'Content-Type: application/json' \
@@ -33,3 +40,4 @@ curl --insecure -L  -X POST \
     "session_id": "session_id_value",
     "screenshot": "screenshotImage_value"
 }'
+```
