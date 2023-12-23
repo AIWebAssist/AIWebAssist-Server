@@ -1,6 +1,6 @@
 
 {
-	"dockerComposeFile": "../docker-compose.yaml",
+	"dockerComposeFile": "./dev-docker-compose.yaml",
 	"service": "scrape_anything",
 	"workspaceFolder": "/app",
 	"customizations": {
