@@ -8,7 +8,7 @@ services:
     ports:
      - 3000:3000
     environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_API=${OPENAI_API}
     depends_on: 
       # make sure the the image will be created only after Selenium is stable 
       # otherwise, tests a run before Selenium is accessible 

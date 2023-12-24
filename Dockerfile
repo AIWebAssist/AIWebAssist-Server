@@ -9,7 +9,7 @@ EXPOSE 3000
 CMD ["python", "main.py"]
 
 FROM prod as dev
-ENV OPENAI_API_KEY <PLACE_WITH_KEY>
+ENV OPENAI_API <PLACE_WITH_KEY>
 # install all dev requirements 
 RUN pip3 install -r requirements-dev.txt
 
