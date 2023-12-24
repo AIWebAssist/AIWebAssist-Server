@@ -41,3 +41,8 @@ curl --insecure -L  -X POST \
     "screenshot": "screenshotImage_value"
 }'
 ```
+
+
+
+```sudo nano /private/etc/hosts```
+```127.0.0.1 scrape_anything```
