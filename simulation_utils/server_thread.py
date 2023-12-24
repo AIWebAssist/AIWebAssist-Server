@@ -5,12 +5,13 @@ from multiprocessing import Process
 class ServerInAThread:
     process = None
 
-    @classmethod
-    def start(cls):
-        cls.process = Process(target=lambda: Server().start())
-        cls.process.start()
+    def __init__(self,experiment_uuid) -> None:
+        self.experiment_uuid = experiment_uuid
+   
+    def start(self):
+        self.process = Process(target=lambda: Server(self.experiment_uuid).start())
+        self.process.start()
 
-    @classmethod
-    def stop(cls):
-        cls.process.terminate()
-        cls.process.join()
+    def stop(self):
+        self.process.terminate()
+        self.process.join()

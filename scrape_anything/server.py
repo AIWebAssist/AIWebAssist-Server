@@ -4,16 +4,18 @@ from scrape_anything import Agent
 from scrape_anything import TextOnlyLLM, VisionBaseLLM
 from scrape_anything import RemoteFeedController
 from scrape_anything.util import DataBase,Logger
+from scrape_anything import OutGoingData, IncommingData, Error
 from queue import Queue
-import os
+
 
 
 class Server:
     agents_queues = dict()
     agents_threads = dict()
 
-    def __init__(self):
+    def __init__(self,experiment_uuid=""):
         self.app = Flask(__name__)
+        self.experiment_uuid = experiment_uuid
         CORS(self.app)
 
         self.app.route("/process", methods=["POST", "OPTIONS"])(self.process)
@@ -72,7 +74,6 @@ class Server:
         feed_from_chrome = Queue(maxsize=1)
         feed_from_agent = Queue(maxsize=1)
         status_feed_queue = Queue(maxsize=1)
-        uuid_str = os.environ.get("EXPRIMENT_UUID", None)
 
         controller = RemoteFeedController(
             incoming_data_queue=feed_from_chrome,
@@ -84,7 +85,7 @@ class Server:
         agnet = Agent(
             llm=VisionBaseLLM(),
             max_loops=max_message,
-            session_id=DataBase.get_session_id(uuid_str),
+            session_id=DataBase.get_session_id(self.experiment_uuid),
         )
         self.agents_threads[session_id] = agnet.run_parallel(controller)
         self.agents_queues[session_id] = (
@@ -101,7 +102,6 @@ class Server:
         return jsonify({}), 200
 
     def process_request(self, data, session_id):
-        from scrape_anything import OutGoingData, IncommingData, Error
 
         (feed_from_chrome, feed_from_agent, _) = self.agents_queues[session_id]
         feed_from_chrome.put(

@@ -31,9 +31,9 @@ def simulate_client_click(url, user_task, recording_file, num_of_iteration=1):
 
 
 def simulate(experiment_uuid, url, task_description, max_num_of_iteration):
-    os.environ["EXPRIMENT_UUID"] = experiment_uuid
+    
     # start the server
-    server = ServerInAThread()
+    server = ServerInAThread(experiment_uuid)
     server.start()
     # start calling the extension
     simulate_completed, recording_completed = simulate_client_click(
@@ -46,38 +46,39 @@ def simulate(experiment_uuid, url, task_description, max_num_of_iteration):
     return simulate_completed and recording_completed
 
 
-scenarios = [
-    {
-        "url": "https://www.google.com/?hl=en",
-        "task_description": "I need to search my name in google, my name is 'sefi'",
-        "max_num_of_iteration": 5,
-    },
-    {
-        "url": "https://www.google.com/?hl=en",
-        "task_description": "help my signin my facebook account.",
-        "max_num_of_iteration": 5,
-    },
-    {
-        "url": "https://www.google.com/?hl=en",
-        "task_description": "i need to read my emails i've an account on gmail.",
-        "max_num_of_iteration": 5,
-    },
-    {
-        "url": "https://www.google.com/?hl=en",
-        "task_description": "help me find the latest twitte of elon musk?",
-        "max_num_of_iteration": 5,
-    },
-]
+if __name__ == "__main__":
+    scenarios = [
+        {
+            "url": "https://www.google.com/?hl=en",
+            "task_description": "I need to search my name in google, my name is 'sefi'",
+            "max_num_of_iteration": 5,
+        },
+        {
+            "url": "https://www.google.com/?hl=en",
+            "task_description": "help my signin my facebook account.",
+            "max_num_of_iteration": 5,
+        },
+        {
+            "url": "https://www.google.com/?hl=en",
+            "task_description": "i need to read my emails i've an account on gmail.",
+            "max_num_of_iteration": 5,
+        },
+        {
+            "url": "https://www.google.com/?hl=en",
+            "task_description": "help me find the latest twitte of elon musk?",
+            "max_num_of_iteration": 5,
+        },
+    ]
 
-df = pd.DataFrame(scenarios)
-df["uuid"] = df.apply(lambda _: str(uuid.uuid4()).replace("-", "_"), axis=1)
-df["run_status"] = False
+    df = pd.DataFrame(scenarios)
+    df["uuid"] = df.apply(lambda _: str(uuid.uuid4()).replace("-", "_"), axis=1)
+    df["run_status"] = False
 
-for index, row in df.iterrows():
-    row["run_status"] = simulate(
-        row["uuid"], row["url"], row["task_description"], row["max_num_of_iteration"]
-    )
+    for index, row in df.iterrows():
+        row["run_status"] = simulate(
+            row["uuid"], row["url"], row["task_description"], row["max_num_of_iteration"]
+        )
 
-experiment_date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-df.to_csv(os.path.join("outputs", experiment_date + "_scenarios.csv"))
-shutil.make_archive(experiment_date, "zip", "outputs")
+    experiment_date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    df.to_csv(os.path.join("outputs", experiment_date + "_scenarios.csv"))
+    shutil.make_archive(experiment_date, "zip", "outputs")
