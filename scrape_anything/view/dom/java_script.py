@@ -1,20 +1,21 @@
 from scrape_anything.util.browser import extract_with_js_code
 import os
 
-CURRENT_PATH = os.path.join(os.getcwd(),"shared","extract")
+CURRENT_PATH = os.path.join(os.getcwd(), "shared", "extract")
+
 
 def screen_to_window_dim(wd):
-    logs = extract_with_js_code(wd,os.path.join(CURRENT_PATH,"window.js"))
+    logs = extract_with_js_code(wd, os.path.join(CURRENT_PATH, "window.js"))
     assert len(logs) == 2
     viewpointscroll = int(logs[0])
     viewportHeight = int(logs[1])
 
-    return viewpointscroll,viewportHeight
+    return viewpointscroll, viewportHeight
+
 
 def screen_to_elements(wd):
-    logs = extract_with_js_code(wd,os.path.join(CURRENT_PATH,"elements.js"))
+    logs = extract_with_js_code(wd, os.path.join(CURRENT_PATH, "elements.js"))
     return "\n".join(logs)
-
 
 
 # def get_scroll_height(web_driver):
@@ -99,31 +100,40 @@ def screen_to_elements(wd):
 #     else:
 #         return "Client cannot scroll either left or right!"
 
+
 def get_scroll_width(web_driver):
-    logs = extract_with_js_code(web_driver,os.path.join(CURRENT_PATH,"scroll_width.js"))
+    logs = extract_with_js_code(
+        web_driver, os.path.join(CURRENT_PATH, "scroll_width.js")
+    )
     assert len(logs) == 1
     return logs[0]
-    
+
+
 def get_scroll_height(web_driver):
-    logs = extract_with_js_code(web_driver,os.path.join(CURRENT_PATH,"scroll_height.js"))
+    logs = extract_with_js_code(
+        web_driver, os.path.join(CURRENT_PATH, "scroll_height.js")
+    )
     assert len(logs) == 1
     return logs[0]
+
 
 def get_scroll_options(web_driver):
     width_scroll = get_scroll_width(web_driver)
     height_scroll = get_scroll_height(web_driver)
-    return width_scroll,height_scroll
+    return width_scroll, height_scroll
 
 
 def get_screen_size(web_driver):
-    logs = extract_with_js_code(web_driver,os.path.join(CURRENT_PATH,"get_window_size.js"))
+    logs = extract_with_js_code(
+        web_driver, os.path.join(CURRENT_PATH, "get_window_size.js")
+    )
     assert len(logs) == 2
     window_size_width = logs[0]
     window_size_height = logs[1]
-    return window_size_width,window_size_height
+    return window_size_width, window_size_height
 
 
 def get_url(web_driver):
-    logs = extract_with_js_code(web_driver,os.path.join(CURRENT_PATH,"get_url.js"))
+    logs = extract_with_js_code(web_driver, os.path.join(CURRENT_PATH, "get_url.js"))
     assert len(logs) == 1
     return logs[0]

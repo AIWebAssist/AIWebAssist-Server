@@ -5,15 +5,25 @@ from scrape_anything.util.browser import *
 from scrape_anything.view import *
 from scrape_anything.act import *
 from scrape_anything.controllers import EnabledActions
-from scrape_anything.util import Logger,parse_json
+from scrape_anything.util import Logger
+
 
 class ToolBox(BaseModel):
-    supoorted_tools: List[ToolInterface] = [ClickOnCoordinates(),EnterText(),GoBack(),ScrollRight(),ScrollUp(),ScrollDown(),Refresh(),HitAKey()]
+    supoorted_tools: List[ToolInterface] = [
+        ClickOnCoordinates(),
+        EnterText(),
+        GoBack(),
+        ScrollRight(),
+        ScrollUp(),
+        ScrollDown(),
+        Refresh(),
+        HitAKey(),
+        FinalAnswer(),
+    ]
     tools: List[ToolInterface] = EnabledActions.filter_enabled(supoorted_tools)
-    
-    # tools that are abstracted from the agent
-    final_answer_tool:ToolInterface = FinalAnswer()
 
+    # tools that are abstracted from the agent
+    final_answer_tool: ToolInterface = FinalAnswer()
 
     @property
     def tool_description(self) -> str:
@@ -27,24 +37,17 @@ class ToolBox(BaseModel):
     def tool_by_names(self) -> Dict[str, ToolInterface]:
         return {tool.name: tool for tool in self.tools}
 
+    def extract(self, tool: str, tool_input: str) -> ToolInterface:
+        Logger.info(f"tool={tool},tool_input={tool_input}")
 
-    def extract(self, tool:str, tool_input:str,  final_answer_token:str) -> ToolInterface:
-
-        Logger.info(f"tool={tool},tool_input={tool_input},final_answer_token={final_answer_token}")
-        if tool == final_answer_token:
-
-            Logger.info("final answer detected.")
-            return self.final_answer_tool, {"message":tool_input}
-
-        if tool not in self.tool_by_names:            
+        if tool not in self.tool_by_names:
             Logger.error(f"tool={tool}, is not in {self.tool_by_names}")
             raise ValueError(f"unknown tool:{tool}")
-        
+
         # grub the tool
         tool_executor = self.tool_by_names[tool]
         # compare tool to tool input
-        json_tool_input = parse_json(tool_input)
-        Logger.info(f"after processing tool inputs = {json_tool_input}")
+        Logger.info(f"after processing tool inputs = {tool_input}")
 
-        tool_input = tool_executor.process_tool_arg(**json_tool_input)
+        tool_input = tool_executor.process_tool_arg(**tool_input)
         return tool_executor, tool_input

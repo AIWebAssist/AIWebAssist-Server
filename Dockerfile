@@ -1,25 +1,26 @@
-FROM python:3.8 as base
+FROM python:3.8 as prod
 
 WORKDIR /app
 
 COPY . .
 RUN pip3 install -r requirements.txt
+EXPOSE 3000
 
-CMD python example/api.py
+CMD ["python", "main.py"]
 
-FROM base as dev
-
+FROM prod as dev
+ENV OPENAI_API <PLACE_WITH_KEY>
+# install all dev requirements 
 RUN pip3 install -r requirements-dev.txt
+
 # pull the extension
-#RUN rm extension.crx && wget https://clients2.googleusercontent.com/crx/blobs/AfBom9YWk6IKwm_bU3pM8Qh-xrzF9MuhUs6Nv7YNUDgc57AMQOIGDK_pvBOUI9k38sA-eHXgCoPYffxUGaadbqHHvLLXsTp4YdLnAJ8BmIylGB4AjYFkAMZSmuWplCwkIU6SdwklpG10UW3WPvV-RA/pacicdjgganecekjpopincedecpdajae.crx -O extension.crx
+RUN rm -f extension.crx
 
-RUN VER=$(curl -I https://github.com/AIWebAssist/AIWebAssistExtension/releases/latest/ | awk -F '/' '/^location/ {print  substr($NF, 1, length($NF)-1)}')
-RUN wget https://github.com/AIWebAssist/AIWebAssistExtension/releases/download/${VER}/extension.zip
-RUN unzip extension.zip "extension/shared/*" -d shared/ && mv shared/extension/shared/* shared/ && rm -r shared/extension/
+ENV CRX_PATH=https://clients2.googleusercontent.com/crx/blobs/AeKPYwwIqwbhw-_kDPnAAu2t5sv92Ssbj3HTsEh4ixHmCJQFowO1yuw3sSkHatdDT-3HUsyfQ1SX9hEnPFG2-gSnQajHhvzouiL4Xv42tmeQCqMnkolpAMZSmuW000Hg1hFgMsxTr2QZUJvYMPSsqA/pacicdjgganecekjpopincedecpdajae.crx
+RUN wget $CRX_PATH -O extension.crx
 
-# to cv2
-RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+# need to convet frames intto video
+RUN apt update && apt install ffmpeg libsm6 libxext6  -y
+
+# do nothing
 CMD sh -c "while sleep 1000; do :; done"
-
-
-

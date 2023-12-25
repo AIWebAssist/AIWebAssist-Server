@@ -17,3 +17,4 @@ extension.crx
 shared
 *.pyc
 logging.log
+temp/

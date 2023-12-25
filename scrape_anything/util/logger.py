@@ -3,7 +3,9 @@ import sys
 import os
 import shutil
 
-LOGGING_FILE = "logging.log"
+LOGGING_FILE = "outputs/logging.log"
+
+
 def build_logger():
     """create the logger instance"""
     # Define logger
@@ -19,6 +21,10 @@ def build_logger():
         )  # set streamhandler to stdout
         console_handler.setFormatter(log_formatter)
         logger.addHandler(console_handler)
+        
+        log_dir = os.path.dirname(LOGGING_FILE)
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
 
         file_handler = logging.FileHandler(LOGGING_FILE)
         file_handler.setFormatter(log_formatter)
@@ -66,6 +72,14 @@ class Logger:
             cls.logger.warning(msg, *args, **kwargs)
 
     @classmethod
-    def copy_log_file(cls,uuid):
-        shutil.copy(LOGGING_FILE, os.path.join("outputs","logs",f"{uuid}_experiment.log"))
+    def copy_log_file(cls, uuid):
+        logging.shutdown()
+
+        if not os.path.exists("outputs/logs"):
+            os.makedirs("outputs/logs")
+
+        shutil.copy(
+            LOGGING_FILE, os.path.join("outputs", "logs", f"{uuid}_experiment.log")
+        )
         os.remove(LOGGING_FILE)
+        Logger.logger = build_logger()
