@@ -15,6 +15,8 @@ Your user instraction is: "{{task_to_accomplish}}", attacted is the screen the u
 You should guide the user to complete the task given to you using the following tools:
 {{tool_description}}
 
+Guidelines:
+ - make sure to describe the tool to be used by the shortest path to the goal.
 --
 Previous executions:
 {{previous_responses}}

@@ -3,7 +3,7 @@ import sys
 import os
 import shutil
 
-LOGGING_FILE = "logging.log"
+LOGGING_FILE = "outputs/logging.log"
 
 
 def build_logger():
@@ -21,6 +21,10 @@ def build_logger():
         )  # set streamhandler to stdout
         console_handler.setFormatter(log_formatter)
         logger.addHandler(console_handler)
+        
+        log_dir = os.path.dirname(LOGGING_FILE)
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
 
         file_handler = logging.FileHandler(LOGGING_FILE)
         file_handler.setFormatter(log_formatter)
