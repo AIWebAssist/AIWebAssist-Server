@@ -9,5 +9,6 @@ services:
      - 3000:3000
     environment:
       - OPENAI_API=${OPENAI_API}
+      - JWT_TOEKN=${JWT_TOEKN}
     volumes:
       - ./outputs:/app/outputs

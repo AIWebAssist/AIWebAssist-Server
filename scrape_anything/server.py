@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token,get_jwt_identity
 from scrape_anything import Agent
 from scrape_anything import TextOnlyLLM, VisionBaseLLM
 from scrape_anything import RemoteFeedController
 from scrape_anything.util import DataBase,Logger
 from scrape_anything import OutGoingData, IncommingData, Error
 from queue import Queue
-
+import os
 
 
 class Server:
@@ -14,15 +15,28 @@ class Server:
     agents_threads = dict()
 
     def __init__(self,experiment_uuid=""):
+        CORS_HEADERS = 'Content-Type'
         self.app = Flask(__name__)
+        self.app.config['SECRET_KEY'] = os.environ['JWT_TOEKN']
+        self.jwt = JWTManager(self.app)
         self.experiment_uuid = experiment_uuid
         CORS(self.app)
 
         self.app.route("/process", methods=["POST", "OPTIONS"])(self.process)
         self.app.route("/status", methods=["POST", "OPTIONS"])(self.status)
+        self.app.route("/auth", methods=["POST"])(self.register)
 
+    def register(self):
+        data = request.get_json()
+        email = data['email']
+        access_token = create_access_token(identity=email)
+        return jsonify(access_token=access_token)
+
+    @jwt_required()
     @cross_origin()
     def process(self):
+        if  get_jwt_identity() is None:
+            return response, 333
         if request.method == "POST":
             return self.handle_process_request()
         elif request.method == "OPTIONS":
@@ -30,8 +44,11 @@ class Server:
             response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
             return response, 200
 
+    @jwt_required()
     @cross_origin()
     def status(self):
+        if  get_jwt_identity() is None:
+            return response, 333
         if request.method == "POST":
             return self.handle_status_request()
         elif request.method == "OPTIONS":
@@ -39,6 +56,9 @@ class Server:
             response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
             return response, 200
 
+    def create_access_token(self, identity):
+        return create_access_token(identity=identity)
+    
     def handle_process_request(self):
         try:
             data = request.get_json()
