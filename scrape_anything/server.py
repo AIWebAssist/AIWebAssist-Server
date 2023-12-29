@@ -137,5 +137,8 @@ class Server:
             port=3000,
             debug=True,
             use_reloader=False,
-            ssl_context="adhoc",
+           ssl_context=(
+               'ssl/scrape_anything.crt', 
+               'ssl/scrape_anything.key'
+            )  
         )

@@ -120,42 +120,42 @@ class Agent(BaseModel):
                 except Exception as e:
                     Logger.error(f"unknown execption {str(e)}")
                     raise e
-                finally:
-                    # if there is not other itreation
-                    if num_loops >= self.max_loops and self.max_loops != -1:  #
-                        Logger.info("closeing agent.")
-                        break
 
-                    (
-                        on_screen,
-                        _,
-                        _,
-                        screen_size,
-                        screenshot_png,
-                        _,
-                        scroll_ratio,
-                        url,
-                        task_to_accomplish,
-                    ) = controller.fetch_infomration_on_screen(
-                        self.session_id, loop_num=num_loops
-                    )
+                # if there is not other itreation
+                if num_loops >= self.max_loops and self.max_loops != -1:  #
+                    Logger.info("closeing agent.")
+                    break
 
-                    # foramt a message
-                    message = f"Itreation number {num_loops} \n"
-                    if not parsing_status:  # if parsing failed
-                        message += f"parsing failed. The raw response = {raw}. Error message = {error_message}"
-                    elif not execution_status:  # exection failed
-                        message += f"execution failed. Error message = {error_message}"
-                    else:
-                        message += f"execution successful. Tool used: {tool}, Tool input: {tool_input}"
+                (
+                    on_screen,
+                    _,
+                    _,
+                    screen_size,
+                    screenshot_png,
+                    _,
+                    scroll_ratio,
+                    url,
+                    task_to_accomplish,
+                ) = controller.fetch_infomration_on_screen(
+                    self.session_id, loop_num=num_loops
+                )
 
-                    Logger.info(
-                        f"exection number {num_loops} completed, message = {message}"
-                    )
-                    DataBase.store_exection_status(
-                        message, session_id=self.session_id, call_in_seassion=num_loops
-                    )
-                    previous_responses.append(message)
+                # foramt a message
+                message = f"Itreation number {num_loops} \n"
+                if not parsing_status:  # if parsing failed
+                    message += f"parsing failed. The raw response = {raw}. Error message = {error_message}"
+                elif not execution_status:  # exection failed
+                    message += f"execution failed. Error message = {error_message}"
+                else:
+                    message += f"execution successful. Tool used: {tool}, Tool input: {tool_input}"
+
+                Logger.info(
+                    f"exection number {num_loops} completed, message = {message}"
+                )
+                DataBase.store_exection_status(
+                    message, session_id=self.session_id, call_in_seassion=num_loops
+                )
+                previous_responses.append(message)
 
         except Exception as e:
             Logger.error(f"reporting fatel to controler, reason={str(e)}")
