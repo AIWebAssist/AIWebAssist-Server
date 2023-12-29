@@ -17,6 +17,15 @@
             }
         },
         {
+            "name": "Server",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
             "name": "Controling main",
             "type": "python",
             "request": "launch",

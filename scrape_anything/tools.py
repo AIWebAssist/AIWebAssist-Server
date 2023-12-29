@@ -18,12 +18,13 @@ class ToolBox(BaseModel):
         ScrollDown(),
         Refresh(),
         HitAKey(),
-        FinalAnswer(),
+        MessageUser(),
+        FinalAnswer()
     ]
     tools: List[ToolInterface] = EnabledActions.filter_enabled(supoorted_tools)
 
-    # tools that are abstracted from the agent
-    final_answer_tool: ToolInterface = FinalAnswer()
+    # # tools that are abstracted from the agent
+    # final_answer_tool: ToolInterface = MessageUser()
 
     @property
     def tool_description(self) -> str:

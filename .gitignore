@@ -8,7 +8,7 @@ outputs/*
 */*/__pycache__/*
 */*/*/__pycache__/*
 
-.vscode
+.vscode/settings.json
 node_modules/
 extension/
 extension.zip
@@ -18,3 +18,11 @@ shared
 *.pyc
 logging.log
 temp/
+
+# for create temporal ssl certification
+ssl/*.key
+ssl/*.pem
+ssl/*.srl
+ssl/*.csr
+ssl/*.ext
+ssl/*.crt

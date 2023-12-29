@@ -1,13 +1,14 @@
 import openai
 
 from .base_llm import LLMInterface
+from .prompts.base_task_extraction import BaseTaskExtractionPrompt
 from .prompts.text_base_task_extraction import TaskExtractionTextBasePrompt
 from ..util import extract_tool_and_args, Logger, DataBase
 
 
 class TextOnlyLLM(LLMInterface):
     model: str = "gpt-3.5-turbo"
-    prompt_manager: TaskExtractionTextBasePrompt = TaskExtractionTextBasePrompt()
+    prompt_manager: BaseTaskExtractionPrompt = TaskExtractionTextBasePrompt()
 
     def generate(self, prompt: str):
         assert self.api_key != None, "please provide API key"

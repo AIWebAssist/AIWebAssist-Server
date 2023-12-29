@@ -16,12 +16,12 @@ class GoToURL(ToolInterface):
         return {"text": url}
 
 
-class FinalAnswer(ToolInterface):
-    """Go to a specific url address"""
+class MessageUser(ToolInterface):
+    """show text to the user"""
 
-    name: str = "Your final message to the user if you think there is not more Actions to accomplished. "
-    description: str = 'Present to the user the final message. Input format: {{"text":"<final_message_here>"}}'
-    click_on_screen: str = True
+    name: str = "Textual Guidence"
+    description: str = 'Present the user with a message, Input format: {{"text":"<message_here>"}}'
+    click_on_screen: str = False
     example_script: str = "show_guidance"
 
     def process_tool_arg(self, **kwarg):
