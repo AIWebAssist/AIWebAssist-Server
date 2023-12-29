@@ -32,7 +32,7 @@ class Server:
         access_token = create_access_token(identity=email)
         return jsonify(access_token=access_token)
 
-    @jwt_required()
+    #@jwt_required()
     @cross_origin()
     def process(self):
         if  get_jwt_identity() is None:
@@ -44,7 +44,7 @@ class Server:
             response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
             return response, 200
 
-    @jwt_required()
+    #@jwt_required()
     @cross_origin()
     def status(self):
         if  get_jwt_identity() is None:
