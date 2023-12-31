@@ -1,5 +1,6 @@
 import base64
 import io
+import re
 import json
 import pandas as pd
 import requests
@@ -143,6 +144,13 @@ def web_driver_to_html(wd, file_name):
         f.write(html_content)
     return full_path
 
+def clean_spaces(input_string):
+    # Use regular expression to replace multiple spaces with a single space
+    if pd.isnull(input_string):
+        return input_string
+    
+    cleaned_string = re.sub(r'\s+', ' ', input_string)
+    return cleaned_string
 
 def elements_to_table(logs):
     """convert string to dataframe"""
@@ -150,7 +158,7 @@ def elements_to_table(logs):
     for column in df.columns:
         if hasattr(df[column], "str"):
             df[column] = (
-                df[column].str.replace("<comma>", ",").str.replace("<new_line>", "\n")
+                df[column].str.replace("<comma>", ",").str.replace("<new_line>", "\n").apply(clean_spaces)
             )
     return df
 

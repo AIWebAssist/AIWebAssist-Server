@@ -1,6 +1,10 @@
 import pandas as pd
 import re
-
+import base64
+import io
+from PIL import Image
+import imagehash
+from scrape_anything.util.io import stringable_dataframe_to_csv,dataframe_to_stringable
 
 def is_css_code(text):
     pattern = r"\{.*?\}"
@@ -122,26 +126,44 @@ def minimize_page_data(df, viewpointscroll, viewportHeight, using_vision=False):
     return _df
 
 
-def dataframe_diff(df1, df2, viewpointscroll, viewportHeight):
+def dataframe_diff(df_before, df_current):
     """
     Calculates the difference between two DataFrames.
     Returns two DataFrames: one for removed rows and one for added rows.
     """
-    if df1 is None:
+    if df_before is None:
         return "There was not page before"
-    df1_list = df1.to_csv(index=False).split("\n")[1:]
-    df2_list = df2.to_csv(index=False).split("\n")[1:]
+    df1_list = stringable_dataframe_to_csv(df_before).to_csv(index=False).split("\n")[1:]
+    df2_list = stringable_dataframe_to_csv(df_current).to_csv(index=False).split("\n")[1:]
 
-    added_to_changed = pd.DataFrame(
+    added_to_changed = dataframe_to_stringable(pd.DataFrame(
         [row.split(",") for row in df2_list if row not in df1_list],
-        columns=list(df1.columns),
-    )
-    removed = pd.DataFrame(
+        columns=list(df_before.columns),
+    ))
+    removed = dataframe_to_stringable(pd.DataFrame(
         [row.split(",") for row in df1_list if row not in df2_list],
-        columns=list(df1.columns),
-    )
+        columns=list(df_before.columns),
+    ))
 
     return (
-        f"The Elements that was removed or changed are:\n {minimize_page_data(removed,viewpointscroll,viewportHeight).to_csv(index=False)} "
-        + f"The Elements that was added or changed are:\n {minimize_page_data(added_to_changed,viewpointscroll,viewportHeight).to_csv(index=False)} "
+        f"The Elements that was removed or changed are:\n {added_to_changed.to_csv(float_format=f'%.2f')} "
+        + f"The Elements that was added or changed are:\n {removed.to_csv(float_format=f'%.2f')} "
     )
+
+
+def screenshot_diff(df_before, df_current,cutoff = 5):
+    if df_before is None:
+        return "There was not page before"
+    img1 = Image.open(io.BytesIO(base64.b64decode(df_before)))
+    img2 = Image.open(io.BytesIO(base64.b64decode(df_current)))
+
+    # Compute hashes
+    hash1 = imagehash.average_hash(img1)
+    hash2 = imagehash.average_hash(img2)
+
+    # Compare hashes
+    
+    if hash1 - hash2 < cutoff:
+        return True  # Images are considered similar
+    else:
+        return False

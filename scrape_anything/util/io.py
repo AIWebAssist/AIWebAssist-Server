@@ -1,3 +1,6 @@
+import pandas as pd
+import os 
+
 def to_text_file(text, filename):
     import datetime
 
@@ -13,12 +16,31 @@ def to_text_file(text, filename):
 
 def dataframe_to_csv(df, csv_filename):
     _df = df.copy()
-    for column in _df.columns:
-        if hasattr(_df[column], "str"):
-            _df[column] = (
-                _df[column].str.replace(",", "<comma>").str.replace("\n", "<new_line>")
-            )
+    _df = stringable_dataframe_to_csv(_df)
     _df.to_csv(csv_filename, index=False)
+
+def dataframe_from_csv(csv_filename):
+    if not os.path.exists(csv_filename):
+        raise Exception(f"implementation error file {csv_filename} wasn't found.")
+    
+    df = pd.read_csv(csv_filename)
+    return dataframe_to_stringable(df)
+
+def dataframe_to_stringable(df):
+    for column in df.columns:
+        if hasattr(df[column], "str"):
+            df[column] = (
+                df[column].str.replace("<comma>","," ).str.replace("<new_line>","\n")
+            )
+    return df
+
+def stringable_dataframe_to_csv(df):
+    for column in df.columns:
+        if hasattr(df[column], "str"):
+            df[column] = (
+                df[column].str.replace(",", "<comma>").str.replace("\n", "<new_line>")
+            )
+    return df
 
 
 def pickle(data, filename):

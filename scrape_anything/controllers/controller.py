@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from scrape_anything.act.tool import ToolInterface
 from ..view import *
 from ..util import dataframe_to_csv, bytes_to_file, elements_to_table, DataBase
-import os
+import pandas as pd
 
 
 class Controller(ABC):
@@ -84,11 +84,26 @@ class Controller(ABC):
             viewportHeight,
             screen_size,
             screenshot_path,
+            incoming_data.screenshot.split(",")[1],
             file_name_html,
             scroll_ratio,
             url,
             self.user_task,
         )
+
+    def extract_from_agent_memory(self,on_screen:pd.DataFrame,screenshot_png:str,output_folder:str,num_loops:int):
+        prev_on_screen:pd.DataFrame = None
+        if num_loops > 1:
+            prev_on_screen:pd.DataFrame = DataBase.get_last_minimized_on_screen(output_folder,num_loops)
+        dataframe_changed = dataframe_diff(prev_on_screen,on_screen)
+
+        prev_image:str = None
+        if num_loops > 1:
+            prev_image = DataBase.get_last_screenshot(output_folder,num_loops)
+        screenshot_changed = screenshot_diff(prev_image,screenshot_png)
+
+        return dataframe_changed, screenshot_changed
+            
 
     @abstractmethod
     def take_action(

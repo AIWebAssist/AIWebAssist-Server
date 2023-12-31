@@ -7,15 +7,14 @@ from ..util import extract_tool_and_args, Logger, DataBase
 
 
 class TextOnlyLLM(LLMInterface):
-    model: str = "gpt-3.5-turbo"
     prompt_manager: BaseTaskExtractionPrompt = TaskExtractionTextBasePrompt()
 
-    def generate(self, prompt: str):
+    def generate(self, prompt: str, model:str):
         assert self.api_key != None, "please provide API key"
 
         openai.api_key = self.api_key
         response = openai.ChatCompletion.create(
-            model=self.model,
+            model=model,
             messages=[{"role": "user", "content": prompt}],
             temperature=self.temperature,
             stop=self.prompt_manager.get_stop_patterns(),
@@ -38,7 +37,12 @@ class TextOnlyLLM(LLMInterface):
 
         # call LLM
         Logger.info("calling LLM.")
-        generated = self.generate(prompt)
+        try:
+            generated = self.generate(prompt,model="gpt-3.5-turbo")
+        except openai.InvalidRequestError:
+            Logger.info("context to large, tring with 16k version.")
+            generated = self.generate(prompt,model="gpt-3.5-turbo-16k")
+
         Logger.info("got response from LLM.")
 
         return generated
