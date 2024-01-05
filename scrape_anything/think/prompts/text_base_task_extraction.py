@@ -35,13 +35,14 @@ Describe all Buttons:
 
 Finally, describe your guideance to the user using the following format:
 
-Question: <the input question you must answer>
-Thought: <comment on what you want to do next>
+Thought: <comment on what you want to achieve>
 Execution Status: <comment on if the your previous executions what is successful>
 Current Task: <comment on given the task and the past execution, what it your current goal>
 Action: <the action to take, exactly one element of [{tool_names}]>
-Action Input: <the input to the action>
+Action Input: <the input to the action you provided>
 {observation_token}: <the change you expect to see after the action is executed>
+--
+don't use placeholders, if you are missing information, ask the user to provide it.
 """
         
 
