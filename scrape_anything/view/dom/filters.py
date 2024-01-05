@@ -132,7 +132,7 @@ def dataframe_diff(df_before, df_current):
     Returns two DataFrames: one for removed rows and one for added rows.
     """
     if df_before is None:
-        return "There was not page before"
+        return None,None
     df1_list = stringable_dataframe_to_csv(df_before).to_csv(index=False).split("\n")[1:]
     df2_list = stringable_dataframe_to_csv(df_current).to_csv(index=False).split("\n")[1:]
 
@@ -145,15 +145,12 @@ def dataframe_diff(df_before, df_current):
         columns=list(df_before.columns),
     ))
 
-    return (
-        f"The Elements that was removed or changed are:\n {added_to_changed.to_csv(float_format=f'%.2f')} "
-        + f"The Elements that was added or changed are:\n {removed.to_csv(float_format=f'%.2f')} "
-    )
+    return added_to_changed,removed
 
 
-def screenshot_diff(df_before, df_current,cutoff = 5):
+def is_screenshot_changed(df_before, df_current,cutoff = 5):
     if df_before is None:
-        return "There was not page before"
+        return None
     img1 = Image.open(io.BytesIO(base64.b64decode(df_before)))
     img2 = Image.open(io.BytesIO(base64.b64decode(df_current)))
 
@@ -164,6 +161,6 @@ def screenshot_diff(df_before, df_current,cutoff = 5):
     # Compare hashes
     
     if hash1 - hash2 < cutoff:
-        return True  # Images are considered similar
-    else:
         return False
+    else:
+        return True  # Images are considered similar 

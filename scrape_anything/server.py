@@ -132,12 +132,12 @@ class Server:
 
     def start(self):
         self.app.run(
-            host="0.0.0.0",
+            host="scrape_anything",
             port=3000,
             debug=True,
             use_reloader=False,
-           ssl_context=(
-               'ssl/scrape_anything.crt', 
-               'ssl/scrape_anything.key'
-            )  
+            ssl_context=(
+                'ssl/scrape_anything.crt', 
+                'ssl/scrape_anything.key'
+                )  
         )

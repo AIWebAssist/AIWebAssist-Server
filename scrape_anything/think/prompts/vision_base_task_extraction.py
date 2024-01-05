@@ -19,12 +19,13 @@ Previous executions:
 ---
 
 Use the following format:
-Thought: Comment on what you want to do next.
-Action: The action to take, exactly one element of [{tool_names}]
-Action Input: The input to the action
-{observation_token}: The change you expect to see after the action is executed.
-    """
+Thought: <comment on what you want to do next>
+Action: <the action to take, exactly one element of [{tool_names}]>
+Action Input: <the input to the action>
+{observation_token}: <the change you expect to see after the action is executed>
+"""
         
 
     def get_stop_patterns(self):
         return [f"\n{self.observation_token}", f"\n\t{self.observation_token}"]
+    

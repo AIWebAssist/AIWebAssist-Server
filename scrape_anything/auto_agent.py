@@ -52,7 +52,10 @@ class Agent(BaseModel):
             while True:
                 
                 Logger.info(f"starting iteration number {num_loops}")
-                dataframe_changed, screenshot_changed = controller.extract_from_agent_memory(on_screen,screenshot_stream,self.session_id,num_loops)
+                _, screenshot_changed = controller.extract_from_agent_memory(on_screen,screenshot_stream,self.session_id,num_loops)
+
+                if len(previous_responses) != 0 and not screenshot_changed:
+                    previous_responses[-1] += f"{previous_responses[-1]}. Notice! the user screen wasn't affected by this action."
 
                 parsing_status = False
                 execution_status = False
@@ -95,7 +98,8 @@ class Agent(BaseModel):
                     Logger.info(
                         f"Extract tool '{type(tool_executor)}' and tool inputs '{tool_input}'."
                     )
-
+                    
+                    controller.mark_on_screenshot(tool_executor,session_id=self.session_id,call_in_seassion=num_loops,**tool_input)
                     # use the tool
                     Logger.info("calling controller action.")
                     controller.take_action(
@@ -149,11 +153,11 @@ class Agent(BaseModel):
                 # foramt a message
                 message = f"Itreation number {num_loops} \n"
                 if not parsing_status:  # if parsing failed
-                    message += f"parsing failed. The raw response = {raw}. Error message = {error_message}"
+                    message += f"parsing failed. The raw response = {raw}. Error message = {error_message}."
                 elif not execution_status:  # exection failed
-                    message += f"execution failed. Error message = {error_message}"
+                    message += f"execution failed. Error message = {error_message}."
                 else:
-                    message += f"execution successful. Tool used: {tool}, Tool input: {tool_input}"
+                    message += f"execution successful. Tool used: {tool}, Tool input: {tool_input}."
 
                 Logger.info(
                     f"exection number {num_loops} completed, message = {message}"

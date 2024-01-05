@@ -47,7 +47,22 @@ class FileSystemDataBase:
         return file_to_bytes(
             os.path.join(session_id, f"step_{call_in_seassion}_screenshot.png")
             )
-
+    
+    @classmethod
+    def get_current_screenshot(cls,session_id: str, call_in_seassion: int):
+        return file_to_bytes(
+            os.path.join(session_id, f"step_{call_in_seassion}_screenshot.png")
+            )
+    
+    @classmethod
+    def store_marked_screenshot(
+        cls, screenshot_stream, session_id: str, call_in_seassion: int
+    ):
+        return bytes_to_file(
+            screenshot_stream,
+            os.path.join(session_id, f"step_{call_in_seassion}_screenshot_marked.png"),
+        )
+    
     @classmethod
     def store_server_response(cls, obj, session_id: str, call_in_seassion: int):
         pickle(obj, f"{session_id}/step_{call_in_seassion}_raw_response.pkl")
@@ -118,7 +133,20 @@ class DataBase:
     @classmethod
     def get_last_screenshot(cls,session_id: str, call_in_seassion: int):
         return cls.data_base.get_last_screenshot(session_id,call_in_seassion-1)
-
+    
+    @classmethod
+    def get_current_screenshot(cls,session_id: str, call_in_seassion: int):
+        return cls.data_base.get_current_screenshot(session_id,call_in_seassion)
+    
+    @classmethod
+    def store_marked_screenshot(
+        cls, screenshot_stream, session_id: str, call_in_seassion: int
+    ):
+        return cls.data_base.store_marked_screenshot(
+            screenshot_stream, session_id, call_in_seassion
+        )
+    
+    
     @classmethod
     def store_server_response(cls, obj, session_id: str, call_in_seassion: int):
         cls.data_base.store_server_response(obj, session_id, call_in_seassion)

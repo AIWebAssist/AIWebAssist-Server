@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
 from scrape_anything.act.tool import ToolInterface
 from ..view import *
-from ..util import dataframe_to_csv, bytes_to_file, elements_to_table, DataBase
+from ..util import dataframe_to_csv, bytes_to_file, elements_to_table, DataBase,draw_on_image
 import pandas as pd
+import io
+from PIL import Image
+import base64
 
 
 class Controller(ABC):
@@ -20,6 +23,17 @@ class Controller(ABC):
     @abstractmethod
     def on_action_extraction_fatal(self, loop_num: int):
         pass
+
+    def mark_on_screenshot(self,tool_executor,session_id,call_in_seassion,**tool_input):
+        if tool_executor.is_click_on_screen():
+            screenshot = DataBase.get_current_screenshot(session_id,call_in_seassion=call_in_seassion)
+            drawed_image = draw_on_image(
+                Image.open(io.BytesIO(base64.b64decode(screenshot))), **tool_input
+            )
+            image_stream = io.BytesIO()
+            drawed_image.save(image_stream, format='PNG')
+            DataBase.store_marked_screenshot(image_stream.getvalue(),session_id,call_in_seassion)
+
 
     def process_elements(
         self,
@@ -95,14 +109,22 @@ class Controller(ABC):
         prev_on_screen:pd.DataFrame = None
         if num_loops > 1:
             prev_on_screen:pd.DataFrame = DataBase.get_last_minimized_on_screen(output_folder,num_loops)
-        dataframe_changed = dataframe_diff(prev_on_screen,on_screen)
+        added_to_changed,removed = dataframe_diff(prev_on_screen,on_screen)
 
         prev_image:str = None
         if num_loops > 1:
             prev_image = DataBase.get_last_screenshot(output_folder,num_loops)
-        screenshot_changed = screenshot_diff(prev_image,screenshot_png)
+        screenshot_changed = is_screenshot_changed(prev_image,screenshot_png)
 
-        return dataframe_changed, screenshot_changed
+
+        if screenshot_changed is None:
+            screenshot_changed = False
+
+        elements_changed = False
+        if added_to_changed is not None and added_to_changed is not None:
+            elements_changed = not added_to_changed.empty or not removed.empty
+
+        return elements_changed, screenshot_changed
             
 
     @abstractmethod

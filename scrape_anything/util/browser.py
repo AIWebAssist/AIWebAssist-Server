@@ -118,7 +118,14 @@ def bytes_to_file(screenshot_data, file_path):
     if not file_path.endswith(".png"):
         raise ValueError("must be a png.")
 
-    screenshot_binary = base64.b64decode(screenshot_data.split(",")[1])
+    if type(screenshot_data) is str:
+        screenshot_data = screenshot_data.split(",")[-1]
+        screenshot_binary = base64.b64decode(screenshot_data)
+
+    elif type(screenshot_data) is bytes:
+        screenshot_binary = screenshot_data
+    else:
+        raise Exception(f"type {type(screenshot_data)} is not supported.")  
 
     # Save the binary image to a file or process it as needed
     with open(file_path, "wb") as f:
@@ -162,18 +169,9 @@ def elements_to_table(logs):
             )
     return df
 
-
-def draw_on_screen(wd, filename, x, y, **kwarg):
-    """draw x and y box in the screen"""
-
-    # Perform mouse click at X and Y coordinates
-    # Open the screenshot image using Pillow
-    final_fname = f"{filename}_click_location"
-    final_fname = web_driver_to_image(wd, final_fname)
-    image = Image.open(final_fname)
-
+def draw_on_image(input_stearm,x, y, **kwarg):
     # Create a drawing context on the image
-    draw = ImageDraw.Draw(image)
+    draw = ImageDraw.Draw(input_stearm)
 
     # Define the size of the marker
     marker_size = 10
@@ -190,8 +188,19 @@ def draw_on_screen(wd, filename, x, y, **kwarg):
         draw.text((text_x, text_y), kwarg["text"], fill="black")
 
     # Save the marked screenshot
+    return input_stearm
+    
+    
+def draw_on_screen(wd, filename, x, y, **kwarg):
+    """draw x and y box in the screen"""
 
-    image.save(final_fname)
+    # Perform mouse click at X and Y coordinates
+    # Open the screenshot image using Pillow
+    final_fname = f"{filename}_click_location"
+    final_fname = web_driver_to_image(wd, final_fname)
+    image = Image.open(final_fname)
+    output_image_stream = draw_on_image(image,x, y, **kwarg)
+    image.save(output_image_stream)
     return filename
 
 
