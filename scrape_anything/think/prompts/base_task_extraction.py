@@ -5,6 +5,7 @@ class BaseTaskExtractionPrompt(BaseModel):
     guidelines:str = """
 Guidelines:
     - make sure to describe the tool to be used by the shortest path to the goal.
+    - if you need any infromation from the user, ask him to include the infomration in the task, don't ask for passwords or usernames.
 """
     prompt_template:str = ""
     
