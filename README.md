@@ -1,28 +1,34 @@
 # AIWebAssist Server
 
 
-  ```bash
-    docker build .  --target prod -t web_assists_prod 
-  ```
 
-```bash 
-  docker run -p 3000:3000 -it --rm web_assists_prod 
-```
+## Running Localy 
 
+1. create local SSL certificates:
+ - ```chmod +x ssl/generate_certs.sh```
+ - ```./ssl/generate_certs.sh``` and enter at least email 
+ - add "myCa.pem" into keychain, double click and 'trust always'
 
-```bash
-   python3 -m venv env && source env/bin/activate
-```
+2. Add scrape_anything to host file:
+  - ```sudo nano /private/etc/hosts```
+  - ```127.0.0.1 scrape_anything```
 
-```bash
-curl --insecure -L -X POST \
-  https://127.0.0.1:3000/status \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "execution_status": "response",
-    "session_id": "session_id"
-}'
-```
+3. Start server:
+
+  - using docker:
+    ```bash
+      docker compose up
+    ```
+  - local:
+    ```bash
+      python3 -m venv env && source env/bin/activate &&  pip install -r requirements.txt
+    ```
+    then:
+    ```python main.py```
+
+## Calling the backend:
+
+Every call should start with:
 ```bash
 curl --insecure -L  -X POST \
   https://127.0.0.1:3000/process \
@@ -42,7 +48,15 @@ curl --insecure -L  -X POST \
 }'
 ```
 
+And end with:
+```bash
+curl --insecure -L -X POST \
+  https://127.0.0.1:3000/status \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "execution_status": "response",
+    "session_id": "session_id"
+}'
+```
 
-
-```sudo nano /private/etc/hosts```
-```127.0.0.1 scrape_anything```
+or you can install the extesnion.
