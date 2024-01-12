@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token,get_jwt_identity
 from scrape_anything import Agent
-from scrape_anything import TextOnlyLLM, VisionBaseLLM
+from scrape_anything import TextOnlyLLM, VisionBaseLLM,TestAllTools
 from scrape_anything import RemoteFeedController
 from scrape_anything.util import DataBase,Logger
 from scrape_anything import OutGoingData, IncommingData, Error
@@ -74,7 +74,7 @@ class Server:
             return self.process_request(data, session_id)
 
         except Exception as e:
-            Logger.error(f"Error processing request: {str(e)}")
+            Logger.error(f"Error processing request: {str(e)}: {traceback.format_exc()}")
             return jsonify({"error": str(e)}), 500
 
     def handle_status_request(self):
@@ -87,7 +87,7 @@ class Server:
             return self.process_status(session_id, data)
 
         except Exception as e:
-            Logger.error(f"Error processing status request: {str(e)}")
+            Logger.error(f"Error processing status request: {str(e)}: {traceback.format_exc()}")
             return jsonify({"error": str(e)}), 500
         
     def init_agent(self, user_task, session_id, max_message=-1):
@@ -103,7 +103,7 @@ class Server:
             max_loops=max_message,
         )
         agnet = Agent(
-            llm=VisionBaseLLM(),
+            llm=TestAllTools(),
             max_loops=max_message,
             session_id=DataBase.get_session_id(self.experiment_uuid),
         )
@@ -119,7 +119,7 @@ class Server:
         status = data["execution_status"]
         status_queue.put(status)
 
-        return jsonify({}), 200
+        return jsonify({"status":"ok"}), 200
 
     def process_request(self, data, session_id):
 
@@ -139,9 +139,7 @@ class Server:
             )
         )
         response: OutGoingData = feed_from_agent.get()
-        if isinstance(response, Error) and (
-            response.is_fatel or response.session_closed
-        ):
+        if isinstance(response, Error):
             self.agents_queues.pop(session_id)
             return jsonify(response.__dict__), 500
         elif isinstance(response, OutGoingData):
@@ -149,13 +147,16 @@ class Server:
                 self.agents_queues.pop(session_id)
             return jsonify(response.__dict__), 200
         else:
-            raise ValueError(type(response) + " is not supported.")
+            raise Exception(type(response) + " is not supported.")
 
     def start(self):
         self.app.run(
-            host="0.0.0.0",
+            host="scrape_anything",
             port=3000,
             debug=True,
             use_reloader=False,
-            ssl_context="adhoc",
+            ssl_context=(
+                'ssl/scrape_anything.crt', 
+                'ssl/scrape_anything.key'
+                )  
         )

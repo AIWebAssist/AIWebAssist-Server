@@ -7,10 +7,9 @@ from ..util import extract_tool_and_args, Logger, file_to_bytes, DataBase
 
 
 class VisionBaseLLM(LLMInterface):
-    model: str = "gpt-4-vision-preview"
     prompt_manager: TaskExtractionVisionBasePrompt = TaskExtractionVisionBasePrompt()
 
-    def generate(self, prompt: str, screenshot: str):
+    def generate(self, prompt: str, screenshot: str, model:str = "gpt-4-vision-preview"):
         assert self.api_key != None, "please provide API key"
 
         headers = {
@@ -20,7 +19,7 @@ class VisionBaseLLM(LLMInterface):
         base64_image = file_to_bytes(screenshot)
 
         payload = {
-            "model": "gpt-4-vision-preview",
+            "model": model,
             "messages": [
                 {
                     "role": "user",
