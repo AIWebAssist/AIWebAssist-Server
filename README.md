@@ -1,48 +1,64 @@
 # AIWebAssist Server
 
 
-  ```bash
-    docker build .  --target prod -t web_assists_prod 
-  ```
 
-```bash 
-  docker run -p 3000:3000 -it --rm web_assists_prod 
-```
+## Running Localy 
 
+1. create local SSL certificates:
+    - Allow the script to run: ```chmod +x ssl/generate_certs.sh```
+    - Run the script and create on the spot ssl certificates: ```./ssl/generate_certs.sh``` and enter at least email 
+    - Add "myCa.pem" into keychain, double click and 'trust always'
 
-```bash
-   python3 -m venv env && source env/bin/activate
-```
+2. Add scrape_anything to host file:
+    - ```sudo nano /private/etc/hosts```
+    - ```127.0.0.1 scrape_anything```
 
-```bash
-curl --insecure -L -X POST \
-  https://127.0.0.1:3000/status \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "execution_status": "response",
-    "session_id": "session_id"
-}'
-```
-```bash
-curl --insecure -L  -X POST \
-  https://127.0.0.1:3000/process \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "viewpointscroll": "viewpointscroll_value",
-    "viewportHeight": "viewportHeight_value",
-    "scroll_width": "scroll_width_value",
-    "scroll_height": "scroll_height_value",
-    "width": "width_value",
-    "height": "height_value",
-    "raw_on_screen": "elements_value",
-    "url": "url_value",
-    "user_task": "objective_value",
-    "session_id": "session_id_value",
-    "screenshot": "screenshotImage_value"
-}'
-```
+3. Start server:
 
+    - Docker:
+      ```bash
+        docker compose up
+      ```
+    - Local:
+      ```bash
+        python3 -m venv env && source env/bin/activate &&  pip install -r requirements.txt
+      ```
+      then:
+      ```python main.py```
 
+## Calling the backend:
 
-```sudo nano /private/etc/hosts```
-```127.0.0.1 scrape_anything```
+- You can use curls:
+  Every call should start with:
+    ```bash
+    curl --insecure -L  -X POST \
+      https://127.0.0.1:3000/process \
+      -H 'Content-Type: application/json' \
+      -d '{
+        "viewpointscroll": "viewpointscroll_value",
+        "viewportHeight": "viewportHeight_value",
+        "scroll_width": "scroll_width_value",
+        "scroll_height": "scroll_height_value",
+        "width": "width_value",
+        "height": "height_value",
+        "raw_on_screen": "elements_value",
+        "url": "url_value",
+        "user_task": "objective_value",
+        "session_id": "session_id_value",
+        "screenshot": "screenshotImage_value"
+    }'
+    ```
+
+  And end with:
+    ```bash
+    curl --insecure -L -X POST \
+      https://127.0.0.1:3000/status \
+      -H 'Content-Type: application/json' \
+      -d '{
+        "execution_status": "response",
+        "session_id": "session_id"
+    }'
+    ```
+
+Or 
+  - You can install the [extesnion](https://github.com/AIWebAssist/AIWebAssistExtension)

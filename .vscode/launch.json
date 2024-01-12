@@ -11,10 +11,7 @@
             "program": "simulate.py",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}",
-                //"OPENAI_API": "sk"
-            }
+            "envFile": "${workspaceFolder}/.env"
         },
         {
             "name": "Server",
@@ -24,30 +21,6 @@
             "console": "integratedTerminal",
             "justMyCode": false,
             "envFile": "${workspaceFolder}/.env"
-        },
-        {
-            "name": "Controling main",
-            "type": "python",
-            "request": "launch",
-            "program": "examples/controling.py",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}",
-                "OPENAI_API": "sk"
-            }
-        },
-        {
-            "name": "Guiding main",
-            "type": "python",
-            "request": "launch",
-            "program": "examples/guiding.py",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}",
-                "OPENAI_API": "sk"
-            }
         }
     ]
 }
