@@ -45,7 +45,7 @@ class Agent(BaseModel):
                 scroll_ratio,
                 url,
                 task_to_accomplish,
-            ) = controller.fetch_infomration_on_screen(
+            ) = controller.fetch_information_on_screen(
                 self.session_id, loop_num=num_loops
             )
 
@@ -154,7 +154,7 @@ class Agent(BaseModel):
                     scroll_ratio,
                     url,
                     task_to_accomplish,
-                ) = controller.fetch_infomration_on_screen(
+                ) = controller.fetch_information_on_screen(
                     self.session_id, loop_num=num_loops
                 )
 

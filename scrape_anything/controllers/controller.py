@@ -19,7 +19,7 @@ class Controller(ABC):
         pass
 
     @abstractmethod
-    def fetch_infomration_on_screen(self, output_folder: str, loop_num: int):
+    def fetch_information_on_screen(self, output_folder: str, loop_num: int):
         pass
 
     @abstractmethod

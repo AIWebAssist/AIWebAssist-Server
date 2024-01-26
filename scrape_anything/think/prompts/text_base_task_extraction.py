@@ -33,16 +33,16 @@ Describe all Buttons:
   2. Coordinates
   3. Purpose
 
-Finally, describe your guideance to the user using the following format:
+Finally, describe your guidance to the user using the following format:
 
 Thought: <comment on what you want to achieve>
-Execution Status: <comment on if the your previous executions what is successful>
+Execution Status: <comment on if the your previous executions what is successful, when making a decision consider if the the screenshot should've changed after the previous action>
 Current Task: <comment on given the task and the past execution, what it your current goal>
 Action: <the action to take, exactly one element of [{tool_names}]>
 Action Input: <the input to the action you provided>
 {observation_token}: <the change you expect to see after the action is executed>
 --
-don't use placeholders, if you are missing information, ask the user to provide it.
+The current step execution is {step_num}
 """
 
     def get_stop_patterns(self):

@@ -23,7 +23,7 @@ class WebDriverController(Controller):
             self.close()
             raise e
 
-    def fetch_infomration_on_screen(self, output_folder: str, loop_num: int):
+    def fetch_information_on_screen(self, output_folder: str, loop_num: int):
         # compute the elements on screen, current + change
         (
             raw_on_screen,

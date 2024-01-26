@@ -28,7 +28,7 @@ class TextOnlyLLM(LLMInterface):
     ):
         Logger.info("calling make a decision.")
         # foramt prompt
-        prompt = self.prompt_manager.format_prompt(**prompt_params)
+        prompt = self.prompt_manager.format_prompt(step_num=num_loops, **prompt_params)
 
         # store prompt
         DataBase.store_prompt(

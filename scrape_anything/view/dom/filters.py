@@ -62,7 +62,7 @@ def remove_out_of_window(df, viewpointscroll, viewportHeight):
     ]
 
 
-def remove_without_textual_infomration(df):
+def remove_without_textual_information(df):
     # remove if all is null
     _df = df[
         ~df[
@@ -91,7 +91,7 @@ def minimize_page_data(df, viewpointscroll, viewportHeight, using_vision=False):
     _df = df.copy()
     _df = remove_elements_without_size(_df)
     _df = remove_out_of_window(_df, viewpointscroll, viewportHeight)
-    _df = remove_without_textual_infomration(_df)
+    _df = remove_without_textual_information(_df)
 
     # if all the information is the same, take the deeper element (which is the last becuase of our listing method)
     _df.drop_duplicates(
