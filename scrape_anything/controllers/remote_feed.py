@@ -33,12 +33,12 @@ class RemoteFeedController(Controller):
             incoming_data, output_folder, loop_num, file_name_html=file_name_html
         )
 
-    def should_close(self,tool_executor):
+    def should_close(self,tool_executor=None):
         self.message_count = +1
         if self.message_count == self.max_loops:
             Logger.info(f"Session closed because execution count eached limit {self.max_loops}")
             return True
-        elif isinstance(tool_executor,FinalAnswer):
+        elif tool_executor is not None and isinstance(tool_executor,FinalAnswer):
             Logger.info(f"Session closed because final answer was provided {tool_executor}")
             return True
         return False
@@ -78,7 +78,7 @@ class RemoteFeedController(Controller):
             Error(
                 error_message="server_fault_retry",
                 user_should_retry=True,
-                session_closed=self.count_and_close(),
+                session_closed=self.should_close(),
             )
         )
         Logger.info(
@@ -93,7 +93,7 @@ class RemoteFeedController(Controller):
             Error(
                 error_message="server_fault_contact_admin",
                 is_fatel=True,
-                session_closed=self.count_and_close(),
+                session_closed=self.should_close(),
             )
         )
         Logger.info(

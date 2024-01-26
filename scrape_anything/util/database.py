@@ -38,20 +38,20 @@ class FileSystemDataBase:
     ):
         return bytes_to_file(
             screenshot_stream,
-            os.path.join(session_id, f"step_{call_in_seassion}_screenshot.png"),
+            os.path.join(session_id, f"step_{call_in_seassion}_input_screenshot.png"),
         )
     
 
     @classmethod
     def get_last_screenshot(cls,session_id: str, call_in_seassion: int):
         return file_to_bytes(
-            os.path.join(session_id, f"step_{call_in_seassion}_screenshot.png")
+            os.path.join(session_id, f"step_{call_in_seassion}_input_screenshot.png")
             )
     
     @classmethod
     def get_current_screenshot(cls,session_id: str, call_in_seassion: int):
         return file_to_bytes(
-            os.path.join(session_id, f"step_{call_in_seassion}_screenshot.png")
+            os.path.join(session_id, f"step_{call_in_seassion}_input_screenshot.png")
             )
     
     @classmethod
@@ -60,7 +60,7 @@ class FileSystemDataBase:
     ):
         return bytes_to_file(
             screenshot_stream,
-            os.path.join(session_id, f"step_{call_in_seassion}_screenshot_marked.png"),
+            os.path.join(session_id, f"step_{call_in_seassion}_input__screenshot_action_marked.png"),
         )
     
     @classmethod

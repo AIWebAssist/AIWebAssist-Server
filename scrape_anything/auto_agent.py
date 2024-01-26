@@ -55,7 +55,7 @@ class Agent(BaseModel):
                 _, screenshot_changed = controller.extract_from_agent_memory(on_screen,screenshot_stream,self.session_id,num_loops)
 
                 if not previous_responses.is_empty() and not screenshot_changed:
-                    previous_responses.append("Notice! the user screen wasn't affected by this action.")
+                    previous_responses.append("The user screen wasn't affected by this action.")
 
                 parsing_status = False
                 execution_status = False

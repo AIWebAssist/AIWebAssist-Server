@@ -23,7 +23,7 @@ class ExecutionStatusPromptValues:
         self.previous_tools.append(tool)
 
     def append(self,message):
-        self.previous_responses[-1] = f"{self.previous_responses[-1]}. {message}."
+        self.previous_responses[-1] = f"{self.previous_responses[-1]} However, {message}."
 
     def __str__(self) -> str:
         return "\n".join(self.previous_responses)

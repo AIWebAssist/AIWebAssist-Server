@@ -159,5 +159,4 @@ def is_screenshot_changed(screen_strem_before, screen_strem_current):
     hash2 = imagehash.dhash_vertical(img2)
 
     # Compare hashes
-    
     return hash1 - hash2 != 0
