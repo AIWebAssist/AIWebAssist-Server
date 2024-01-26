@@ -11,16 +11,20 @@ from scrape_anything.util.logger import Logger
 from webdriver_manager.chrome import ChromeDriverManager
 import requests
 
-def simulate_client_click(url, user_task, recording_file, num_of_iteration=1, dockerized=True):
-    
+
+def simulate_client_click(
+    url, user_task, recording_file, num_of_iteration=1, dockerized=True
+):
     if dockerized:
         clear_sessions(selenium_host="selenium-chrome")
     else:
         executable_path = ChromeDriverManager().install()
 
-    web_driver = start_browesr(selenium_host="selenium-chrome",
-                               dockerized=dockerized,
-                               executable_path=executable_path)
+    web_driver = start_browesr(
+        selenium_host="selenium-chrome",
+        dockerized=dockerized,
+        executable_path=executable_path,
+    )
     web_driver.maximize_window()
 
     screen_recorder = ScreenRecorder(
@@ -38,15 +42,19 @@ def simulate_client_click(url, user_task, recording_file, num_of_iteration=1, do
         return simulate_completed, recording_completed
 
 
-def simulate(experiment_uuid, url, task_description, max_num_of_iteration, dockerized=True):
-    
+def simulate(
+    experiment_uuid, url, task_description, max_num_of_iteration, dockerized=True
+):
     # start the server
     server = ServerInAThread(experiment_uuid)
     server.start()
     # start calling the extension
     simulate_completed, recording_completed = simulate_client_click(
-        url, task_description, experiment_uuid, num_of_iteration=max_num_of_iteration,
-        dockerized=dockerized
+        url,
+        task_description,
+        experiment_uuid,
+        num_of_iteration=max_num_of_iteration,
+        dockerized=dockerized,
     )
     # stop the server
     server.stop()
@@ -86,7 +94,11 @@ if __name__ == "__main__":
 
     for index, row in df.iterrows():
         row["run_status"] = simulate(
-            row["uuid"], row["url"], row["task_description"], row["max_num_of_iteration"],dockerized = dockerized_selenuim
+            row["uuid"],
+            row["url"],
+            row["task_description"],
+            row["max_num_of_iteration"],
+            dockerized=dockerized_selenuim,
         )
 
     experiment_date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

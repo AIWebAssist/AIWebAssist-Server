@@ -1,38 +1,101 @@
-
 from typing import List
+import json
+
 
 class ToolDescriptionPromptValues:
-    
-    def __init__(self,tools:List) -> None:
+    def __init__(self, tools: List) -> None:
         self.tools = tools
 
     def __str__(self) -> str:
         return "\n".join([f"{tool.name}: {tool.description}" for tool in self.tools])
 
-class ExecutionStatusPromptValues:
 
+class ExecutionStatusPromptValues:
     def __init__(self) -> None:
-        self.previous_responses = list()
-        self.previous_tools = list()
+        self.previous_executions = list()
 
     def is_empty(self):
-        return len(self.previous_responses) == 0
-    
-    def set(self,tool,message):
-        self.previous_responses.append(message)
-        self.previous_tools.append(tool)
+        return len(self.previous_executions) == 0
 
-    def append(self,message):
-        self.previous_responses[-1] = f"{self.previous_responses[-1]} However, {message}."
+    def append(self, execution_status):
+        self.previous_executions.append(execution_status)
+
+    def on_new_screenshot(self, is_screen_changed):
+        self.previous_executions[-1].on_screen_changed(is_screen_changed)
 
     def __str__(self) -> str:
-        return "\n".join(self.previous_responses)
+        exections = ",\n".join(list(map(str, self.previous_executions)))
+        return f"[{exections}"
+
+
+class ExecutionStep:
+    def __init__(self, num_loop) -> None:
+        self.num_loop = num_loop
+        self.screen_changed = None
+
+    def on_screen_changed(self, is_screen_changed):
+        self.screen_changed = is_screen_changed
+
+    def values(self):
+        response = {"itreation_num": self.num_loop - 1}
+        if self.screen_changed is not None:
+            response["is_screen_changed_after_action"] = self.screen_changed
+        return response
+
+    def __str__(self) -> str:
+        return json.dumps(self.values())
+
+
+class FailedLLMUnderstandingStepExecution(ExecutionStep):
+    def __init__(self, num_loop, raw, error_message) -> None:
+        super(FailedLLMUnderstandingStepExecution, self).__init__(num_loop)
+        self.error_message = error_message
+        self.raw = raw
+
+    def values(self):
+        return {
+            **super(FailedLLMUnderstandingStepExecution, self).values(),
+            "execution_success": False,
+            "parsing_success": False,
+            "related_data": self.raw,
+            "error_message": self.error_message,
+        }
+
+
+class FailedStepExecution(ExecutionStep):
+    def __init__(self, num_loop, error_message, tool, tool_input) -> None:
+        super(FailedStepExecution, self).__init__(num_loop)
+        self.error_message = error_message
+        self.tool = tool
+        self.tool_input = tool_input
+
+    def values(self):
+        return {
+            **super(FailedStepExecution, self).values(),
+            "execution_success": False,
+            "parsing_success": True,
+            "related_data": {"tool": self.tool, "tool_input": self.tool_input},
+            "error_message": self.error_message,
+        }
+
+
+class SuccessfulStepExecution(ExecutionStep):
+    def __init__(self, num_loop, tool, tool_input) -> None:
+        super(SuccessfulStepExecution, self).__init__(num_loop)
+        self.tool = tool
+        self.tool_input = tool_input
+
+    def values(self):
+        return {
+            **super(SuccessfulStepExecution, self).values(),
+            "execution_success": True,
+            "related_data": {"tool": self.tool, "tool_input": self.tool_input},
+        }
+
 
 class DataFramePromptValues:
-
-    def __init__(self,on_screen) -> None:
+    def __init__(self, on_screen) -> None:
         self.on_screen = on_screen
 
     def __str__(self) -> str:
-        return self.on_screen.rename_axis("index").to_csv(float_format=f'%.2f')
-        
+        return self.on_screen.rename_axis("index").to_csv(float_format=f"%.2f")

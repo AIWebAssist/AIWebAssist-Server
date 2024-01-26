@@ -21,7 +21,7 @@ def build_logger():
         )  # set streamhandler to stdout
         console_handler.setFormatter(log_formatter)
         logger.addHandler(console_handler)
-        
+
         log_dir = os.path.dirname(LOGGING_FILE)
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)

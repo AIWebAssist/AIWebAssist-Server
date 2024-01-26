@@ -52,4 +52,3 @@ class ScreenRecorder:
                 return False
         finally:
             shutil.rmtree("temp")
-    

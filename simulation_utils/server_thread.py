@@ -1,6 +1,7 @@
 from multiprocessing import Process
 from scrape_anything import Server
 
+
 class ServerInAThread:
     process = None
 

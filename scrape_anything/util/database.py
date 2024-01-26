@@ -1,5 +1,5 @@
-from .io import to_text_file, pickle, dataframe_to_csv,dataframe_from_csv
-from .browser import bytes_to_file,file_to_bytes
+from .io import to_text_file, pickle, dataframe_to_csv, dataframe_from_csv
+from .browser import bytes_to_file, file_to_bytes
 import os
 
 
@@ -40,29 +40,31 @@ class FileSystemDataBase:
             screenshot_stream,
             os.path.join(session_id, f"step_{call_in_seassion}_input_screenshot.png"),
         )
-    
 
     @classmethod
-    def get_last_screenshot(cls,session_id: str, call_in_seassion: int):
+    def get_last_screenshot(cls, session_id: str, call_in_seassion: int):
         return file_to_bytes(
             os.path.join(session_id, f"step_{call_in_seassion}_input_screenshot.png")
-            )
-    
+        )
+
     @classmethod
-    def get_current_screenshot(cls,session_id: str, call_in_seassion: int):
+    def get_current_screenshot(cls, session_id: str, call_in_seassion: int):
         return file_to_bytes(
             os.path.join(session_id, f"step_{call_in_seassion}_input_screenshot.png")
-            )
-    
+        )
+
     @classmethod
     def store_marked_screenshot(
         cls, screenshot_stream, session_id: str, call_in_seassion: int
     ):
         return bytes_to_file(
             screenshot_stream,
-            os.path.join(session_id, f"step_{call_in_seassion}_input__screenshot_action_marked.png"),
+            os.path.join(
+                session_id,
+                f"step_{call_in_seassion}_input__screenshot_action_marked.png",
+            ),
         )
-    
+
     @classmethod
     def store_server_response(cls, obj, session_id: str, call_in_seassion: int):
         pickle(obj, f"{session_id}/step_{call_in_seassion}_raw_response.pkl")
@@ -70,9 +72,7 @@ class FileSystemDataBase:
     # Html Elements filltering E2E
     @classmethod
     def store_html_elements(cls, raw_on_screen, session_id: str, call_in_seassion: int):
-        dataframe_to_csv(
-            raw_on_screen, f"{session_id}/step_{call_in_seassion}_raw.csv"
-        )
+        dataframe_to_csv(raw_on_screen, f"{session_id}/step_{call_in_seassion}_raw.csv")
 
     @classmethod
     def store_filltered_html_elements(
@@ -83,7 +83,7 @@ class FileSystemDataBase:
         )
 
     @classmethod
-    def get_last_minimized_on_screen(cls,session_id: str, call_in_seassion: int):
+    def get_last_minimized_on_screen(cls, session_id: str, call_in_seassion: int):
         return dataframe_from_csv(f"{session_id}/step_{call_in_seassion}_minimized.csv")
 
     # Agent call E2E
@@ -125,19 +125,21 @@ class DataBase:
         return cls.data_base.store_screenshot(
             screenshot_stream, session_id, call_in_seassion
         )
-    
-    @classmethod
-    def get_last_minimized_on_screen(cls,session_id: str, call_in_seassion: int):
-        return cls.data_base.get_last_minimized_on_screen(session_id,call_in_seassion-1)
 
     @classmethod
-    def get_last_screenshot(cls,session_id: str, call_in_seassion: int):
-        return cls.data_base.get_last_screenshot(session_id,call_in_seassion-1)
-    
+    def get_last_minimized_on_screen(cls, session_id: str, call_in_seassion: int):
+        return cls.data_base.get_last_minimized_on_screen(
+            session_id, call_in_seassion - 1
+        )
+
     @classmethod
-    def get_current_screenshot(cls,session_id: str, call_in_seassion: int):
-        return cls.data_base.get_current_screenshot(session_id,call_in_seassion)
-    
+    def get_last_screenshot(cls, session_id: str, call_in_seassion: int):
+        return cls.data_base.get_last_screenshot(session_id, call_in_seassion - 1)
+
+    @classmethod
+    def get_current_screenshot(cls, session_id: str, call_in_seassion: int):
+        return cls.data_base.get_current_screenshot(session_id, call_in_seassion)
+
     @classmethod
     def store_marked_screenshot(
         cls, screenshot_stream, session_id: str, call_in_seassion: int
@@ -145,8 +147,7 @@ class DataBase:
         return cls.data_base.store_marked_screenshot(
             screenshot_stream, session_id, call_in_seassion
         )
-    
-    
+
     @classmethod
     def store_server_response(cls, obj, session_id: str, call_in_seassion: int):
         cls.data_base.store_server_response(obj, session_id, call_in_seassion)

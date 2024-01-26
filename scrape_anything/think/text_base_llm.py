@@ -9,7 +9,7 @@ from ..util import extract_tool_and_args, Logger, DataBase
 class TextOnlyLLM(LLMInterface):
     prompt_manager: BaseTaskExtractionPrompt = TaskExtractionTextBasePrompt()
 
-    def generate(self, prompt: str, model:str):
+    def generate(self, prompt: str, model: str):
         assert self.api_key != None, "please provide API key"
 
         openai.api_key = self.api_key
@@ -38,10 +38,10 @@ class TextOnlyLLM(LLMInterface):
         # call LLM
         Logger.info("calling LLM.")
         try:
-            generated = self.generate(prompt,model="gpt-3.5-turbo")
+            generated = self.generate(prompt, model="gpt-3.5-turbo")
         except openai.InvalidRequestError:
             Logger.info("context to large, tring with 16k version.")
-            generated = self.generate(prompt,model="gpt-3.5-turbo-16k")
+            generated = self.generate(prompt, model="gpt-3.5-turbo-16k")
 
         Logger.info("got response from LLM.")
 

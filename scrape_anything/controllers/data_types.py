@@ -51,9 +51,8 @@ class EnabledActions(Enum):
     HitAKey = 7
     MessageUser = 8
     FinalAnswer = 9
-    ScrollLeft = 10 
+    ScrollLeft = 10
     GoToURL = 11
-    
 
     def get_tool_enum(tool):
         return type(tool).__name__

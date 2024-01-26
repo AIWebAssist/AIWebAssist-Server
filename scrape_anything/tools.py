@@ -22,10 +22,9 @@ class ToolBox(BaseModel):
         HitAKey(),
         MessageUser(),
         FinalAnswer(),
-        GoToURL()
+        GoToURL(),
     ]
     tools: List[ToolInterface] = EnabledActions.filter_enabled(supoorted_tools)
-
 
     @property
     def tool_description(self) -> str:

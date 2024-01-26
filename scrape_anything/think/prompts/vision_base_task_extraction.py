@@ -2,8 +2,7 @@ from .base_task_extraction import BaseTaskExtractionPrompt
 
 
 class TaskExtractionVisionBasePrompt(BaseTaskExtractionPrompt):
-    
-    prompt_template:str = """
+    prompt_template: str = """
 Today is {today}, the site you're looking on is {site_url}.
 
 Your user instraction is: "{task_to_accomplish}", attacted is the screen the user see and here are the relevent elements:
@@ -24,8 +23,6 @@ Action: <the action to take, exactly one element of [{tool_names}]>
 Action Input: <the input to the action>
 {observation_token}: <the change you expect to see after the action is executed>
 """
-        
 
     def get_stop_patterns(self):
         return [f"\n{self.observation_token}", f"\n\t{self.observation_token}"]
-    

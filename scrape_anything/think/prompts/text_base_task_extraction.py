@@ -2,7 +2,7 @@ from .base_task_extraction import BaseTaskExtractionPrompt
 
 
 class TaskExtractionTextBasePrompt(BaseTaskExtractionPrompt):
-    prompt_template:str = """
+    prompt_template: str = """
 Today is {today}, the site your user is looking on is '{site_url}'.
 
 Here is a representation of the valuable elements existing on the screen:
@@ -44,7 +44,6 @@ Action Input: <the input to the action you provided>
 --
 don't use placeholders, if you are missing information, ask the user to provide it.
 """
-        
 
     def get_stop_patterns(self):
         return [f"\n{self.observation_token}", f"\n\t{self.observation_token}"]

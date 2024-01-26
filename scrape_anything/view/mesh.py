@@ -44,7 +44,7 @@ def minimize_and_enrich_page_data(
         df, viewpointscroll, viewportHeight, using_vision=using_vision
     )
 
-    df = df[(df['centerY'] > 0) & (df['centerX'] > 0)]
+    df = df[(df["centerY"] > 0) & (df["centerX"] > 0)]
     if can_use_vision:
         df = enrich_base_on_vision(df, screenshot_filename)
         df.drop(

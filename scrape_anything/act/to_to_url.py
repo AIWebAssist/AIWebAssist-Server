@@ -20,7 +20,9 @@ class MessageUser(ToolInterface):
     """show text to the user"""
 
     name: str = "Textual Guidance"
-    description: str = 'Present the user with a message, Input format: {{"text":"<text_to_enter>"}}'
+    description: str = (
+        'Present the user with a message, Input format: {{"text":"<text_to_enter>"}}'
+    )
     click_on_screen: str = False
     example_script: str = "show_guidance"
 

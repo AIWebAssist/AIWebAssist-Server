@@ -1,20 +1,19 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from scrape_anything import Agent
-from scrape_anything import TextOnlyLLM, VisionBaseLLM,TestAllTools
+from scrape_anything import TextOnlyLLM, VisionBaseLLM, TestAllTools
 from scrape_anything import RemoteFeedController
-from scrape_anything.util import DataBase,Logger
+from scrape_anything.util import DataBase, Logger
 from scrape_anything import OutGoingData, IncommingData, Error
 from queue import Queue
 import traceback
-
 
 
 class Server:
     agents_queues = dict()
     agents_threads = dict()
 
-    def __init__(self,experiment_uuid=""):
+    def __init__(self, experiment_uuid=""):
         self.app = Flask(__name__)
         self.experiment_uuid = experiment_uuid
         CORS(self.app)
@@ -55,7 +54,9 @@ class Server:
             return self.process_request(data, session_id)
 
         except Exception as e:
-            Logger.error(f"Error processing request: {str(e)}: {traceback.format_exc()}")
+            Logger.error(
+                f"Error processing request: {str(e)}: {traceback.format_exc()}"
+            )
             return jsonify({"error": str(e)}), 500
 
     def handle_status_request(self):
@@ -68,9 +69,11 @@ class Server:
             return self.process_status(session_id, data)
 
         except Exception as e:
-            Logger.error(f"Error processing status request: {str(e)}: {traceback.format_exc()}")
+            Logger.error(
+                f"Error processing status request: {str(e)}: {traceback.format_exc()}"
+            )
             return jsonify({"error": str(e)}), 500
-        
+
     def init_agent(self, user_task, session_id, max_message=-1):
         feed_from_chrome = Queue(maxsize=1)
         feed_from_agent = Queue(maxsize=1)
@@ -100,10 +103,9 @@ class Server:
         status = data["execution_status"]
         status_queue.put(status)
 
-        return jsonify({"status":"ok"}), 200
+        return jsonify({"status": "ok"}), 200
 
     def process_request(self, data, session_id):
-
         (feed_from_chrome, feed_from_agent, _) = self.agents_queues[session_id]
         feed_from_chrome.put(
             IncommingData(
@@ -136,8 +138,5 @@ class Server:
             port=3000,
             debug=True,
             use_reloader=False,
-            ssl_context=(
-                'ssl/scrape_anything.crt', 
-                'ssl/scrape_anything.key'
-                )  
+            ssl_context=("ssl/scrape_anything.crt", "ssl/scrape_anything.key"),
         )

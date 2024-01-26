@@ -4,7 +4,8 @@ import base64
 import io
 from PIL import Image
 import imagehash
-from scrape_anything.util.io import stringable_dataframe_to_csv,dataframe_to_stringable
+from scrape_anything.util.io import stringable_dataframe_to_csv, dataframe_to_stringable
+
 
 def is_css_code(text):
     pattern = r"\{.*?\}"
@@ -132,20 +133,28 @@ def dataframe_diff(df_before, df_current):
     Returns two DataFrames: one for removed rows and one for added rows.
     """
     if df_before is None:
-        return None,None
-    df1_list = stringable_dataframe_to_csv(df_before).to_csv(index=False).split("\n")[1:]
-    df2_list = stringable_dataframe_to_csv(df_current).to_csv(index=False).split("\n")[1:]
+        return None, None
+    df1_list = (
+        stringable_dataframe_to_csv(df_before).to_csv(index=False).split("\n")[1:]
+    )
+    df2_list = (
+        stringable_dataframe_to_csv(df_current).to_csv(index=False).split("\n")[1:]
+    )
 
-    added_to_changed = dataframe_to_stringable(pd.DataFrame(
-        [row.split(",") for row in df2_list if row not in df1_list],
-        columns=list(df_before.columns),
-    ))
-    removed = dataframe_to_stringable(pd.DataFrame(
-        [row.split(",") for row in df1_list if row not in df2_list],
-        columns=list(df_before.columns),
-    ))
+    added_to_changed = dataframe_to_stringable(
+        pd.DataFrame(
+            [row.split(",") for row in df2_list if row not in df1_list],
+            columns=list(df_before.columns),
+        )
+    )
+    removed = dataframe_to_stringable(
+        pd.DataFrame(
+            [row.split(",") for row in df1_list if row not in df2_list],
+            columns=list(df_before.columns),
+        )
+    )
 
-    return added_to_changed,removed
+    return added_to_changed, removed
 
 
 def is_screenshot_changed(screen_strem_before, screen_strem_current):
