@@ -84,7 +84,7 @@ class Server:
             max_loops=max_message,
         )
         agnet = Agent(
-            llm=TestAllTools(),
+            llm=TextOnlyLLM(),
             max_loops=max_message,
             session_id=DataBase.get_session_id(self.experiment_uuid),
         )

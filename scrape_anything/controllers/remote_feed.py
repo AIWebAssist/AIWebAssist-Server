@@ -33,9 +33,15 @@ class RemoteFeedController(Controller):
             incoming_data, output_folder, loop_num, file_name_html=file_name_html
         )
 
-    def count_and_close(self):
+    def should_close(self,tool_executor):
         self.message_count = +1
-        return self.message_count == self.max_loops
+        if self.message_count == self.max_loops:
+            Logger.info(f"Session closed because execution count eached limit {self.max_loops}")
+            return True
+        elif isinstance(tool_executor,FinalAnswer):
+            Logger.info(f"Session closed because final answer was provided {tool_executor}")
+            return True
+        return False
 
     def take_action(
         self,
@@ -46,7 +52,7 @@ class RemoteFeedController(Controller):
     ):
         Logger.info(f"itration number {loop_num}: putting response.")
         response = OutGoingData(
-            session_closed=self.count_and_close(),
+            session_closed=self.should_close(tool_executor),
             script=tool_executor.example_script,
             tool_input=tool_input,
         )

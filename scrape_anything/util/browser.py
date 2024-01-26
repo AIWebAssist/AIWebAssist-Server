@@ -1,5 +1,6 @@
 import base64
 import io
+import os
 import re
 import json
 import pandas as pd
@@ -9,12 +10,15 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 
-
 def start_browesr(
-    dockerized=True, headless=False, selenium_host="host.docker.internal"
+    dockerized=True, headless=False, selenium_host="host.docker.internal" , executable_path=r"/usr/bin/chromedriver"
 ):
     """start browser"""
     chrome_options = webdriver.ChromeOptions()
+
+    if not os.path.exists("extension.crx"):
+        raise Exception("missing extension file")
+
     chrome_options.add_extension("extension.crx")
 
     chrome_options.add_argument("--no-sandbox")
@@ -29,7 +33,7 @@ def start_browesr(
             f"http://{selenium_host}:4444/wd/hub", options=chrome_options
         )
 
-    service = Service(executable_path=r"/usr/bin/chromedriver")
+    service = Service(executable_path=executable_path)
     return webdriver.Chrome(service=service, options=chrome_options)
 
 
@@ -40,19 +44,22 @@ def clear_sessions(selenium_host="host.docker.internal", session_id=None):
     :return: None
     """
 
-    url = f"http://{selenium_host}:4444"
-    if not session_id:
-        # delete all sessions
-        r = requests.get(f"{url}/status")
-        data = json.loads(r.text)
-        for node in data["value"]["nodes"]:
-            for slot in node["slots"]:
-                if slot["session"]:
-                    id = slot["session"]["sessionId"]
-                    r = requests.delete(f"{url}/session/{id}")
-    else:
-        # delete session from params
-        r = requests.delete(f"{url}/session/{session_id}")
+    try:
+        url = f"http://{selenium_host}:4444"
+        if not session_id:
+            # delete all sessions
+            r = requests.get(f"{url}/status")
+            data = json.loads(r.text)
+            for node in data["value"]["nodes"]:
+                for slot in node["slots"]:
+                    if slot["session"]:
+                        id = slot["session"]["sessionId"]
+                        r = requests.delete(f"{url}/session/{id}")
+        else:
+            # delete session from params
+            r = requests.delete(f"{url}/session/{session_id}")
+    except requests.exceptions.ConnectionError:
+        raise Exception(f"selenuim is down at {selenium_host}")
 
 
 def load_script(filepath):
@@ -212,3 +219,14 @@ def wait_for_page_load(wdriver):
         return driver.execute_script("return document.readyState") == "complete"
 
     wait.until(page_loaded)
+
+
+
+def is_running_in_docker():
+    """check if running in docker"""
+    try:
+        with open('/proc/1/cgroup', 'rt') as cgroup_file:
+            return 'docker' in cgroup_file.read()
+    except Exception as e:
+        print(f"Error checking Docker environment: {e}")
+        return False

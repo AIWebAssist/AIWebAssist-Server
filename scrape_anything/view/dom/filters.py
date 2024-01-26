@@ -148,19 +148,16 @@ def dataframe_diff(df_before, df_current):
     return added_to_changed,removed
 
 
-def is_screenshot_changed(df_before, df_current,cutoff = 5):
-    if df_before is None:
+def is_screenshot_changed(screen_strem_before, screen_strem_current):
+    if screen_strem_before is None:
         return None
-    img1 = Image.open(io.BytesIO(base64.b64decode(df_before)))
-    img2 = Image.open(io.BytesIO(base64.b64decode(df_current)))
+    img1 = Image.open(io.BytesIO(base64.b64decode(screen_strem_before)))
+    img2 = Image.open(io.BytesIO(base64.b64decode(screen_strem_current)))
 
     # Compute hashes
-    hash1 = imagehash.average_hash(img1)
-    hash2 = imagehash.average_hash(img2)
+    hash1 = imagehash.dhash_vertical(img1)
+    hash2 = imagehash.dhash_vertical(img2)
 
     # Compare hashes
     
-    if hash1 - hash2 < cutoff:
-        return False
-    else:
-        return True  # Images are considered similar 
+    return hash1 - hash2 != 0
