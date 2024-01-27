@@ -17,6 +17,14 @@ def extract_tool_and_args(generated: str) -> Tuple[str, str]:
         elif "Action" in generated:  # if not, try to get actions that have no input
             tool = generated.split("Action:")[-1].split("\n")[0].strip()
             tool_input = "{}"
+
+        if "Current Action Goal" in generated:
+            current_task = (
+                generated.split("Current Action Goal:")[-1].split("\n")[0].strip()
+            )
+        else:
+            current_task = "not provide."
+
     else:
         raise ValueError(
             f"you should provide one of the following: "
@@ -28,7 +36,7 @@ def extract_tool_and_args(generated: str) -> Tuple[str, str]:
         tool_input = json.loads(tool_input)
     except json.JSONDecodeError:
         tool_input = {}
-    return strip_tool(tool), tool_input
+    return strip_tool(tool), tool_input, current_task
 
 
 def strip_tool(string: str):

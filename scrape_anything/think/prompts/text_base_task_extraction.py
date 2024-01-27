@@ -14,7 +14,7 @@ Current screen dimensions:
 Scroll Options: 
 {scroll_ratio}
 
-You should guide the user to complete the task '{task_to_accomplish}', the tools you can use are:
+You should guide the user to complete the task  '{task_to_accomplish}', the tools you can use are:
 {tool_description}
 
 Consider the previous executions to refine your response.
@@ -35,14 +35,15 @@ Describe all Buttons:
 
 Finally, describe your guidance to the user using the following format:
 
-Thought: <comment on what you want to achieve>
 Execution Status: <comment on if the your previous executions what is successful, when making a decision consider if the the screenshot should've changed after the previous action>
-Current Task: <comment on given the task and the past execution, what it your current goal>
+Current Task Status: <given the user task and the past execution, if the task is done>
+Current Action Goal: <given the user task and the past execution, comment on what is the goal of the current action offered>
 Action: <the action to take, exactly one element of [{tool_names}]>
 Action Input: <the input to the action you provided>
+Next Action Goal: <given the user task, the past execution and current task, comment on what will be the goal of the next action you will offer.>
 {observation_token}: <the change you expect to see after the action is executed>
 --
-The current step execution is {step_num}
+The current iteration number is {step_num}
 """
 
     def get_stop_patterns(self):

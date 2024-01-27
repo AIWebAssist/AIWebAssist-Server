@@ -25,30 +25,38 @@ class ExecutionStatusPromptValues:
 
     def __str__(self) -> str:
         exections = ",\n".join(list(map(str, self.previous_executions)))
-        return f"[{exections}"
+        return f"""[
+{exections}
+]"""
 
 
 class ExecutionStep:
-    def __init__(self, num_loop) -> None:
+    def __init__(self, num_loop, action_description) -> None:
         self.num_loop = num_loop
+        self.action_description = action_description
         self.screen_changed = None
 
     def on_screen_changed(self, is_screen_changed):
         self.screen_changed = is_screen_changed
 
     def values(self):
-        response = {"itreation_num": self.num_loop - 1}
+        response = {
+            "iteration_number": self.num_loop - 1,
+            "action_goal": self.action_description,
+        }
         if self.screen_changed is not None:
             response["is_screen_changed_after_action"] = self.screen_changed
         return response
 
     def __str__(self) -> str:
-        return json.dumps(self.values())
+        return json.dumps(self.values(), indent=2)
 
 
 class FailedLLMUnderstandingStepExecution(ExecutionStep):
-    def __init__(self, num_loop, raw, error_message) -> None:
-        super(FailedLLMUnderstandingStepExecution, self).__init__(num_loop)
+    def __init__(self, num_loop, raw, error_message, action_description) -> None:
+        super(FailedLLMUnderstandingStepExecution, self).__init__(
+            num_loop, action_description
+        )
         self.error_message = error_message
         self.raw = raw
 
@@ -63,8 +71,10 @@ class FailedLLMUnderstandingStepExecution(ExecutionStep):
 
 
 class FailedStepExecution(ExecutionStep):
-    def __init__(self, num_loop, error_message, tool, tool_input) -> None:
-        super(FailedStepExecution, self).__init__(num_loop)
+    def __init__(
+        self, num_loop, error_message, tool, tool_input, action_description
+    ) -> None:
+        super(FailedStepExecution, self).__init__(num_loop, action_description)
         self.error_message = error_message
         self.tool = tool
         self.tool_input = tool_input
@@ -80,8 +90,8 @@ class FailedStepExecution(ExecutionStep):
 
 
 class SuccessfulStepExecution(ExecutionStep):
-    def __init__(self, num_loop, tool, tool_input) -> None:
-        super(SuccessfulStepExecution, self).__init__(num_loop)
+    def __init__(self, num_loop, tool, tool_input, action_description) -> None:
+        super(SuccessfulStepExecution, self).__init__(num_loop, action_description)
         self.tool = tool
         self.tool_input = tool_input
 

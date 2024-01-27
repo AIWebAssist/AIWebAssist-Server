@@ -84,7 +84,9 @@ class Agent(BaseModel):
                     )
 
                     Logger.info(f"extracting tool from = {raw}")
-                    tool, tool_input = extract_tool_and_args(raw.replace("N/A", ""))
+                    tool, tool_input, current_task = extract_tool_and_args(
+                        raw.replace("N/A", "")
+                    )
                     Logger.info(
                         f"extracted tools are tool={tool} and tool_input={tool_input}"
                     )
@@ -162,15 +164,19 @@ class Agent(BaseModel):
                 current_status = None
                 if not parsing_status:  # if parsing failed
                     current_status = FailedLLMUnderstandingStepExecution(
-                        num_loops, raw, error_message
+                        num_loops, raw, error_message, action_description=current_task
                     )
                 elif not execution_status:  # exection failed
                     current_status = FailedStepExecution(
-                        num_loops, error_message, tool, tool_input
+                        num_loops,
+                        error_message,
+                        tool,
+                        tool_input,
+                        action_description=current_task,
                     )
                 else:
                     current_status = SuccessfulStepExecution(
-                        num_loops, tool, tool_input
+                        num_loops, tool, tool_input, action_description=current_task
                     )
 
                 Logger.info(

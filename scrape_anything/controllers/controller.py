@@ -91,7 +91,7 @@ class Controller(ABC):
         scroll_ratio = (
             f"On the Width Axis, {scroll_width}. On the Height Axis, {scroll_height}"
         )
-        screen_size = f"width={width},height={height}"
+        screen_size = f"width={width} ,height={height}"
 
         # process the elements
         on_screen = self.process_elements(

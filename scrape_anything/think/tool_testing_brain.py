@@ -61,5 +61,6 @@ class TestAllTools(LLMInterface):
 
         return f"""
         Action: {selected_tool.name}
-        Action Input: {json.dumps(args)}
+        Action Input: {json.dumps(args)},
+        Current Action Goal: Sefi
         """
