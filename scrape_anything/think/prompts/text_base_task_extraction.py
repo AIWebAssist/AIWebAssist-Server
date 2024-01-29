@@ -37,7 +37,7 @@ Finally, describe your guidance to the user using the following format:
 
 Execution Status: <comment on if the your previous executions what is successful, when making a decision consider if the the screenshot should've changed after the previous action>
 Overall Task Status: <given the user task and the past execution, comment if the overall user task is completed>
-Current Action Goal: <given the user task and the past execution, comment on what is the goal of the current action offered>
+Current Action Goal: <given the user task and the past execution, comment on what is the goal of the CURRENT action you are offering to the user>
 Action: <the action to take, exactly one element of [{tool_names}]>
 Action Input: <the input to the action you provided, MUST be a json form>
 Next Action Goal: <given the user task, the past execution and current task, comment on what will be the goal of the next action you will offer.>

@@ -6,14 +6,23 @@ from typing import Tuple
 def extract_tool_and_args(generated: str) -> Tuple[str, str]:
     if "Action" in generated or "Action Input" in generated:
         if "Action Input" in generated:  # try to get actions with inputs
-            regex = r"Action: [\[]?(.*?)[\]]?[\n]*Action Input:(.*?)?[\n]"
+            regex = r"Action: [\[]?(.*?)[\]]?[\n]*Action Input:"
             match = re.search(regex, generated + "\n", re.DOTALL)
             if not match:
                 raise ValueError(
                     f"the output `{generated}` is not matching the expected format."
                 )
             tool = match.group(1).strip()
-            tool_input = match.group(2).strip()
+
+            regex = r"(?<=Action Input:)([\w\W]+?)(?=\})"
+            match = re.search(regex, generated + "\n", re.DOTALL)
+            if match:
+                tool_input = match.group(1).strip()
+            else:
+                tool_input = "{"
+
+            tool_input += "}"
+            
         elif "Action" in generated:  # if not, try to get actions that have no input
             tool = generated.split("Action:")[-1].split("\n")[0].strip()
             tool_input = "{}"

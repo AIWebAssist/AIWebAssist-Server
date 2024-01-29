@@ -37,6 +37,23 @@ def test_if_llm_provide_one_extract():
     assert tool == "Enter Text"
     assert tool_input == {"text": "sefi", "x": 498.5, "y": 400.5}
 
+
+def test_if_llm_provide_addtional_op():
+    sample = """
+    Action: Click on coordinates on the screen
+
+    Action Input: 
+    {
+    "x": 678.8,
+    "y": 436.0
+    }
+    """
+    tool, tool_input,_ = response.extract_tool_and_args(sample)
+
+    assert tool == "Click on coordinates on the screen"
+    assert tool_input == { "x": 678.8, "y": 436.0}
+
+
 def test_if_llm_provids_not_action_raise_execption():
     sample = """
     Thought: The previous action was to close the cookie settings dialogue and it was successful. Now that the screen is clear and accessible, I will proceed to search for the name 'sefi' by entering the text into the search bar.
