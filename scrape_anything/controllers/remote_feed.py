@@ -40,7 +40,7 @@ class RemoteFeedController(Controller):
                 f"Session closed because execution count eached limit {self.max_loops}"
             )
             return True
-        elif tool_executor is not None and isinstance(tool_executor, FinalAnswer):
+        elif tool_executor is not None and isinstance(tool_executor, FinalMessage):
             Logger.info(
                 f"Session closed because final answer was provided {tool_executor}"
             )

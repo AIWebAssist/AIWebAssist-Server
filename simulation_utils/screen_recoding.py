@@ -44,10 +44,11 @@ class ScreenRecorder:
         try:
             self.final_lock.acquire()
             if os.path.exists("temp") and len(os.listdir("temp")) > 0:
-                os.system(
-                    f"ffmpeg -r {self.fps} -i temp/tmp_%01d.png -vcodec mpeg4 -y {self.output_file}.mp4"
+                mp4_file = f"{self.output_file}.mp4"
+                exit_code = os.system(
+                    f"ffmpeg -r {self.fps} -i temp/tmp_%01d.png -vcodec mpeg4 -y {mp4_file}"
                 )
-                return True
+                return exit_code == 0 and os.path.exists(mp4_file)
             else:
                 return False
         finally:

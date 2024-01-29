@@ -21,7 +21,7 @@ class ToolBox(BaseModel):
         Refresh(),
         HitAKey(),
         MessageUser(),
-        FinalAnswer(),
+        FinalMessage(),
         GoToURL(),
     ]
     tools: List[ToolInterface] = EnabledActions.filter_enabled(supoorted_tools)

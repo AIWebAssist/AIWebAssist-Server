@@ -38,7 +38,8 @@ class Agent(BaseModel):
                 on_screen,
                 _,
                 _,
-                screen_size,
+                width,
+                height, 
                 screenshot_png,
                 screenshot_stream,
                 _,
@@ -73,7 +74,7 @@ class Agent(BaseModel):
                         task_to_accomplish=task_to_accomplish,
                         previous_responses=previous_responses,
                         on_screen_data=DataFramePromptValues(on_screen),
-                        screen_size=screen_size,
+                        width=width,height=height,
                         scroll_ratio=scroll_ratio,
                         screenshot_png=screenshot_png,
                     )
@@ -104,6 +105,7 @@ class Agent(BaseModel):
 
                     controller.mark_on_screenshot(
                         tool_executor,
+                        screen_width=width ,screen_height=height,
                         session_id=self.session_id,
                         call_in_seassion=num_loops,
                         **tool_input,
@@ -149,7 +151,8 @@ class Agent(BaseModel):
                     on_screen,
                     _,
                     _,
-                    screen_size,
+                    width,
+                    height,
                     screenshot_png,
                     screenshot_stream,
                     _,
@@ -180,7 +183,7 @@ class Agent(BaseModel):
                     )
 
                 Logger.info(
-                    f"exection number {num_loops} completed, response {current_status}"
+                    f"exection number {num_loops-1} completed, response {current_status}"
                 )
                 DataBase.store_exection_status(
                     str(current_status),

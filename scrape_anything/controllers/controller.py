@@ -31,14 +31,16 @@ class Controller(ABC):
         pass
 
     def mark_on_screenshot(
-        self, tool_executor, session_id, call_in_seassion, **tool_input
+        self, tool_executor,screen_width ,screen_height, session_id, call_in_seassion, **tool_input
     ):
         if tool_executor.is_click_on_screen():
             screenshot = DataBase.get_current_screenshot(
                 session_id, call_in_seassion=call_in_seassion
             )
             drawed_image = draw_on_image(
-                Image.open(io.BytesIO(base64.b64decode(screenshot))), **tool_input
+                Image.open(io.BytesIO(base64.b64decode(screenshot))),
+                screen_width=screen_width ,screen_height=screen_height,
+                 **tool_input
             )
             image_stream = io.BytesIO()
             drawed_image.save(image_stream, format="PNG")
@@ -91,7 +93,6 @@ class Controller(ABC):
         scroll_ratio = (
             f"On the Width Axis, {scroll_width}. On the Height Axis, {scroll_height}"
         )
-        screen_size = f"width={width} ,height={height}"
 
         # process the elements
         on_screen = self.process_elements(
@@ -107,7 +108,8 @@ class Controller(ABC):
             on_screen,
             viewpointscroll,
             viewportHeight,
-            screen_size,
+            width,
+            height,
             screenshot_path,
             incoming_data.screenshot.split(",")[1],
             file_name_html,

@@ -50,7 +50,7 @@ class EnabledActions(Enum):
     Refresh = 6
     HitAKey = 7
     MessageUser = 8
-    FinalAnswer = 9
+    FinalMessage = 9
     ScrollLeft = 10
     GoToURL = 11
 

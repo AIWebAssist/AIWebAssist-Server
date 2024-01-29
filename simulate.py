@@ -60,6 +60,10 @@ def simulate(
     server.stop()
 
     Logger.copy_log_file(experiment_uuid)
+
+    if not (simulate_completed and recording_completed):
+        Logger.error("Simulation failed.")
+    
     return simulate_completed and recording_completed
 
 

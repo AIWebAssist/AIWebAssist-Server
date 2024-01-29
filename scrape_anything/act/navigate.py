@@ -23,7 +23,7 @@ class Refresh(ToolInterface):
         return {}
 
 
-class FinalAnswer(ToolInterface):
+class FinalMessage(ToolInterface):
     """the tool to use in the final answer"""
 
     name: str = "Final Guidance"

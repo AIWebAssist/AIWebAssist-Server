@@ -9,7 +9,7 @@ Here is a representation of the valuable elements existing on the screen:
 {on_screen_data}
 
 Current screen dimensions:
-{screen_size}
+width={width} ,height={height}
 
 Scroll Options: 
 {scroll_ratio}
@@ -36,14 +36,14 @@ Describe all Buttons:
 Finally, describe your guidance to the user using the following format:
 
 Execution Status: <comment on if the your previous executions what is successful, when making a decision consider if the the screenshot should've changed after the previous action>
-Current Task Status: <given the user task and the past execution, if the task is done>
+Overall Task Status: <given the user task and the past execution, comment if the overall user task is completed>
 Current Action Goal: <given the user task and the past execution, comment on what is the goal of the current action offered>
 Action: <the action to take, exactly one element of [{tool_names}]>
-Action Input: <the input to the action you provided>
+Action Input: <the input to the action you provided, MUST be a json form>
 Next Action Goal: <given the user task, the past execution and current task, comment on what will be the goal of the next action you will offer.>
 {observation_token}: <the change you expect to see after the action is executed>
 --
-The current iteration number is {step_num}
+The current iteration number is {step_num}.
 """
 
     def get_stop_patterns(self):
