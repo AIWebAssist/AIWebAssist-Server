@@ -74,6 +74,19 @@ class OutGoingData:
         self.session_closed = session_closed
 
 
+class ClientResponseStatus(Enum):
+    Failed = 0 
+    Successful = 1
+    Close = 2
+
+class LLMResponseParsingStatus(Enum):
+    Failed = 0
+    Successful = 1
+
+class AgnetStatus(Enum):
+    Open = 1
+    Closed = 0
+
 class Error:
     def __init__(
         self,

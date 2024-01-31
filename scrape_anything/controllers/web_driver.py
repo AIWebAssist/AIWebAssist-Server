@@ -94,6 +94,8 @@ class WebDriverController(Controller):
         if need_to_wait:
             wait_for_page_load(self.web_driver)
 
+        return True
+
     def on_action_extraction_failed(self, loop_num: int):
         pass
 

@@ -98,7 +98,7 @@ class FailedLLMUnderstandingStepExecution(ExecutionStep):
         }
     
     def to_nl(self):
-        return f"On Iteration #{self.num_loop - 1} you've failed to {self.action_description} because your response '{self.error_message}'"
+        return f"On Iteration #{self.num_loop} you've failed to {self.action_description} because your response '{self.error_message}'"
 
 
 class FailedStepExecution(ExecutionStep):
@@ -120,7 +120,7 @@ class FailedStepExecution(ExecutionStep):
         }
     
     def to_nl(self):
-        message = f"On Iteration #{self.num_loop - 1} you've failed to {self.action_description} because the tool you've offerd {self.tool} with the params {self.tool_input} wasn't able to be executed because '{self.error_message}'"
+        message = f"On Iteration #{self.num_loop} you've failed to {self.action_description} because the tool you've offerd {self.tool} with the params {self.tool_input} wasn't able to be executed because '{self.error_message}'"
         if self.screen_changed is not None and self.screen_changed:
             message+= "however, the screen changed."
         return message
@@ -141,11 +141,11 @@ class SuccessfulStepExecution(ExecutionStep):
     
     def to_nl(self):
         if self.screen_changed is not None and self.screen_changed:
-            return f"On Iteration #{self.num_loop - 1} you've successfully completed this action '{self.action_description}'"
+            return f"On Iteration #{self.num_loop} you've successfully completed this action '{self.action_description}'"
         elif self.screen_changed is None:
-            return f"On Iteration #{self.num_loop - 1} you've successfully completed this action, waiting for screen data to validate."
+            return f"On Iteration #{self.num_loop} you've successfully completed this action, waiting for screen data to validate."
         else:
-            return f"On Iteration #{self.num_loop - 1} action '{self.action_description}' wasn't successfully since the screen wasn't affected."
+            return f"On Iteration #{self.num_loop} action '{self.action_description}' wasn't successfully since the screen wasn't affected."
 
 
 class DataFramePromptValues:

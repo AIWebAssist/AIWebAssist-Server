@@ -3,7 +3,7 @@ from ..view import *
 from ..think import *
 from ..act import *
 from .controller import Controller
-from .data_types import IncommingData, OutGoingData, Error
+from .data_types import IncommingData, OutGoingData, Error, ClientResponseStatus, AgnetStatus
 from queue import Queue
 
 
@@ -15,14 +15,15 @@ class RemoteFeedController(Controller):
         status_queue: Queue,
         user_task: str,
         max_loops: int,
+        agent_status: AgnetStatus,
     ) -> None:
         super(RemoteFeedController, self).__init__(user_task)
         self.incoming_data_queue = incoming_data_queue
         self.outgoing_data_queue = outgoing_data_queue
         self.status_queue = status_queue
-        self.is_closed = False
         self.max_loops = max_loops
         self.message_count = 0
+        self.agent_status = agent_status
 
     def fetch_information_on_screen(self, output_folder: str, loop_num: int):
         incoming_data: IncommingData = self.incoming_data_queue.get()
@@ -55,8 +56,10 @@ class RemoteFeedController(Controller):
         output_folder: str,
     ):
         Logger.info(f"itration number {loop_num}: putting response.")
+        
+        close_request = self.should_close(tool_executor)
         response = OutGoingData(
-            session_closed=self.should_close(tool_executor),
+            session_closed=close_request,
             script=tool_executor.example_script,
             tool_input=tool_input,
         )
@@ -65,6 +68,7 @@ class RemoteFeedController(Controller):
         )
         self.outgoing_data_queue.put(response)
 
+        # waiting to client response
         Logger.info(f"itration number {loop_num}: waiting for feedback from client.")
         execution_status = self.status_queue.get()
 
@@ -73,7 +77,15 @@ class RemoteFeedController(Controller):
         )
         if type(execution_status) is str:
             raise ExecutionError(f"execution failed: {execution_status}")
-
+        
+        if close_request:
+            # don't allow new connections
+            self.close()
+            # report the agent the exit
+            return ClientResponseStatus.Close
+        
+        return ClientResponseStatus.Successful
+    
     def on_action_extraction_failed(self, loop_num: int):
         Logger.info(
             f"itration number {loop_num}: putting failed response on recoverable error."
@@ -105,11 +117,11 @@ class RemoteFeedController(Controller):
         )
 
     def is_closed(self):
-        self.is_closed
+        self.agent_status == AgnetStatus.Closed
 
     def from_pickle(self, output_folder, loop_num):
         data = unpickle(f"{output_folder}/data_{loop_num}.pkl")
         self.incoming_data_queue.put(data)
 
     def close(self):
-        self.is_closed = True
+        self.agent_status = AgnetStatus.Closed
