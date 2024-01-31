@@ -117,11 +117,11 @@ class RemoteFeedController(Controller):
         )
 
     def is_closed(self):
-        self.agent_status == AgnetStatus.Closed
+        return self.agent_status.is_closed()
 
     def from_pickle(self, output_folder, loop_num):
         data = unpickle(f"{output_folder}/data_{loop_num}.pkl")
         self.incoming_data_queue.put(data)
 
     def close(self):
-        self.agent_status = AgnetStatus.Closed
+        self.agent_status.close()

@@ -1,6 +1,6 @@
 rm -f extension.crx
 
-CRX_PATH=https://clients2.googleusercontent.com/crx/blobs/AeKPYwwIqwbhw-_kDPnAAu2t5sv92Ssbj3HTsEh4ixHmCJQFowO1yuw3sSkHatdDT-3HUsyfQ1SX9hEnPFG2-gSnQajHhvzouiL4Xv42tmeQCqMnkolpAMZSmuW000Hg1hFgMsxTr2QZUJvYMPSsqA/pacicdjgganecekjpopincedecpdajae.crx
+CRX_PATH=https://clients2.googleusercontent.com/crx/blobs/AeKPYww0O2oW6lOT9OY1OjOyixfZRGChttlgFdEFT0QAiOxHKM_QudcTxPHZBubP1jMQjG5rcz_nIwuUaU8n-ZP-mArbIbB0bZQil9ZBRLIfS75U3xNFAMZSmuXpvTfAtzEPC-zuhXnVNTYP2JbKOA/dicmckdpjpagngabbhhlbahoicjabmoe.crx
 wget $CRX_PATH -O extension.crx
 
 # Check the operating system

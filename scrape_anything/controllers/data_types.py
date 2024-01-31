@@ -1,3 +1,5 @@
+import threading
+from enum import Enum
 class IncommingData:
     viewpointscroll: int
     viewportHeight: int
@@ -35,9 +37,6 @@ class IncommingData:
         self.url = url
         self.task = task
         self.screenshot = screenshot
-
-
-from enum import Enum
 
 
 class EnabledActions(Enum):
@@ -83,9 +82,14 @@ class LLMResponseParsingStatus(Enum):
     Failed = 0
     Successful = 1
 
-class AgnetStatus(Enum):
-    Open = 1
-    Closed = 0
+class AgnetStatus(object):
+    is_open = True
+
+    def close(self):
+        self.is_open = False
+    
+    def is_closed(self):
+        return not self.is_open 
 
 class Error:
     def __init__(

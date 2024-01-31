@@ -67,21 +67,32 @@ class Agent(BaseModel):
                 error_message = ""
                 try:
                     Logger.info(f"calling llm of type {type(self.llm)}")
-                    raw = self.llm.make_a_decide_on_next_action(
-                        num_loops,
-                        self.session_id,
-                        today=datetime.date.today(),
-                        site_url=url,
-                        tool_description=self.tool_box.tool_description,
-                        tool_names=self.tool_box.tool_names,
-                        task_to_accomplish=task_to_accomplish,
-                        previous_responses=previous_responses,
-                        on_screen_data=DataFramePromptValues(on_screen),
-                        width=width,
-                        height=height,
-                        scroll_ratio=scroll_ratio,
-                        screenshot_png=screenshot_png,
-                    )
+                    # raw = self.llm.make_a_decide_on_next_action(
+                    #     num_loops,
+                    #     self.session_id,
+                    #     today=datetime.date.today(),
+                    #     site_url=url,
+                    #     tool_description=self.tool_box.tool_description,
+                    #     tool_names=self.tool_box.tool_names,
+                    #     task_to_accomplish=task_to_accomplish,
+                    #     previous_responses=previous_responses,
+                    #     on_screen_data=DataFramePromptValues(on_screen),
+                    #     width=width,
+                    #     height=height,
+                    #     scroll_ratio=scroll_ratio,
+                    #     screenshot_png=screenshot_png,
+                    # )
+                    raw = """
+                    Overall Task Status: The overall user task was completed successfully. The user's name was searched on Google and the search results were viewed.
+
+                    Current Action Goal: None. The user task has been completed.
+
+                    Action: Final Guidance
+
+                    Action Input: { "message": "You have successfully searched your name on Google and viewed the search results. You can now explore the search results or perform any other task you need." }
+
+                    Next Action Goal: None. The user task has been completed.
+                    """
 
                     # store response
                     DataBase.store_response(

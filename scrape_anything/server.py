@@ -80,14 +80,14 @@ class Server:
 
     def check_for_dead_agents(self,session_id):
         (_, _, _,agent_status) = self.agents_queues[session_id]
-        if agent_status == AgnetStatus.Closed:
+        if agent_status.is_closed():
             self.agents_queues.pop(session_id)
 
     def init_agent(self, user_task, session_id, max_message=-1):
         feed_from_chrome = Queue(maxsize=1)
         feed_from_agent = Queue(maxsize=1)
         status_feed_queue = Queue(maxsize=1)
-        agent_status = AgnetStatus.Open
+        agent_status = AgnetStatus()
 
         # start a worker
         controller = RemoteFeedController(
