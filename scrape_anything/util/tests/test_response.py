@@ -127,6 +127,17 @@ def test_extract_tool():
     assert tool == "Refresh page"
     assert tool_input == {}
 
+def test_url_extraction_tool():
+    sample = """
+    Action: Go to a specific URL web address.
+
+    Action Input: {{"url":"https://www.google.com/?hl=en"}}
+    """
+
+    tool, tool_input,_ = response.extract_tool_and_args(sample)
+    assert tool == "Go to a specific URL web address"
+    assert tool_input == {"url":"https://www.google.com/?hl=en"}
+
 
 def test_bad_format():
     sample = """
