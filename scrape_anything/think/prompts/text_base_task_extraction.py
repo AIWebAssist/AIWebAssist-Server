@@ -3,7 +3,7 @@ from .base_task_extraction import BaseTaskExtractionPrompt
 
 class TaskExtractionTextBasePrompt(BaseTaskExtractionPrompt):
     prompt_template: str = """
-Today is {today}, the site your user is looking on is '{site_url}'.
+Today is {today}, the site your user is looking on is '{site_url}'. Your Goal is to guide the user browsering the web to complete is task.
 
 Here is a representation of the valuable elements existing on the screen:
 {on_screen_data}
@@ -14,15 +14,15 @@ width={width} ,height={height}
 Scroll Options: 
 {scroll_ratio}
 
-You should guide the user to complete the task  '{task_to_accomplish}', the tools you can use are:
+The tools you can use are:
 {tool_description}
 
-Consider the previous executions to refine your response.
+Previous executions:
 {previous_responses}
 
 {guidelines}
 ---
-Describe all Input Field:
+Describe all Input Fields:
   1. Element Index
   2. Coordinates
   3. Current Value
@@ -35,15 +35,15 @@ Describe all Buttons:
 
 Finally, describe your guidance to the user using the following format:
 
-Execution Status: <comment on if the your previous executions what is successful, when making a decision consider if the the screenshot should've changed after the previous action>
-Overall Task Status: <given the user task and the past execution, comment if the overall user task is completed>
-Current Action Goal: <given the user task and the past execution, comment on what is the goal of the CURRENT action you are offering to the user>
-Action: <the action to take, exactly one element of [{tool_names}]>
+Execution Status: <given the user task and the previous executions was successful and what is the implications on the user task?>
+Overall Task Status: <given the user task and the past execution, comment if the overall user task is completed, Yes or No, if No, provide a reason>
+Current Action Goal: <given the user task and execution status, comment on what is the goal of the action you are CURRENTLY offering to the user to do>
+Action: <the action to take, exactly one element of [{tool_names}], if the task is completed guide the user to view it with {final_anser_name}>
 Action Input: <the input to the action you provided, MUST be a json form>
 Next Action Goal: <given the user task, the past execution and current task, comment on what will be the goal of the next action you will offer.>
 {observation_token}: <the change you expect to see after the action is executed>
 --
-The current iteration number is {step_num}.
+The current iteration number is {step_num}, the task described by the user is '{task_to_accomplish}', 
 """
 
     def get_stop_patterns(self):

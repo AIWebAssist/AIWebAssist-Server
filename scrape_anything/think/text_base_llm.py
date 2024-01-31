@@ -4,6 +4,7 @@ from .base_llm import LLMInterface
 from .prompts.base_task_extraction import BaseTaskExtractionPrompt
 from .prompts.text_base_task_extraction import TaskExtractionTextBasePrompt
 from ..util import extract_tool_and_args, Logger, DataBase
+from scrape_anything.tools import FinalMessage
 
 
 class TextOnlyLLM(LLMInterface):
@@ -28,7 +29,7 @@ class TextOnlyLLM(LLMInterface):
     ):
         Logger.info("calling make a decision.")
         # foramt prompt
-        prompt = self.prompt_manager.format_prompt(step_num=num_loops, **prompt_params)
+        prompt = self.prompt_manager.format_prompt(step_num=num_loops, **prompt_params,final_anser_name=FinalMessage().name)
 
         # store prompt
         DataBase.store_prompt(

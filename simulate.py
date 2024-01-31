@@ -31,15 +31,17 @@ def simulate_client_click(
         os.path.join("outputs", "recordings", recording_file), web_driver
     )
     simulate_completed = False
+    screen_recorder.start_recording()
     try:
-        screen_recorder.start_recording()
         simulate_completed = simulate_user_call(
             web_driver, url, user_task, num_of_iteration=num_of_iteration
         )
+    except Exception:
+        Logger.error_execption("Simulation call failed")
     finally:
         recording_completed = screen_recorder.stop_recording()
 
-        return simulate_completed, recording_completed
+    return simulate_completed, recording_completed
 
 
 def simulate(
@@ -59,10 +61,10 @@ def simulate(
     # stop the server
     server.stop()
 
-    Logger.copy_log_file(experiment_uuid)
-
     if not (simulate_completed and recording_completed):
-        Logger.error("Simulation failed.")
+        Logger.error(f"Simulation failed. simulate_completed={simulate_completed},recording_completed={recording_completed}")
+
+    Logger.copy_log_file(experiment_uuid)
     
     return simulate_completed and recording_completed
 

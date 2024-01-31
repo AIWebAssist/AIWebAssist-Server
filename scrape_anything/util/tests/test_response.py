@@ -130,7 +130,7 @@ def test_extract_tool():
 
 def test_bad_format():
     sample = """
-Describe all Input Field:
+Describe all Input Fields:
 1. Element Index: 93
    Coordinates: (657.5, 401.5)
    Current Value: None

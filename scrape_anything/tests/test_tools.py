@@ -16,3 +16,10 @@ def test_tool_parsing_with_description():
 
             json_tools = json.loads(excepted_format_after_populated)
             tool.process_tool_arg(**json_tools)
+
+def test_tool_name_as_no_dot():
+    # LLM tip
+    toolbox = ToolBox()
+    for tool in toolbox.tools:
+        assert toolbox.extract_tool_by_name(tool.name), f"tool {tool} doesn't parsable"
+           

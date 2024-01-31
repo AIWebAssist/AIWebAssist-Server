@@ -38,15 +38,19 @@ class ToolBox(BaseModel):
     def tool_by_names(self) -> Dict[str, ToolInterface]:
         return {tool.name: tool for tool in self.tools}
 
-    def extract(self, tool: str, tool_input: str) -> ToolInterface:
+    def extract_tool_by_name(self,tool_name):
+        """clean tool name from invalid characther"""
+        return self.tool_by_names[tool_name.replace(".","")]
+    
+    def extract(self, tool_name: str, tool_input: str) -> ToolInterface:
         Logger.info(f"tool={tool},tool_input={tool_input}")
 
-        if tool not in self.tool_by_names:
-            Logger.error(f"tool={tool}, is not in {self.tool_by_names}")
-            raise ValueError(f"unknown tool:{tool}")
+        if tool_name not in self.tool_by_names:
+            Logger.error(f"tool={tool_name}, is not in {self.tool_by_names}")
+            raise ValueError(f"unknown tool:{tool_name}")
 
         # grub the tool
-        tool_executor = self.tool_by_names[tool]
+        tool_executor = self.extract_tool_by_name(tool_name)
         # compare tool to tool input
         Logger.info(f"after processing tool inputs = {tool_input}")
 
