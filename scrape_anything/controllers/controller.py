@@ -31,11 +31,11 @@ class Controller(ABC):
         pass
 
     def mark_on_screenshot(
-        self, tool_executor,screen_width ,screen_height, session_id, call_in_seassion, **tool_input
+        self, tool_executor,screen_width ,screen_height, context, call_in_seassion, **tool_input
     ):
         if tool_executor.is_click_on_screen():
             screenshot = DataBase.get_current_screenshot(
-                session_id, call_in_seassion=call_in_seassion
+                context, call_in_seassion=call_in_seassion
             )
             drawed_image = draw_on_image(
                 Image.open(io.BytesIO(base64.b64decode(screenshot))),
@@ -45,7 +45,7 @@ class Controller(ABC):
             image_stream = io.BytesIO()
             drawed_image.save(image_stream, format="PNG")
             DataBase.store_marked_screenshot(
-                image_stream.getvalue(), session_id, call_in_seassion
+                image_stream.getvalue(), context, call_in_seassion
             )
 
     def process_elements(
@@ -71,7 +71,7 @@ class Controller(ABC):
         self, incoming_data, output_folder, loop_num, file_name_html=None
     ):
         DataBase.store_client_raw_request(
-            incoming_data, session_id=output_folder, call_in_seassion=loop_num
+            incoming_data, context=output_folder, call_in_seassion=loop_num
         )
 
         raw_on_screen, viewpointscroll, viewportHeight, scroll_width, scroll_height = (
@@ -86,7 +86,7 @@ class Controller(ABC):
         url = incoming_data.url
         screenshot_path = DataBase.store_screenshot(
             incoming_data.screenshot,
-            session_id=output_folder,
+            context=output_folder,
             call_in_seassion=loop_num,
         )
 

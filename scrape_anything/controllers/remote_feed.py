@@ -64,7 +64,7 @@ class RemoteFeedController(Controller):
             tool_input=tool_input,
         )
         DataBase.store_server_response(
-            response, session_id=output_folder, call_in_seassion=loop_num
+            response, context=output_folder, call_in_seassion=loop_num
         )
         self.outgoing_data_queue.put(response)
 

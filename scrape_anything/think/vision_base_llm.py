@@ -53,7 +53,7 @@ class VisionBaseLLM(LLMInterface):
 
         # store prompt
         DataBase.store_prompt(
-            prompt, call_in_seassion=num_loops, session_id=output_folder
+            prompt, call_in_seassion=num_loops, context=output_folder
         )
 
         Logger.info("calling LLM.")

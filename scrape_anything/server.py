@@ -5,12 +5,14 @@ from scrape_anything import TextOnlyLLM, VisionBaseLLM, TestAllTools
 from scrape_anything import RemoteFeedController
 from scrape_anything.util import DataBase, Logger
 from scrape_anything import OutGoingData, IncommingData, Error, AgnetStatus
+from scrape_anything.session_manager import SessionManager
 from queue import Queue
 import traceback
 
 
 class Server:
     agents_queues = dict()
+    session_manager = SessionManager()
     def __init__(self, experiment_uuid=""):
         self.app = Flask(__name__)
         self.experiment_uuid = experiment_uuid
@@ -44,11 +46,12 @@ class Server:
                 raise ValueError("Invalid JSON input or missing required fields")
 
             user_task = data["user_task"]
-            session_id = str(data.pop("session_id"))
+            session_id = self.get_interanl_identifier(data)
 
             # remove dead agent before
             if session_id in self.agents_queues:
                 self.check_for_dead_agents(session_id)
+                session_id = self.get_interanl_identifier(data)
 
             # start new agent (if dead agent was removed)
             if session_id not in self.agents_queues:
@@ -63,13 +66,16 @@ class Server:
             )
             return jsonify({"error": str(e)}), 500
 
+    def get_interanl_identifier(self,data):
+        return self.session_manager.get_server_session(str(data["session_id"])) 
+
     def handle_status_request(self):
         try:
             data = request.get_json()
             if data is None or "session_id" not in data:
                 raise ValueError("Invalid JSON input or missing required fields")
 
-            session_id = str(data.pop("session_id"))
+            session_id = self.get_interanl_identifier(data)
             return self.process_status(session_id, data)
 
         except Exception as e:
@@ -81,6 +87,7 @@ class Server:
     def check_for_dead_agents(self,session_id):
         (_, _, _,agent_status) = self.agents_queues[session_id]
         if agent_status.is_closed():
+            self.session_manager.mark_session_as_closed(session_id)
             self.agents_queues.pop(session_id)
 
     def init_agent(self, user_task, session_id, max_message=-1):
@@ -101,7 +108,7 @@ class Server:
         agnet = Agent(
             llm=TextOnlyLLM(),
             max_loops=max_message,
-            session_id=DataBase.get_session_id(self.experiment_uuid),
+            context=DataBase.assign_context(self.experiment_uuid,session_id),
         )
         agnet.run_parallel(controller)
 

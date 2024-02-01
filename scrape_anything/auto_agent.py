@@ -17,7 +17,7 @@ class Agent(BaseModel):
     llm: LLMInterface
     max_loops: int = 1
     tool_box: ToolBox = ToolBox()
-    session_id: str
+    context: str
 
     def run_parallel(self, controller: Controller):
         thread = threading.Thread(target=self.run, args=(controller,))
@@ -27,7 +27,7 @@ class Agent(BaseModel):
 
     def run(self, controller: Controller):
         Logger.info(
-            f"starting new agent of {type(controller)}, session_id ={self.session_id}"
+            f"starting new agent of {type(controller)}, context ={self.context}"
         )
 
         on_screen = None
@@ -52,11 +52,11 @@ class Agent(BaseModel):
                     url,
                     task_to_accomplish,
                 ) = controller.fetch_information_on_screen(
-                    self.session_id, loop_num=num_loops
+                    self.context, loop_num=num_loops
                 )
 
                 _, screenshot_changed = controller.extract_from_agent_memory(
-                    on_screen, screenshot_stream, self.session_id, num_loops
+                    on_screen, screenshot_stream, self.context, num_loops
                 )
 
                 if not previous_responses.is_empty():
@@ -67,36 +67,25 @@ class Agent(BaseModel):
                 error_message = ""
                 try:
                     Logger.info(f"calling llm of type {type(self.llm)}")
-                    # raw = self.llm.make_a_decide_on_next_action(
-                    #     num_loops,
-                    #     self.session_id,
-                    #     today=datetime.date.today(),
-                    #     site_url=url,
-                    #     tool_description=self.tool_box.tool_description,
-                    #     tool_names=self.tool_box.tool_names,
-                    #     task_to_accomplish=task_to_accomplish,
-                    #     previous_responses=previous_responses,
-                    #     on_screen_data=DataFramePromptValues(on_screen),
-                    #     width=width,
-                    #     height=height,
-                    #     scroll_ratio=scroll_ratio,
-                    #     screenshot_png=screenshot_png,
-                    # )
-                    raw = """
-                    Overall Task Status: The overall user task was completed successfully. The user's name was searched on Google and the search results were viewed.
-
-                    Current Action Goal: None. The user task has been completed.
-
-                    Action: Final Guidance
-
-                    Action Input: { "message": "You have successfully searched your name on Google and viewed the search results. You can now explore the search results or perform any other task you need." }
-
-                    Next Action Goal: None. The user task has been completed.
-                    """
+                    raw = self.llm.make_a_decide_on_next_action(
+                        num_loops,
+                        self.context,
+                        today=datetime.date.today(),
+                        site_url=url,
+                        tool_description=self.tool_box.tool_description,
+                        tool_names=self.tool_box.tool_names,
+                        task_to_accomplish=task_to_accomplish,
+                        previous_responses=previous_responses,
+                        on_screen_data=DataFramePromptValues(on_screen),
+                        width=width,
+                        height=height,
+                        scroll_ratio=scroll_ratio,
+                        screenshot_png=screenshot_png,
+                    )
 
                     # store response
                     DataBase.store_response(
-                        raw, call_in_seassion=num_loops, session_id=self.session_id
+                        raw, call_in_seassion=num_loops, context=self.context
                     )
 
                     Logger.info(f"extracting tool from = {raw}")
@@ -122,14 +111,14 @@ class Agent(BaseModel):
                         tool_executor,
                         screen_width=width,
                         screen_height=height,
-                        session_id=self.session_id,
+                        context=self.context,
                         call_in_seassion=num_loops,
                         **tool_input,
                     )
                     # use the tool
                     Logger.info("calling controller action.")
                     execution_status = controller.take_action(
-                        tool_executor, tool_input, num_loops, self.session_id
+                        tool_executor, tool_input, num_loops, self.context
                     )
                     Logger.info(f"execution completed successfully.")
 
@@ -144,7 +133,7 @@ class Agent(BaseModel):
 
                     Logger.error(
                         f"cycle failed parsing_status={parsing_status},\n"
-                        f"session_id={self.session_id},\n"
+                        f"context={self.context},\n"
                         f"error = {error_message}\n"
                     )
 
@@ -178,7 +167,7 @@ class Agent(BaseModel):
                 )
                 DataBase.store_exection_status(
                     str(current_status),
-                    session_id=self.session_id,
+                    context=self.context,
                     call_in_seassion=num_loops,
                 )
                 previous_responses.append(current_status)
