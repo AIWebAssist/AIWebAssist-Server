@@ -18,7 +18,7 @@ def test_if_llm_provide_more_then_one_extract_first():
     Action Input: {{"key":"enter"}}
     Observation: I expect the Google search to be conducted and the search results page for the query 'sefi' to be displayed.
     """
-    tool, tool_input,_ = response.extract_tool_and_args(sample)
+    tool, tool_input, _ = response.extract_tool_and_args(sample)
 
     assert tool == "Enter Text"
     assert tool_input == {"text": "sefi", "x": 498.5, "y": 400.5}
@@ -32,7 +32,7 @@ def test_if_llm_provide_one_extract():
     Action Input: {{"text":"sefi","x": 498.5,"y":400.5}}
     Observation: I expect to see the name 'sefi' appear in the Google search bar, indicating that the text has been successfully entered.
     """
-    tool, tool_input,_ = response.extract_tool_and_args(sample)
+    tool, tool_input, _ = response.extract_tool_and_args(sample)
 
     assert tool == "Enter Text"
     assert tool_input == {"text": "sefi", "x": 498.5, "y": 400.5}
@@ -48,10 +48,10 @@ def test_if_llm_provide_addtional_op():
     "y": 436.0
     }
     """
-    tool, tool_input,_ = response.extract_tool_and_args(sample)
+    tool, tool_input, _ = response.extract_tool_and_args(sample)
 
     assert tool == "Click on coordinates on the screen"
-    assert tool_input == { "x": 678.8, "y": 436.0}
+    assert tool_input == {"x": 678.8, "y": 436.0}
 
 
 def test_if_llm_provids_not_action_raise_execption():
@@ -74,7 +74,7 @@ def test_if_llm_provids_not_action_input_no_failure():
     Observation: I expect to see the name 'sefi' appear in the Google search bar, indicating that the text has been successfully entered.
     """
 
-    tool, tool_input,_ = response.extract_tool_and_args(sample)
+    tool, tool_input, _ = response.extract_tool_and_args(sample)
 
     assert tool == "Go Back"
     assert tool_input == {}
@@ -90,7 +90,7 @@ def test_if_llm_provide_provide_final_answer():
     Action Input: {{"text":"You should see the result in this page"}}
     
     """
-    tool, tool_input,_ = response.extract_tool_and_args(sample)
+    tool, tool_input, _ = response.extract_tool_and_args(sample)
 
     assert tool == "Final Answer"
     assert tool_input == {"text": "You should see the result in this page"}
@@ -106,7 +106,7 @@ def test_final_answer_is_ignored_if_llm_provide_action_with_it():
     Final Answer: Once the search results are displayed, inform the user that the task has been completed.
 
     """
-    tool, tool_input,_ = response.extract_tool_and_args(sample)
+    tool, tool_input, _ = response.extract_tool_and_args(sample)
 
     assert tool == "Enter Text"
     assert tool_input == {"text": "sefi", "x": 498.5, "y": 400.5}
@@ -123,9 +123,10 @@ def test_extract_tool():
     Observation: I expect to either see the Gmail sign-in page or the user's inbox if they were already signed in, or potentially a loading page if the click operation is still in progress. If the refresh action leads to a re-prompt of the cookie settings, I may need to click 'Accept all' or 'Reject all' to proceed
     """
 
-    tool, tool_input,_ = response.extract_tool_and_args(sample)
+    tool, tool_input, _ = response.extract_tool_and_args(sample)
     assert tool == "Refresh page"
     assert tool_input == {}
+
 
 def test_url_extraction_tool():
     sample = """
@@ -134,9 +135,9 @@ def test_url_extraction_tool():
     Action Input: {{"url":"https://www.google.com/?hl=en"}}
     """
 
-    tool, tool_input,_ = response.extract_tool_and_args(sample)
+    tool, tool_input, _ = response.extract_tool_and_args(sample)
     assert tool == "Go to a specific URL web address"
-    assert tool_input == {"url":"https://www.google.com/?hl=en"}
+    assert tool_input == {"url": "https://www.google.com/?hl=en"}
 
 
 def test_bad_format():
@@ -164,6 +165,6 @@ Action: Enter Text
 Action Input: { "text": "sefi", "x": 657.5, "y": 401.5 }
     """
 
-    tool, tool_input,_ = response.extract_tool_and_args(sample)
+    tool, tool_input, _ = response.extract_tool_and_args(sample)
     assert tool == "Enter Text"
     assert tool_input == {"text": "sefi", "x": 657.5, "y": 401.5}

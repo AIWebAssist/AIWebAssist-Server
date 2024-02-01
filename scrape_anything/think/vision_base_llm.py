@@ -52,9 +52,7 @@ class VisionBaseLLM(LLMInterface):
         prompt = self.prompt_manager.format_prompt(**prompt_params)
 
         # store prompt
-        DataBase.store_prompt(
-            prompt, call_in_seassion=num_loops, context=output_folder
-        )
+        DataBase.store_prompt(prompt, call_in_seassion=num_loops, context=output_folder)
 
         Logger.info("calling LLM.")
         generated = self.generate(prompt, prompt_params.pop("screenshot_png"))

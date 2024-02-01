@@ -38,16 +38,16 @@ class ToolBox(BaseModel):
     def tool_by_names(self) -> Dict[str, ToolInterface]:
         return {tool.name.lower(): tool for tool in self.tools}
 
-    def extract_tool_by_name(self,tool_name):
+    def extract_tool_by_name(self, tool_name):
         """clean tool name from invalid characther"""
-        normlized_tool_name = tool_name.replace(".","").lower()
+        normlized_tool_name = tool_name.replace(".", "").lower()
 
         if normlized_tool_name not in self.tool_by_names:
             Logger.error(f"tool={normlized_tool_name}, is not in {self.tool_by_names}")
             raise ValueError(f"unknown tool:{normlized_tool_name}")
-    
+
         return self.tool_by_names[normlized_tool_name]
-    
+
     def extract(self, tool_name: str, tool_input: str) -> ToolInterface:
         Logger.info(f"tool={tool},tool_input={tool_input}")
 

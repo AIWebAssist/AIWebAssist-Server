@@ -3,15 +3,15 @@ from .browser import bytes_to_file, file_to_bytes
 import os
 import uuid
 
+
 class FileSystemDataBase:
     @classmethod
     def assign_context(cls, session_id, uuid_str=None):
-        
         output_folder = os.path.join(
             "outputs",
             "datebase",
             uuid_str if uuid_str else str(uuid.uuid4()).replace("-", "_"),
-            session_id
+            session_id,
         )
         os.makedirs(output_folder)
         return output_folder
@@ -23,9 +23,7 @@ class FileSystemDataBase:
 
     @classmethod
     def store_response(cls, response: str, context: str, call_in_seassion: int):
-        to_text_file(
-            response, f"{context}/step_{str(call_in_seassion)}_response.txt"
-        )
+        to_text_file(response, f"{context}/step_{str(call_in_seassion)}_response.txt")
 
     # Server call E2E
     @classmethod
@@ -33,9 +31,7 @@ class FileSystemDataBase:
         pickle(obj, f"{context}/step_{call_in_seassion}_raw_request.pkl")
 
     @classmethod
-    def store_screenshot(
-        cls, screenshot_stream, context: str, call_in_seassion: int
-    ):
+    def store_screenshot(cls, screenshot_stream, context: str, call_in_seassion: int):
         return bytes_to_file(
             screenshot_stream,
             os.path.join(context, f"step_{call_in_seassion}_input_screenshot.png"),
@@ -88,9 +84,7 @@ class FileSystemDataBase:
 
     # Agent call E2E
     @classmethod
-    def store_exection_status(
-        cls, status_message, context: str, call_in_seassion: int
-    ):
+    def store_exection_status(cls, status_message, context: str, call_in_seassion: int):
         to_text_file(
             status_message,
             f"{context}/step_{str(call_in_seassion)}_execution_status.txt",
@@ -119,18 +113,14 @@ class DataBase:
         cls.data_base.store_client_raw_request(obj, context, call_in_seassion)
 
     @classmethod
-    def store_screenshot(
-        cls, screenshot_stream, context: str, call_in_seassion: int
-    ):
+    def store_screenshot(cls, screenshot_stream, context: str, call_in_seassion: int):
         return cls.data_base.store_screenshot(
             screenshot_stream, context, call_in_seassion
         )
 
     @classmethod
     def get_last_minimized_on_screen(cls, context: str, call_in_seassion: int):
-        return cls.data_base.get_last_minimized_on_screen(
-            context, call_in_seassion - 1
-        )
+        return cls.data_base.get_last_minimized_on_screen(context, call_in_seassion - 1)
 
     @classmethod
     def get_last_screenshot(cls, context: str, call_in_seassion: int):
@@ -166,9 +156,5 @@ class DataBase:
         )
 
     @classmethod
-    def store_exection_status(
-        cls, status_message, context: str, call_in_seassion: int
-    ):
-        cls.data_base.store_exection_status(
-            status_message, context, call_in_seassion
-        )
+    def store_exection_status(cls, status_message, context: str, call_in_seassion: int):
+        cls.data_base.store_exection_status(status_message, context, call_in_seassion)

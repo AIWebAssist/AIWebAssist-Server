@@ -3,7 +3,13 @@ from ..view import *
 from ..think import *
 from ..act import *
 from .controller import Controller
-from .data_types import IncommingData, OutGoingData, Error, ClientResponseStatus, AgnetStatus
+from .data_types import (
+    IncommingData,
+    OutGoingData,
+    Error,
+    ClientResponseStatus,
+    AgnetStatus,
+)
 from queue import Queue
 
 
@@ -56,7 +62,7 @@ class RemoteFeedController(Controller):
         output_folder: str,
     ):
         Logger.info(f"itration number {loop_num}: putting response.")
-        
+
         close_request = self.should_close(tool_executor)
         response = OutGoingData(
             session_closed=close_request,
@@ -77,15 +83,15 @@ class RemoteFeedController(Controller):
         )
         if type(execution_status) is str:
             raise ExecutionError(f"execution failed: {execution_status}")
-        
+
         if close_request:
             # don't allow new connections
             self.close()
             # report the agent the exit
             return ClientResponseStatus.Close
-        
+
         return ClientResponseStatus.Successful
-    
+
     def on_action_extraction_failed(self, loop_num: int):
         Logger.info(
             f"itration number {loop_num}: putting failed response on recoverable error."

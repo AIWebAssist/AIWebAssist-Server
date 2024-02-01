@@ -31,7 +31,13 @@ class Controller(ABC):
         pass
 
     def mark_on_screenshot(
-        self, tool_executor,screen_width ,screen_height, context, call_in_seassion, **tool_input
+        self,
+        tool_executor,
+        screen_width,
+        screen_height,
+        context,
+        call_in_seassion,
+        **tool_input,
     ):
         if tool_executor.is_click_on_screen():
             screenshot = DataBase.get_current_screenshot(
@@ -39,8 +45,9 @@ class Controller(ABC):
             )
             drawed_image = draw_on_image(
                 Image.open(io.BytesIO(base64.b64decode(screenshot))),
-                screen_width=screen_width ,screen_height=screen_height,
-                 **tool_input
+                screen_width=screen_width,
+                screen_height=screen_height,
+                **tool_input,
             )
             image_stream = io.BytesIO()
             drawed_image.save(image_stream, format="PNG")

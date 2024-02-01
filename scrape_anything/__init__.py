@@ -6,6 +6,6 @@ from .controllers import (
     OutGoingData,
     IncommingData,
     Error,
-    AgnetStatus
+    AgnetStatus,
 )
 from .server import Server

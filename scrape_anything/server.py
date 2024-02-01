@@ -13,6 +13,7 @@ import traceback
 class Server:
     agents_queues = dict()
     session_manager = SessionManager()
+
     def __init__(self, experiment_uuid=""):
         self.app = Flask(__name__)
         self.experiment_uuid = experiment_uuid
@@ -66,8 +67,8 @@ class Server:
             )
             return jsonify({"error": str(e)}), 500
 
-    def get_interanl_identifier(self,data):
-        return self.session_manager.get_server_session(str(data["session_id"])) 
+    def get_interanl_identifier(self, data):
+        return self.session_manager.get_server_session(str(data["session_id"]))
 
     def handle_status_request(self):
         try:
@@ -84,8 +85,8 @@ class Server:
             )
             return jsonify({"error": str(e)}), 500
 
-    def check_for_dead_agents(self,session_id):
-        (_, _, _,agent_status) = self.agents_queues[session_id]
+    def check_for_dead_agents(self, session_id):
+        (_, _, _, agent_status) = self.agents_queues[session_id]
         if agent_status.is_closed():
             self.session_manager.mark_session_as_closed(session_id)
             self.agents_queues.pop(session_id)
@@ -108,7 +109,7 @@ class Server:
         agnet = Agent(
             llm=TextOnlyLLM(),
             max_loops=max_message,
-            context=DataBase.assign_context(self.experiment_uuid,session_id),
+            context=DataBase.assign_context(self.experiment_uuid, session_id),
         )
         agnet.run_parallel(controller)
 
@@ -117,18 +118,18 @@ class Server:
             feed_from_chrome,
             feed_from_agent,
             status_feed_queue,
-            agent_status
+            agent_status,
         )
 
     def process_status(self, session_id, data):
-        (_, _, status_queue,_) = self.agents_queues[session_id]
+        (_, _, status_queue, _) = self.agents_queues[session_id]
         status = data["execution_status"]
         status_queue.put(status)
 
         return jsonify({"status": "ok"}), 200
 
     def process_request(self, data, session_id):
-        (feed_from_chrome, feed_from_agent, _,_) = self.agents_queues[session_id]
+        (feed_from_chrome, feed_from_agent, _, _) = self.agents_queues[session_id]
         feed_from_chrome.put(
             IncommingData(
                 url=data["url"],

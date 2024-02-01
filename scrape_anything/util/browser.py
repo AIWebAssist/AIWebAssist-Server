@@ -186,15 +186,15 @@ def elements_to_table(logs):
     return df
 
 
-def draw_on_image(input_stearm, screen_width ,screen_height, x, y, **kwarg):
+def draw_on_image(input_stearm, screen_width, screen_height, x, y, **kwarg):
     # Create a drawing context on the image
     draw = ImageDraw.Draw(input_stearm)
     image_width, image_height = input_stearm.size
 
     # Define the size of the marker
     marker_size = 40
-    x = x*(image_height/screen_height)
-    y = y*(image_width/screen_width)
+    x = x * (image_height / screen_height)
+    y = y * (image_width / screen_width)
     # Draw a marker at the specified coordinates
     draw.rectangle(
         [(x - marker_size, y - marker_size), (x + marker_size, y + marker_size)],

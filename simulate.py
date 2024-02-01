@@ -62,10 +62,12 @@ def simulate(
     server.stop()
 
     if not (simulate_completed and recording_completed):
-        Logger.error(f"Simulation failed. simulate_completed={simulate_completed},recording_completed={recording_completed}")
+        Logger.error(
+            f"Simulation failed. simulate_completed={simulate_completed},recording_completed={recording_completed}"
+        )
 
     Logger.copy_log_file(experiment_uuid)
-    
+
     return simulate_completed and recording_completed
 
 

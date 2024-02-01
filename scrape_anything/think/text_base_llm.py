@@ -29,12 +29,12 @@ class TextOnlyLLM(LLMInterface):
     ):
         Logger.info("calling make a decision.")
         # foramt prompt
-        prompt = self.prompt_manager.format_prompt(step_num=num_loops, **prompt_params,final_anser_name=FinalMessage().name)
+        prompt = self.prompt_manager.format_prompt(
+            step_num=num_loops, **prompt_params, final_anser_name=FinalMessage().name
+        )
 
         # store prompt
-        DataBase.store_prompt(
-            prompt, call_in_seassion=num_loops, context=output_folder
-        )
+        DataBase.store_prompt(prompt, call_in_seassion=num_loops, context=output_folder)
 
         # call LLM
         Logger.info("calling LLM.")

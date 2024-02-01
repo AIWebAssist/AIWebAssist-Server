@@ -11,7 +11,11 @@ from scrape_anything.think import *
 from scrape_anything.act import *
 from scrape_anything.controllers import Controller
 from scrape_anything.tools import ToolBox
-from scrape_anything.controllers.data_types import ClientResponseStatus,LLMResponseParsingStatus
+from scrape_anything.controllers.data_types import (
+    ClientResponseStatus,
+    LLMResponseParsingStatus,
+)
+
 
 class Agent(BaseModel):
     llm: LLMInterface
@@ -34,9 +38,9 @@ class Agent(BaseModel):
         num_loops = 0
         try:
             previous_responses = ExecutionStatusPromptValues()
-            
-            while num_loops <= self.max_loops or self.max_loops == -1 :
-                num_loops+=1
+
+            while num_loops <= self.max_loops or self.max_loops == -1:
+                num_loops += 1
                 Logger.info(f"starting iteration number {num_loops}")
 
                 (
@@ -89,7 +93,7 @@ class Agent(BaseModel):
                     )
 
                     Logger.info(f"extracting tool from = {raw}")
-                    tool, tool_input, current_task = extract_tool_and_args(
+                    tool, tool_input, current_task, next_task = extract_tool_and_args(
                         raw.replace("N/A", "")
                     )
                     Logger.info(
@@ -145,21 +149,34 @@ class Agent(BaseModel):
 
                 # format a message
                 current_status = None
-                if parsing_status == LLMResponseParsingStatus.Failed:  # if parsing failed
+                if (
+                    parsing_status == LLMResponseParsingStatus.Failed
+                ):  # if parsing failed
                     current_status = FailedLLMUnderstandingStepExecution(
-                        num_loops, raw, error_message, action_description=current_task
+                        num_loops,
+                        raw,
+                        error_message,
+                        action_description=current_task,
+                        on_succeed_next_action_description=next_task,
                     )
-                elif execution_status == ClientResponseStatus.Failed:  # execution failed
+                elif (
+                    execution_status == ClientResponseStatus.Failed
+                ):  # execution failed
                     current_status = FailedStepExecution(
                         num_loops,
                         error_message,
                         tool,
                         tool_input,
                         action_description=current_task,
+                        on_succeed_next_action_description=next_task,
                     )
                 else:
                     current_status = SuccessfulStepExecution(
-                        num_loops, tool, tool_input, action_description=current_task
+                        num_loops,
+                        tool,
+                        tool_input,
+                        action_description=current_task,
+                        on_succeed_next_action_description=next_task,
                     )
 
                 Logger.info(
@@ -186,4 +203,3 @@ class Agent(BaseModel):
 
         finally:
             controller.close()
-
