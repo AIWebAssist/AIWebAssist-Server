@@ -155,12 +155,14 @@ class SuccessfulStepExecution(ExecutionStep):
         tool_input,
         current_action_description,
         on_succeed_next_action_description,
+        execution_data,
     ) -> None:
         super(SuccessfulStepExecution, self).__init__(
             num_loop, current_action_description, on_succeed_next_action_description
         )
         self.tool = tool
         self.tool_input = tool_input
+        self.execution_data = execution_data
 
     def values(self):
         return {

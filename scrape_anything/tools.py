@@ -49,7 +49,7 @@ class ToolBox(BaseModel):
         return self.tool_by_names[normlized_tool_name]
 
     def extract(self, tool_name: str, tool_input: str) -> ToolInterface:
-        Logger.info(f"tool={tool},tool_input={tool_input}")
+        Logger.info(f"tool={tool_name},tool_input={tool_input}")
 
         # grub the tool
         tool_executor = self.extract_tool_by_name(tool_name)
@@ -57,4 +57,11 @@ class ToolBox(BaseModel):
         Logger.info(f"after processing tool inputs = {tool_input}")
 
         tool_input = tool_executor.process_tool_arg(**tool_input)
-        return tool_executor, tool_input
+        return tool_executor, tool_input, self.is_contain_placeholders(tool_input)
+
+    def is_contain_placeholders(self,tool_input):
+        if "text" and tool_input:
+            clean_value = tool_input['text'].strip()
+            if clean_value[0] == "<" and clean_value[-1] == ">":
+                return True
+        return False

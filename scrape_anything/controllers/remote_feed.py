@@ -6,6 +6,8 @@ from .controller import Controller
 from .data_types import (
     IncommingData,
     OutGoingData,
+    IncomeingExecutionReport,
+    IncomeingExecutionFailure,
     Error,
     ClientResponseStatus,
     AgnetStatus,
@@ -58,6 +60,7 @@ class RemoteFeedController(Controller):
         self,
         tool_executor: ToolInterface,
         tool_input,
+        contains_user_input: bool,
         loop_num: int,
         output_folder: str,
     ):
@@ -68,6 +71,7 @@ class RemoteFeedController(Controller):
             session_closed=close_request,
             script=tool_executor.example_script,
             tool_input=tool_input,
+            force_guide=contains_user_input,
         )
         DataBase.store_server_response(
             response, context=output_folder, call_in_seassion=loop_num
@@ -81,16 +85,16 @@ class RemoteFeedController(Controller):
         Logger.info(
             f"itration number {loop_num}: response from client is {execution_status}"
         )
-        if type(execution_status) is str:
-            raise ExecutionError(f"execution failed: {execution_status}")
+        if isinstance(execution_status,IncomeingExecutionFailure):
+            raise ExecutionError(f"execution failed: {execution_status.message}")
 
         if close_request:
             # don't allow new connections
             self.close()
             # report the agent the exit
-            return ClientResponseStatus.Close
+            execution_status.set_close()
 
-        return ClientResponseStatus.Successful
+        return execution_status
 
     def on_action_extraction_failed(self, loop_num: int):
         Logger.info(
