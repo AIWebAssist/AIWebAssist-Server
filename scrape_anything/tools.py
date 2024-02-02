@@ -60,8 +60,7 @@ class ToolBox(BaseModel):
         return tool_executor, tool_input, self.is_contain_placeholders(tool_input)
 
     def is_contain_placeholders(self,tool_input):
-        if "text" and tool_input:
-            clean_value = tool_input['text'].strip()
-            if clean_value[0] == "<" and clean_value[-1] == ">":
+        for value in tool_input.values():
+            if isinstance(value,str) and value[0] == "<" and value[-1] == ">":
                 return True
         return False
