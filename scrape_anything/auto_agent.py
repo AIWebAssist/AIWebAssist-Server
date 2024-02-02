@@ -156,7 +156,7 @@ class Agent(BaseModel):
                         num_loops,
                         raw,
                         error_message,
-                        action_description=current_task,
+                        current_action_description=current_task,
                         on_succeed_next_action_description=next_task,
                     )
                 elif (
@@ -167,7 +167,7 @@ class Agent(BaseModel):
                         error_message,
                         tool,
                         tool_input,
-                        action_description=current_task,
+                        current_action_description=current_task,
                         on_succeed_next_action_description=next_task,
                     )
                 else:
@@ -175,7 +175,7 @@ class Agent(BaseModel):
                         num_loops,
                         tool,
                         tool_input,
-                        action_description=current_task,
+                        current_action_description=current_task,
                         on_succeed_next_action_description=next_task,
                     )
 
