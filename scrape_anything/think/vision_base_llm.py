@@ -9,7 +9,9 @@ from ..util import extract_tool_and_args, Logger, file_to_bytes, DataBase
 class VisionBaseLLM(LLMInterface):
     prompt_manager: TaskExtractionVisionBasePrompt = TaskExtractionVisionBasePrompt()
 
-    def generate(self, prompt: str, screenshot: str, model:str = "gpt-4-vision-preview"):
+    def generate(
+        self, prompt: str, screenshot: str, model: str = "gpt-4-vision-preview"
+    ):
         assert self.api_key != None, "please provide API key"
 
         headers = {
@@ -50,9 +52,7 @@ class VisionBaseLLM(LLMInterface):
         prompt = self.prompt_manager.format_prompt(**prompt_params)
 
         # store prompt
-        DataBase.store_prompt(
-            prompt, call_in_seassion=num_loops, session_id=output_folder
-        )
+        DataBase.store_prompt(prompt, call_in_seassion=num_loops, context=output_folder)
 
         Logger.info("calling LLM.")
         generated = self.generate(prompt, prompt_params.pop("screenshot_png"))

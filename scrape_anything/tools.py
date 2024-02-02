@@ -21,11 +21,10 @@ class ToolBox(BaseModel):
         Refresh(),
         HitAKey(),
         MessageUser(),
-        FinalAnswer(),
-        GoToURL()
+        FinalMessage(),
+        GoToURL(),
     ]
     tools: List[ToolInterface] = EnabledActions.filter_enabled(supoorted_tools)
-
 
     @property
     def tool_description(self) -> str:
@@ -37,17 +36,23 @@ class ToolBox(BaseModel):
 
     @property
     def tool_by_names(self) -> Dict[str, ToolInterface]:
-        return {tool.name: tool for tool in self.tools}
+        return {tool.name.lower(): tool for tool in self.tools}
 
-    def extract(self, tool: str, tool_input: str) -> ToolInterface:
+    def extract_tool_by_name(self, tool_name):
+        """clean tool name from invalid characther"""
+        normlized_tool_name = tool_name.replace(".", "").lower()
+
+        if normlized_tool_name not in self.tool_by_names:
+            Logger.error(f"tool={normlized_tool_name}, is not in {self.tool_by_names}")
+            raise ValueError(f"unknown tool:{normlized_tool_name}")
+
+        return self.tool_by_names[normlized_tool_name]
+
+    def extract(self, tool_name: str, tool_input: str) -> ToolInterface:
         Logger.info(f"tool={tool},tool_input={tool_input}")
 
-        if tool not in self.tool_by_names:
-            Logger.error(f"tool={tool}, is not in {self.tool_by_names}")
-            raise ValueError(f"unknown tool:{tool}")
-
         # grub the tool
-        tool_executor = self.tool_by_names[tool]
+        tool_executor = self.extract_tool_by_name(tool_name)
         # compare tool to tool input
         Logger.info(f"after processing tool inputs = {tool_input}")
 

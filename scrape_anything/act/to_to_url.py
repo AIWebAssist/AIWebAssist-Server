@@ -6,7 +6,7 @@ class GoToURL(ToolInterface):
 
     name: str = "Go to a specific url web address"
     description: str = (
-        'Change the url to a provied URL. Input format: {{"url":"<place_url_here>"}}'
+        'Change the url to a provide URL. Input format: {{"url":"<place_url_here>"}}'
     )
     click_on_screen: str = False
     example_script: str = "go_to_url"
@@ -20,7 +20,9 @@ class MessageUser(ToolInterface):
     """show text to the user"""
 
     name: str = "Textual Guidance"
-    description: str = 'Present the user with a message, Input format: {{"text":"<text_to_enter>"}}'
+    description: str = (
+        'Present the user with a message, Input format: {{"text":"<text_to_enter>"}}'
+    )
     click_on_screen: str = False
     example_script: str = "show_guidance"
 

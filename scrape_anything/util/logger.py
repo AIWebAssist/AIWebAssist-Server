@@ -21,7 +21,7 @@ def build_logger():
         )  # set streamhandler to stdout
         console_handler.setFormatter(log_formatter)
         logger.addHandler(console_handler)
-        
+
         log_dir = os.path.dirname(LOGGING_FILE)
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
@@ -63,11 +63,11 @@ class Logger:
             cls.logger.error(msg, *args, **kwargs)
 
     @classmethod
-    def error_execption(cls, _):
+    def error_execption(cls, message):
         """log execption"""
         if cls.enabled:
             cls.logger.error(
-                "got an execption:",
+                f"message: {message},Execption:",
                 exc_info=sys.exc_info(),
             )
 

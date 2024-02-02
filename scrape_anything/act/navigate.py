@@ -23,11 +23,11 @@ class Refresh(ToolInterface):
         return {}
 
 
-class FinalAnswer(ToolInterface):
+class FinalMessage(ToolInterface):
     """the tool to use in the final answer"""
 
     name: str = "Final Guidance"
-    description: str = 'present on the screen final guidance to the user, this tool should be used only when you are sure there is not farther guideance since it will close the communication channel with the user. Input format: {{"message":"<text_to_enter>"}} '
+    description: str = 'Present on the screen final guidance to the user, this tool should be used when the user task is completed. Input format: {{"message":"<text_to_enter>"}} '
     example_script: str = "show_final_guidance"
 
     def process_tool_arg(self, **kwarg):

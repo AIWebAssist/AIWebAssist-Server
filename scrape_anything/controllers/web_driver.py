@@ -23,7 +23,7 @@ class WebDriverController(Controller):
             self.close()
             raise e
 
-    def fetch_infomration_on_screen(self, output_folder: str, loop_num: int):
+    def fetch_information_on_screen(self, output_folder: str, loop_num: int):
         # compute the elements on screen, current + change
         (
             raw_on_screen,
@@ -93,6 +93,8 @@ class WebDriverController(Controller):
         # if the tool worked, wait and sample the site again.
         if need_to_wait:
             wait_for_page_load(self.web_driver)
+
+        return True
 
     def on_action_extraction_failed(self, loop_num: int):
         pass

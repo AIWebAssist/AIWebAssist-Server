@@ -1,3 +1,7 @@
+import threading
+from enum import Enum
+
+
 class IncommingData:
     viewpointscroll: int
     viewportHeight: int
@@ -37,9 +41,6 @@ class IncommingData:
         self.screenshot = screenshot
 
 
-from enum import Enum
-
-
 class EnabledActions(Enum):
     ClickOnCoordinates = 0
     EnterText = 1
@@ -50,10 +51,9 @@ class EnabledActions(Enum):
     Refresh = 6
     HitAKey = 7
     MessageUser = 8
-    FinalAnswer = 9
-    ScrollLeft = 10 
+    FinalMessage = 9
+    ScrollLeft = 10
     GoToURL = 11
-    
 
     def get_tool_enum(tool):
         return type(tool).__name__
@@ -73,6 +73,27 @@ class OutGoingData:
         self.script = script
         self.tool_input = tool_input
         self.session_closed = session_closed
+
+
+class ClientResponseStatus(Enum):
+    Failed = 0
+    Successful = 1
+    Close = 2
+
+
+class LLMResponseParsingStatus(Enum):
+    Failed = 0
+    Successful = 1
+
+
+class AgnetStatus(object):
+    is_open = True
+
+    def close(self):
+        self.is_open = False
+
+    def is_closed(self):
+        return not self.is_open
 
 
 class Error:

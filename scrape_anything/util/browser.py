@@ -1,5 +1,6 @@
 import base64
 import io
+import os
 import re
 import json
 import pandas as pd
@@ -11,10 +12,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 def start_browesr(
-    dockerized=True, headless=False, selenium_host="host.docker.internal"
+    dockerized=True,
+    headless=False,
+    selenium_host="host.docker.internal",
+    executable_path=r"/usr/bin/chromedriver",
 ):
     """start browser"""
     chrome_options = webdriver.ChromeOptions()
+
+    if not os.path.exists("extension.crx"):
+        raise Exception("missing extension file")
+
     chrome_options.add_extension("extension.crx")
 
     chrome_options.add_argument("--no-sandbox")
@@ -29,7 +37,7 @@ def start_browesr(
             f"http://{selenium_host}:4444/wd/hub", options=chrome_options
         )
 
-    service = Service(executable_path=r"/usr/bin/chromedriver")
+    service = Service(executable_path=executable_path)
     return webdriver.Chrome(service=service, options=chrome_options)
 
 
@@ -40,19 +48,22 @@ def clear_sessions(selenium_host="host.docker.internal", session_id=None):
     :return: None
     """
 
-    url = f"http://{selenium_host}:4444"
-    if not session_id:
-        # delete all sessions
-        r = requests.get(f"{url}/status")
-        data = json.loads(r.text)
-        for node in data["value"]["nodes"]:
-            for slot in node["slots"]:
-                if slot["session"]:
-                    id = slot["session"]["sessionId"]
-                    r = requests.delete(f"{url}/session/{id}")
-    else:
-        # delete session from params
-        r = requests.delete(f"{url}/session/{session_id}")
+    try:
+        url = f"http://{selenium_host}:4444"
+        if not session_id:
+            # delete all sessions
+            r = requests.get(f"{url}/status")
+            data = json.loads(r.text)
+            for node in data["value"]["nodes"]:
+                for slot in node["slots"]:
+                    if slot["session"]:
+                        id = slot["session"]["sessionId"]
+                        r = requests.delete(f"{url}/session/{id}")
+        else:
+            # delete session from params
+            r = requests.delete(f"{url}/session/{session_id}")
+    except requests.exceptions.ConnectionError:
+        raise Exception(f"selenuim is down at {selenium_host}")
 
 
 def load_script(filepath):
@@ -125,7 +136,7 @@ def bytes_to_file(screenshot_data, file_path):
     elif type(screenshot_data) is bytes:
         screenshot_binary = screenshot_data
     else:
-        raise Exception(f"type {type(screenshot_data)} is not supported.")  
+        raise Exception(f"type {type(screenshot_data)} is not supported.")
 
     # Save the binary image to a file or process it as needed
     with open(file_path, "wb") as f:
@@ -151,13 +162,15 @@ def web_driver_to_html(wd, file_name):
         f.write(html_content)
     return full_path
 
+
 def clean_spaces(input_string):
     # Use regular expression to replace multiple spaces with a single space
     if pd.isnull(input_string):
         return input_string
-    
-    cleaned_string = re.sub(r'\s+', ' ', input_string)
+
+    cleaned_string = re.sub(r"\s+", " ", input_string)
     return cleaned_string
+
 
 def elements_to_table(logs):
     """convert string to dataframe"""
@@ -165,17 +178,23 @@ def elements_to_table(logs):
     for column in df.columns:
         if hasattr(df[column], "str"):
             df[column] = (
-                df[column].str.replace("<comma>", ",").str.replace("<new_line>", "\n").apply(clean_spaces)
+                df[column]
+                .str.replace("<comma>", ",")
+                .str.replace("<new_line>", "\n")
+                .apply(clean_spaces)
             )
     return df
 
-def draw_on_image(input_stearm,x, y, **kwarg):
+
+def draw_on_image(input_stearm, screen_width, screen_height, x, y, **kwarg):
     # Create a drawing context on the image
     draw = ImageDraw.Draw(input_stearm)
+    image_width, image_height = input_stearm.size
 
     # Define the size of the marker
-    marker_size = 10
-
+    marker_size = 40
+    x = x * (image_height / screen_height)
+    y = y * (image_width / screen_width)
     # Draw a marker at the specified coordinates
     draw.rectangle(
         [(x - marker_size, y - marker_size), (x + marker_size, y + marker_size)],
@@ -189,8 +208,8 @@ def draw_on_image(input_stearm,x, y, **kwarg):
 
     # Save the marked screenshot
     return input_stearm
-    
-    
+
+
 def draw_on_screen(wd, filename, x, y, **kwarg):
     """draw x and y box in the screen"""
 
@@ -199,7 +218,7 @@ def draw_on_screen(wd, filename, x, y, **kwarg):
     final_fname = f"{filename}_click_location"
     final_fname = web_driver_to_image(wd, final_fname)
     image = Image.open(final_fname)
-    output_image_stream = draw_on_image(image,x, y, **kwarg)
+    output_image_stream = draw_on_image(image, x, y, **kwarg)
     image.save(output_image_stream)
     return filename
 
@@ -212,3 +231,13 @@ def wait_for_page_load(wdriver):
         return driver.execute_script("return document.readyState") == "complete"
 
     wait.until(page_loaded)
+
+
+def is_running_in_docker():
+    """check if running in docker"""
+    try:
+        with open("/proc/1/cgroup", "rt") as cgroup_file:
+            return "docker" in cgroup_file.read()
+    except Exception as e:
+        print(f"Error checking Docker environment: {e}")
+        return False

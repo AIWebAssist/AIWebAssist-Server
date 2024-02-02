@@ -4,7 +4,8 @@ import base64
 import io
 from PIL import Image
 import imagehash
-from scrape_anything.util.io import stringable_dataframe_to_csv,dataframe_to_stringable
+from scrape_anything.util.io import stringable_dataframe_to_csv, dataframe_to_stringable
+
 
 def is_css_code(text):
     pattern = r"\{.*?\}"
@@ -61,7 +62,7 @@ def remove_out_of_window(df, viewpointscroll, viewportHeight):
     ]
 
 
-def remove_without_textual_infomration(df):
+def remove_without_textual_information(df):
     # remove if all is null
     _df = df[
         ~df[
@@ -90,7 +91,7 @@ def minimize_page_data(df, viewpointscroll, viewportHeight, using_vision=False):
     _df = df.copy()
     _df = remove_elements_without_size(_df)
     _df = remove_out_of_window(_df, viewpointscroll, viewportHeight)
-    _df = remove_without_textual_infomration(_df)
+    _df = remove_without_textual_information(_df)
 
     # if all the information is the same, take the deeper element (which is the last becuase of our listing method)
     _df.drop_duplicates(
@@ -132,35 +133,39 @@ def dataframe_diff(df_before, df_current):
     Returns two DataFrames: one for removed rows and one for added rows.
     """
     if df_before is None:
-        return None,None
-    df1_list = stringable_dataframe_to_csv(df_before).to_csv(index=False).split("\n")[1:]
-    df2_list = stringable_dataframe_to_csv(df_current).to_csv(index=False).split("\n")[1:]
+        return None, None
+    df1_list = (
+        stringable_dataframe_to_csv(df_before).to_csv(index=False).split("\n")[1:]
+    )
+    df2_list = (
+        stringable_dataframe_to_csv(df_current).to_csv(index=False).split("\n")[1:]
+    )
 
-    added_to_changed = dataframe_to_stringable(pd.DataFrame(
-        [row.split(",") for row in df2_list if row not in df1_list],
-        columns=list(df_before.columns),
-    ))
-    removed = dataframe_to_stringable(pd.DataFrame(
-        [row.split(",") for row in df1_list if row not in df2_list],
-        columns=list(df_before.columns),
-    ))
+    added_to_changed = dataframe_to_stringable(
+        pd.DataFrame(
+            [row.split(",") for row in df2_list if row not in df1_list],
+            columns=list(df_before.columns),
+        )
+    )
+    removed = dataframe_to_stringable(
+        pd.DataFrame(
+            [row.split(",") for row in df1_list if row not in df2_list],
+            columns=list(df_before.columns),
+        )
+    )
 
-    return added_to_changed,removed
+    return added_to_changed, removed
 
 
-def is_screenshot_changed(df_before, df_current,cutoff = 5):
-    if df_before is None:
+def is_screenshot_changed(screen_strem_before, screen_strem_current):
+    if screen_strem_before is None:
         return None
-    img1 = Image.open(io.BytesIO(base64.b64decode(df_before)))
-    img2 = Image.open(io.BytesIO(base64.b64decode(df_current)))
+    img1 = Image.open(io.BytesIO(base64.b64decode(screen_strem_before)))
+    img2 = Image.open(io.BytesIO(base64.b64decode(screen_strem_current)))
 
     # Compute hashes
-    hash1 = imagehash.average_hash(img1)
-    hash2 = imagehash.average_hash(img2)
+    hash1 = imagehash.dhash_vertical(img1)
+    hash2 = imagehash.dhash_vertical(img2)
 
     # Compare hashes
-    
-    if hash1 - hash2 < cutoff:
-        return False
-    else:
-        return True  # Images are considered similar 
+    return hash1 - hash2 != 0
