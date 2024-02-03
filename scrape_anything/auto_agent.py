@@ -177,7 +177,7 @@ class Agent(BaseModel):
                         tool_input,
                         current_action_description=current_task,
                         on_succeed_next_action_description=next_task,
-                        execution_data = execution_status.data,
+                        execution_data=execution_status.data,
                     )
 
                 Logger.info(
