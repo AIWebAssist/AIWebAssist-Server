@@ -191,7 +191,7 @@ class Agent(BaseModel):
                 previous_responses.append(current_status)
 
                 # if the client closed, exit.
-                if execution_status.is_closed():
+                if execution_status != None and execution_status.is_closed():
                     Logger.info("Status close was detected, exiting.")
                     break
 
