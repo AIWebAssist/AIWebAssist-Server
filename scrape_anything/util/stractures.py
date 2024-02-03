@@ -173,7 +173,7 @@ class SuccessfulStepExecution(ExecutionStep):
 
     def to_nl(self):
         if self.screen_changed is not None and self.screen_changed:
-            return f"On Iteration #{self.num_loop} you've successfully completed this action '{self.on_succeed_next_action_description}'. the next action should be '{self.on_succeed_next_action_description}'"
+            return f"On Iteration #{self.num_loop} you've successfully completed '{self.on_succeed_next_action_description}', consider on iteration #{self.num_loop+1} to use the action '{self.on_succeed_next_action_description}'"
         elif self.screen_changed is None:
             return f"On Iteration #{self.num_loop} you've successfully completed this action, waiting for screen data to validate."
         else:
