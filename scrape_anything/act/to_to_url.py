@@ -1,31 +1,26 @@
 from .tool import ToolInterface
 
-
 class GoToURL(ToolInterface):
-    """Go to a specific url address"""
+    """Navigate to a specific URL address"""
 
-    name: str = "Go to a specific url web address"
-    description: str = (
-        'Change the url to a provide URL. Input format: {{"url":"<place_url_here>"}}'
-    )
-    click_on_screen: str = False
+    name: str = "Go to a specific URL web address"
+    description: str = 'Change the URL to a provided address. Input format: {"url": "<place_url_here>"}'
+    click_on_screen: bool = False
     example_script: str = "go_to_url"
 
-    def process_tool_arg(self, **kwarg):
-        url = kwarg["url"]
-        return {"text": url}
+    def process_tool_arg(self, **kwargs):
+        url = kwargs["url"]
+        return {"url": url}
 
 
 class MessageUser(ToolInterface):
-    """show text to the user"""
+    """Display text to the user"""
 
     name: str = "Textual Guidance"
-    description: str = (
-        'Present the user with a message, Input format: {{"text":"<text_to_enter>"}}'
-    )
-    click_on_screen: str = False
+    description: str = 'Present a message to the user. Input format: {"text": "<text_to_display>"}'
+    click_on_screen: bool = False
     example_script: str = "show_guidance"
 
-    def process_tool_arg(self, **kwarg):
-        text = kwarg["text"]
+    def process_tool_arg(self, **kwargs):
+        text = kwargs["text"]
         return {"text": text}

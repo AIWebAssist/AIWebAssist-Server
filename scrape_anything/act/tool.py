@@ -22,4 +22,3 @@ class ToolInterface(BaseModel):
     def example(self, web_driver, *arg, **kwarg):
         self.process_tool_arg(**kwarg)
         web_driver.execute_script(self.example_script, active=False, **kwarg)
-        # action_with_js_code(web_driver,os.path.join(os.path.join(os.getcwd(),"shared", "actions"),self.example_script),self.process_tool_arg(**kwarg))

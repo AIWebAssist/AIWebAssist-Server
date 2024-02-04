@@ -64,7 +64,8 @@ class ExecutionStep(ABC):
     def values(self):
         response = {
             "iteration_number": self.num_loop - 1,
-            "action_goal": self.action_description,
+            "action_goal": self.current_action_description,
+            "next_goal":self.on_succeed_next_action_description
         }
         if self.screen_changed is not None:
             response["is_screen_changed_after_action"] = self.screen_changed
@@ -110,7 +111,7 @@ class FailedLLMUnderstandingStepExecution(ExecutionStep):
         }
 
     def to_nl(self):
-        return f"On Iteration #{self.num_loop} you've failed to {self.action_description} because your response '{self.error_message}'"
+        return f"On Iteration #{self.num_loop} you've failed to {self.on_succeed_next_action_description} because your response '{self.error_message}'"
 
 
 class FailedStepExecution(ExecutionStep):
@@ -120,11 +121,11 @@ class FailedStepExecution(ExecutionStep):
         error_message,
         tool,
         tool_input,
-        action_description,
+        current_action_description,
         on_succeed_next_action_description,
     ) -> None:
         super(FailedStepExecution, self).__init__(
-            num_loop, action_description, on_succeed_next_action_description
+            num_loop, current_action_description, on_succeed_next_action_description
         )
         self.error_message = error_message
         self.tool = tool
@@ -140,7 +141,7 @@ class FailedStepExecution(ExecutionStep):
         }
 
     def to_nl(self):
-        message = f"On Iteration #{self.num_loop} you've failed to {self.action_description} because the tool you've offerd {self.tool} with the params {self.tool_input} wasn't able to be executed because '{self.error_message}'"
+        message = f"On Iteration #{self.num_loop} you've failed to {self.on_succeed_next_action_description} because the tool you've offerd {self.tool} with the params {self.tool_input} wasn't able to be executed because '{self.error_message}'"
         if self.screen_changed is not None and self.screen_changed:
             message += "however, the screen changed."
         return message
@@ -152,14 +153,16 @@ class SuccessfulStepExecution(ExecutionStep):
         num_loop,
         tool,
         tool_input,
-        action_description,
+        current_action_description,
         on_succeed_next_action_description,
+        execution_data,
     ) -> None:
         super(SuccessfulStepExecution, self).__init__(
-            num_loop, action_description, on_succeed_next_action_description
+            num_loop, current_action_description, on_succeed_next_action_description
         )
         self.tool = tool
         self.tool_input = tool_input
+        self.execution_data = execution_data
 
     def values(self):
         return {
@@ -170,11 +173,11 @@ class SuccessfulStepExecution(ExecutionStep):
 
     def to_nl(self):
         if self.screen_changed is not None and self.screen_changed:
-            return f"On Iteration #{self.num_loop} you've successfully completed this action '{self.action_description}'"
+            return f"On Iteration #{self.num_loop} you've successfully completed '{self.current_action_description}', at the next iteration #{self.num_loop+1} you should use the action '{self.on_succeed_next_action_description}'"
         elif self.screen_changed is None:
             return f"On Iteration #{self.num_loop} you've successfully completed this action, waiting for screen data to validate."
         else:
-            return f"On Iteration #{self.num_loop} action '{self.action_description}' wasn't successfully since the screen wasn't affected."
+            return f"On Iteration #{self.num_loop} action '{self.current_action_description}' wasn't successfully since the screen wasn't affected."
 
 
 class DataFramePromptValues:

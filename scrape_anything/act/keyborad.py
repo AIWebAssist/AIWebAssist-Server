@@ -2,16 +2,15 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from .tool import ToolInterface
 
-
 class HitAKey(ToolInterface):
-    """Click on a field and enter text"""
+    """Press a key on the keyboard"""
 
     name: str = "Hit A Key"
     description: str = (
-        'Hit on of the keys,  Input format: {{"key":"esc"}} or {{"key":"enter"}}'
+        'Press one of the keys. Input format: {"key": "esc"} or {"key": "enter"}'
     )
-    example_script: str = "keyborad_action"
+    example_script: str = "keyboard_action"
 
-    def process_tool_arg(self, **kwarg):
-        key = kwarg["key"]
+    def process_tool_arg(self, **kwargs):
+        key = kwargs["key"]
         return {"key": key}

@@ -70,6 +70,7 @@ class WebDriverController(Controller):
         self,
         tool_executor: ToolInterface,
         tool_input: str,
+        contains_user_input: bool,
         num_loops: int,
         output_folder: str,
     ):
