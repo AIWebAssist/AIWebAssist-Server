@@ -4,8 +4,8 @@ from .base_task_extraction import BaseTaskExtractionPrompt
 class TaskExtractionTextBasePrompt(BaseTaskExtractionPrompt):
     prompt_template: str = """
 Today is {today}. 
-Your goal is to guide the user browsing the web to complete the task he will describe to you, to achieve this you will of one action at a time, each action represent a single action the user can perform.
-You will be provided with information about the webpage the user see and past executions of yourself and details about thier execution.
+Your goal is to guide the user browsing the web to complete the task he will describe to you, to achieve this you will do one action at a time, each action represents a single action the user can perform.
+You will be provided with information about the webpage the user sees and past executions of yourself and details about their execution.
 
 {guidelines}
 
