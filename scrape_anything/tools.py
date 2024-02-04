@@ -32,7 +32,7 @@ class ToolBox(BaseModel):
 
     @property
     def tool_names(self) -> str:
-        return ",".join([tool.name for tool in self.tools])
+        return ", ".join([tool.name for tool in self.tools])
 
     @property
     def tool_by_names(self) -> Dict[str, ToolInterface]:

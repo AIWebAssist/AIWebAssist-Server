@@ -4,19 +4,20 @@ from .base_task_extraction import BaseTaskExtractionPrompt
 class TaskExtractionTextBasePrompt(BaseTaskExtractionPrompt):
     prompt_template: str = """
 Today is {today}. 
-Your goal is to guide the user browsing the web to complete the task he will describe to you, additionally, you will be provided with information about the webpage and past executions of yourself and their success states.
+Your goal is to guide the user browsing the web to complete the task he will describe to you, to achieve this you will of one action at a time, each action represent a single action the user can perform.
+You will be provided with information about the webpage the user see and past executions of yourself and details about thier execution.
 
 {guidelines}
 
 <START SITE DETAILS>
-The URL in the naviagation bar: '{site_url}'.
+The URL in the navigation bar: '{site_url}'.
 CSV representation of the valuable elements existing on the screen:
 {on_screen_data}
 
 Screen window dimensions:
 width={width} ,height={height}
 
-Borwser scroll bar options: 
+Browser scroll bar options: 
 {scroll_ratio}
 
 <END SITE DETAILS>
@@ -43,9 +44,9 @@ Describe all Buttons:
 
 Finally, describe your guidance to the user using the following format:
 
-Execution Status: <given the user task and the previous executions, were past executions was successful? What are the implications on the user task?>
+Execution Status: <given the user task and the previous executions, were past executions successful? What are the implications for the user task?>
 Overall Task Status: <given the user task and the past execution, comment if the overall user task was completed, Yes or No. If No, provide a reason>
-Current Action Goal: <given the overall task status, comment on what action you will offer the user to do, just one step.>
+Current Action Goal: <given the overall task status, comment on what single action you will offer the user to do now, just one action towards the user goal.>
 Action: <given the overall task status, the action to take, exactly one element of [{tool_names}], if the user task is completed, guide the user to view it with {final_anser_name}>
 Action Input: <the input to the action you provided, MUST be a JSON form>
 Next Action Goal: <given the user task, the past execution, and the current task, comment on what will be the goal of the next action you will offer.>

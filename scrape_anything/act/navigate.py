@@ -1,34 +1,33 @@
 from .tool import ToolInterface
 
-
 class GoBack(ToolInterface):
-    """go back to previous page"""
+    """Go back to the previous page"""
 
     name: str = "Go Back"
-    description: str = "Go back to the previous page,no input."
+    description: str = "Navigate back to the previous page. No input is required."
     example_script: str = "back"
 
-    def process_tool_arg(self, **kwarg):
+    def process_tool_arg(self, **kwargs):
         return {}
 
 
 class Refresh(ToolInterface):
-    """go back to previous page"""
+    """Refresh the current page"""
 
     name: str = "Refresh page"
-    description: str = "refresh the current page,no input."
+    description: str = "Refresh the current page. No input is required."
     example_script: str = "refresh"
 
-    def process_tool_arg(self, **kwarg):
+    def process_tool_arg(self, **kwargs):
         return {}
 
 
 class FinalMessage(ToolInterface):
-    """the tool to use in the final answer"""
+    """The tool to use for the final answer"""
 
     name: str = "Final Guidance"
-    description: str = 'Present on the screen final guidance to the user, this tool should be used when the user task is completed. Input format: {{"message":"<text_to_enter>"}} '
+    description: str = 'Present final guidance on the screen to the user. This tool should be used when the users task is completed. Input format: {"message": "<text_to_display>"}'
     example_script: str = "show_final_guidance"
 
-    def process_tool_arg(self, **kwarg):
-        return {"message": kwarg["message"]}
+    def process_tool_arg(self, **kwargs):
+        return {"message": kwargs["message"]}

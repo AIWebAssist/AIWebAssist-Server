@@ -173,11 +173,11 @@ class SuccessfulStepExecution(ExecutionStep):
 
     def to_nl(self):
         if self.screen_changed is not None and self.screen_changed:
-            return f"On Iteration #{self.num_loop} you've successfully completed '{self.on_succeed_next_action_description}', consider on iteration #{self.num_loop+1} to use the action '{self.on_succeed_next_action_description}'"
+            return f"On Iteration #{self.num_loop} you've successfully completed '{self.current_action_description}', next iteration #{self.num_loop+1} to use the action '{self.on_succeed_next_action_description}'"
         elif self.screen_changed is None:
             return f"On Iteration #{self.num_loop} you've successfully completed this action, waiting for screen data to validate."
         else:
-            return f"On Iteration #{self.num_loop} action '{self.on_succeed_next_action_description}' wasn't successfully since the screen wasn't affected."
+            return f"On Iteration #{self.num_loop} action '{self.current_action_description}' wasn't successfully since the screen wasn't affected."
 
 
 class DataFramePromptValues:
