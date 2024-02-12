@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Simulate",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "simulate.py",
             "console": "integratedTerminal",
@@ -15,7 +15,7 @@
         },
         {
             "name": "Server",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "main.py",
             "console": "integratedTerminal",

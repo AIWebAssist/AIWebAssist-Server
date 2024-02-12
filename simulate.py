@@ -13,7 +13,7 @@ import requests
 
 
 def simulate_client_click(
-    url, user_task, recording_file, num_of_iteration=1, dockerized=True
+    extension_resource, url, user_task, recording_file, num_of_iteration=1, dockerized=True
 ):
     if dockerized:
         clear_sessions(selenium_host="selenium-chrome")
@@ -21,6 +21,7 @@ def simulate_client_click(
         executable_path = ChromeDriverManager().install()
 
     web_driver = start_browesr(
+        extension_resource,
         selenium_host="selenium-chrome",
         dockerized=dockerized,
         executable_path=executable_path,
@@ -45,13 +46,14 @@ def simulate_client_click(
 
 
 def simulate(
-    experiment_uuid, url, task_description, max_num_of_iteration, dockerized=True
+    extension_resource, experiment_uuid, url, task_description, max_num_of_iteration, dockerized=True
 ):
     # start the server
     server = ServerInAThread(experiment_uuid)
     server.start()
     # start calling the extension
     simulate_completed, recording_completed = simulate_client_click(
+        extension_resource,
         url,
         task_description,
         experiment_uuid,
@@ -95,6 +97,7 @@ if __name__ == "__main__":
         },
     ]
     dockerized_selenuim = False
+    extension_resource = os.environ['EXTENSION']
 
     df = pd.DataFrame(scenarios)
     df["uuid"] = df.apply(lambda _: str(uuid.uuid4()).replace("-", "_"), axis=1)
@@ -102,6 +105,7 @@ if __name__ == "__main__":
 
     for index, row in df.iterrows():
         row["run_status"] = simulate(
+            extension_resource,
             row["uuid"],
             row["url"],
             row["task_description"],

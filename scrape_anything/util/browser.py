@@ -12,6 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 def start_browesr(
+    extension_resource,
     dockerized=True,
     headless=False,
     selenium_host="host.docker.internal",
@@ -20,10 +21,14 @@ def start_browesr(
     """start browser"""
     chrome_options = webdriver.ChromeOptions()
 
-    if not os.path.exists("extension.crx"):
+    if not os.path.exists(extension_resource):
         raise Exception("missing extension file")
 
-    chrome_options.add_extension("extension.crx")
+    if extension_resource.endswith(".crx"):
+        chrome_options.add_extension("extension.crx")
+    elif os.path.isdir(extension_resource):
+        chrome_options.add_argument(f"load-extension={extension_resource}")
+
 
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--lang=en")
