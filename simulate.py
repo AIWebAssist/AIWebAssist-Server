@@ -73,11 +73,11 @@ def simulate(
 
 if __name__ == "__main__":
     scenarios = [
-        {
-            "url": "https://www.google.com/?hl=en",
-            "task_description": "I need to search my name in google, my name is 'sefi'",
-            "max_num_of_iteration": 5,
-        },
+        # {
+        #     "url": "https://www.google.com/?hl=en",
+        #     "task_description": "I need to search my name in google, my name is 'sefi'",
+        #     "max_num_of_iteration": 5,
+        # },
         {
             "url": "https://www.google.com/?hl=en",
             "task_description": "help my signin my facebook account.",
