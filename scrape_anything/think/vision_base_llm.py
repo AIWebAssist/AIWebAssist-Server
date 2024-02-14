@@ -1,4 +1,6 @@
 import requests
+import os
+from PIL import Image
 
 from .base_llm import LLMInterface
 from ..util.io import to_text_file
@@ -9,6 +11,22 @@ from ..util import extract_tool_and_args, Logger, file_to_bytes, DataBase
 class VisionBaseLLM(LLMInterface):
     prompt_manager: TaskExtractionVisionBasePrompt = TaskExtractionVisionBasePrompt()
 
+
+    def reduce_resolution(self,input_path, output_path, percentage):
+        # Open the image
+        image = Image.open(input_path)
+
+        # Calculate the new width and height based on the percentage reduction
+        new_width = int(image.width * (1 - percentage / 100))
+        new_height = int(image.height * (1 - percentage / 100))
+
+        # Resize the image
+        resized_image = image.resize((new_width, new_height), Image.LANCZOS)
+
+
+        # Save the resized image
+        resized_image.save(output_path)
+
     def generate(
         self, prompt: str, screenshot: str, model: str = "gpt-4-vision-preview"
     ):
@@ -18,7 +36,9 @@ class VisionBaseLLM(LLMInterface):
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}",
         }
-        base64_image = file_to_bytes(screenshot)
+        reduced_screenshot = ".temp.png"
+        self.reduce_resolution(input_path=screenshot,output_path=reduced_screenshot,percentage=75)
+        base64_image = file_to_bytes(reduced_screenshot)
 
         payload = {
             "model": model,
@@ -41,6 +61,8 @@ class VisionBaseLLM(LLMInterface):
         response = requests.post(
             "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
         ).json()
+
+        os.remove(reduced_screenshot)
 
         return self.safe_extract_response(response, "choices", 0, "message", "content")
 

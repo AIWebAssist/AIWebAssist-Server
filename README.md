@@ -1,64 +1,103 @@
 # AIWebAssist Server
+Backend to support making a decision of what action to preform in web broswer base on user task.
 
+## Local Setup
 
+1. Create local SSL certificates:
 
-## Running Localy 
+    a. Allow the script by running: `chmod +x ssl/generate_certs.sh`
 
-1. create local SSL certificates:
-    - Allow the script to run: ```chmod +x ssl/generate_certs.sh```
-    - Run the script and create on the spot ssl certificates: ```./ssl/generate_certs.sh``` and enter at least email 
-    - Add "myCa.pem" into keychain, double click and 'trust always'
+    b. Run the script and create on-the-spot SSL certificates: `./ssl/generate_certs.sh` and enter at least your email.
 
-2. Add scrape_anything to host file:
-    - ```sudo nano /private/etc/hosts```
-    - ```127.0.0.1 scrape_anything```
+    c. Add "myCa.pem" into the keychain, double click and 'trust always'
 
-3. Start server:
+2. Add a local route from `scrape_anything` to `localhost`:
 
-    - Docker:
-      ```bash
-        docker compose up
+    a. Open host files with sudo: `sudo nano /private/etc/hosts`
+
+    b. Add the following entry: `127.0.0.1 scrape_anything`
+
+3. Create local env:
+
+    a. Copy `.env.example` and rename to `.env`
+
+    b. Populate the values in the `.env` file
+
+## Creating development environment:
+
+1. Create a local Python environment:
+
+    a. On the terminal run `python3 -m venv env`
+
+    b. Activate the created environment source `env/bin/activate`
+
+    c. Install Python dependencies `pip3 install -r requirements-dev.txt` and `pip3 install -r requirements.txt`
+
+    d. Allow the script by running: `chmod +x setup.sh`
+
+    e. Run Setup: `./setup`
+
+2. Entry Points: (If you are using [VScode IDE](https://code.visualstudio.com/) you can simply use the pre-configured in vscode)
+
+    - Running a full simulation of backend-client call:
+
+      ```python
+      python main.py 
       ```
-    - Local:
-      ```bash
-        python3 -m venv env && source env/bin/activate &&  pip install -r requirements.txt && ./setup.sh
+
+    - Or, running the server only:
+
+      ```python
+      python simulate.py 
       ```
-      then:
-      ```python main.py```
 
-## Calling the backend:
+## Running the backend locally independent:
 
-- You can use curls:
-  Every call should start with:
+1. Install [Docker](https://www.docker.com/products/docker-desktop/)
+
+2. Start the Docker server from local setup:
+
     ```bash
-    curl --insecure -L  -X POST \
-      https://127.0.0.1:3000/process \
-      -H 'Content-Type: application/json' \
-      -d '{
-        "viewpointscroll": "viewpointscroll_value",
-        "viewportHeight": "viewportHeight_value",
-        "scroll_width": "scroll_width_value",
-        "scroll_height": "scroll_height_value",
-        "width": "width_value",
-        "height": "height_value",
-        "raw_on_screen": "elements_value",
-        "url": "url_value",
-        "user_task": "objective_value",
-        "session_id": "session_id_value",
-        "screenshot": "screenshotImage_value"
-    }'
+    docker compose up -d 
     ```
+
+## The backend interface:
+
+### Using bash:
+
+Every call should start with:
+
+```bash
+curl --insecure -L  -X POST \
+  https://127.0.0.1:3000/process \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "viewpointscroll": "viewpointscroll_value",
+    "viewportHeight": "viewportHeight_value",
+    "scroll_width": "scroll_width_value",
+    "scroll_height": "scroll_height_value",
+    "width": "width_value",
+    "height": "height_value",
+    "raw_on_screen": "elements_value",
+    "url": "url_value",
+    "user_task": "objective_value",
+    "session_id": "session_id_value",
+    "screenshot": "screenshotImage_value"
+}'
+```
 
   And end with:
-    ```bash
-    curl --insecure -L -X POST \
-      https://127.0.0.1:3000/status \
-      -H 'Content-Type: application/json' \
-      -d '{
-        "execution_status": "response",
-        "session_id": "session_id"
-    }'
-    ```
 
-Or 
-  - You can install the [extesnion](https://github.com/AIWebAssist/AIWebAssistExtension)
+```bash
+curl --insecure -L -X POST \
+  https://127.0.0.1:3000/status \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "execution_status": "response",
+    "session_id": "session_id"
+}'
+```
+
+### Using the extesnion:
+
+You can install the [extesnion](https://github.com/AIWebAssist/AIWebAssistExtension)
