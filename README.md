@@ -1,35 +1,75 @@
 # AIWebAssist Server
 
 
+## Local Setup 
 
-## Running Localy 
+1. Create a local SSL certificates:
 
-1. create local SSL certificates:
-    - Allow the script to run: ```chmod +x ssl/generate_certs.sh```
-    - Run the script and create on the spot ssl certificates: ```./ssl/generate_certs.sh``` and enter at least email 
-    - Add "myCa.pem" into keychain, double click and 'trust always'
+    a. Allow the script by running: ```chmod +x ssl/generate_certs.sh```
 
-2. Add scrape_anything to host file:
-    - ```sudo nano /private/etc/hosts```
-    - ```127.0.0.1 scrape_anything```
+    b. Run the script and create on the spot ssl certificates: ```./ssl/generate_certs.sh``` and enter at least your email. 
 
-3. Start server:
+    c. Add "myCa.pem" into keychain, double click and 'trust always'
 
-    - Docker:
+
+2. Add a local route from  ```scrape_anything``` to ```localhost```:
+
+    a. Open host files with sudo: ```sudo nano /private/etc/hosts```
+
+    b. Add the following entry: ```127.0.0.1 scrape_anything```
+
+3. Create local env:
+
+    a. Copy ```.env.example``` and rename to ```.env```
+
+    b. Populate the values in the ```.env``` file
+
+## Creating devlopment environment:
+
+1. Create local python environment:
+
+    a. On the termianl run ```python3 -m venv env```
+
+    b. Activate the create environment source ```env/bin/activate```
+
+    c. Install python dependencies ```pip3 install -r requirements-dev.txt``` and ```pip3 install -r requirements.txt```
+
+    d. Allow the script by running: ```chmod +x setup.sh```
+
+    e. Run Setup: ```./setup```
+ 
+
+2. Entry Points:
+(If you are using [VScode IDE](https://code.visualstudio.com/) you can simply use the per-configured in vscode)
+
+  - Running a full simulatation of backend-client call:
+    ```python
+      python main.py 
+    ```
+
+  - Or, running the server only:
+    ```python
+      python simulate.py 
+    ```
+
+## Running the backend localy independent:
+
+  1. Install [docker](https://www.docker.com/products/docker-desktop/)
+
+  2. Start the docker server from locall setup:
+      
       ```bash
-        docker compose up
+        docker compose up -d 
       ```
-    - Local:
-      ```bash
-        python3 -m venv env && source env/bin/activate &&  pip install -r requirements.txt && ./setup.sh
-      ```
-      then:
-      ```python main.py```
 
-## Calling the backend:
 
-- You can use curls:
+## The backend interface:
+
+
+### Using bash:
+
   Every call should start with:
+
     ```bash
     curl --insecure -L  -X POST \
       https://127.0.0.1:3000/process \
@@ -50,6 +90,7 @@
     ```
 
   And end with:
+
     ```bash
     curl --insecure -L -X POST \
       https://127.0.0.1:3000/status \
@@ -60,5 +101,6 @@
     }'
     ```
 
-Or 
-  - You can install the [extesnion](https://github.com/AIWebAssist/AIWebAssistExtension)
+### Using the extesnion:
+
+You can install the [extesnion](https://github.com/AIWebAssist/AIWebAssistExtension)
