@@ -1,6 +1,31 @@
 # AIWebAssist Server
 Backend to support making a decision of what action to preform in web broswer base on user task.
 
+## Project stracture
+
+Files defining the code runtime:
+- **`.devcontainer`**: Configuration for development container settings.
+
+- **`.vscode`**: VSCode-specific settings, including launch configurations.
+
+- **`Dockerfile`**: Configuration file for building a Docker image.
+  
+- **`docker-compose.yaml`**: Docker Compose configuration for easy deployment.
+
+- **`requirements-dev.txt`**: List of development dependencies.
+
+- **`requirements.txt`**: List of dependencies for the server.
+
+File defining logic:
+
+- **`scrape_anything`**: Directory that contains the entire logic to process the request.
+
+- **`simulation_utils`**: Directory that contains code the support simulation of the calls to the server.
+
+- **`main.py`**: The main entry to the server.
+
+- **`simulate.py`**: The main entry to the simulation.
+
 ## Local Setup
 
 1. Create local SSL certificates:
