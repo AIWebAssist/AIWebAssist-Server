@@ -34,7 +34,7 @@ File defining logic:
 
     b. Run the script and create on-the-spot SSL certificates: `./ssl/generate_certs.sh` and enter at least your email.
 
-    c. Add "myCa.pem" into the keychain, double click and 'trust always'
+    c. Add "myCa.pem" into the keychain, double click and 'trust always'. if you are using windows you can follow the original [thread](https://stackoverflow.com/a/60516812)
 
 2. Add a local route from `scrape_anything` to `localhost`:
 
