@@ -27,3 +27,5 @@ ssl/*.csr
 ssl/*.ext
 ssl/*.crt
 .DS_Store
+
+*.zip

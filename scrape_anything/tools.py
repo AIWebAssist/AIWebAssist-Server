@@ -59,8 +59,8 @@ class ToolBox(BaseModel):
         tool_input = tool_executor.process_tool_arg(**tool_input)
         return tool_executor, tool_input, self.is_contain_placeholders(tool_input)
 
-    def is_contain_placeholders(self,tool_input):
+    def is_contain_placeholders(self, tool_input):
         for value in tool_input.values():
-            if isinstance(value,str) and value[0] == "<" and value[-1] == ">":
+            if isinstance(value, str) and value[0] == "<" and value[-1] == ">":
                 return True
         return False

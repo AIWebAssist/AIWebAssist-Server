@@ -85,7 +85,7 @@ class RemoteFeedController(Controller):
         Logger.info(
             f"itration number {loop_num}: response from client is {execution_status}"
         )
-        if isinstance(execution_status,IncomeingExecutionFailure):
+        if isinstance(execution_status, IncomeingExecutionFailure):
             raise ExecutionError(f"execution failed: {execution_status.message}")
 
         if close_request:

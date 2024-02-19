@@ -69,14 +69,17 @@ class EnabledActions(Enum):
 
 
 class OutGoingData:
-    def __init__(self, script: str, tool_input, session_closed: bool, force_guide:bool) -> None:
+    def __init__(
+        self, script: str, tool_input, session_closed: bool, force_guide: bool
+    ) -> None:
         self.script = script
         self.tool_input = tool_input
         self.session_closed = session_closed
         self.force_guide = force_guide
 
+
 class IncomeingExecutionReport:
-    def __init__(self,data,close=False) -> None:
+    def __init__(self, data, close=False) -> None:
         self.data = data
         self.close = close
 
@@ -86,8 +89,9 @@ class IncomeingExecutionReport:
     def is_closed(self):
         return self.close
 
+
 class IncomeingExecutionFailure:
-    def __init__(self,message) -> None:
+    def __init__(self, message) -> None:
         self.message = message
 
 

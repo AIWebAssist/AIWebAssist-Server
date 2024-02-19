@@ -13,7 +13,12 @@ import requests
 
 
 def simulate_client_click(
-    extension_resource, url, user_task, recording_file, num_of_iteration=1, dockerized=True
+    extension_resource,
+    url,
+    user_task,
+    recording_file,
+    num_of_iteration=1,
+    dockerized=True,
 ):
     if dockerized:
         clear_sessions(selenium_host="selenium-chrome")
@@ -46,7 +51,12 @@ def simulate_client_click(
 
 
 def simulate(
-    extension_resource, experiment_uuid, url, task_description, max_num_of_iteration, dockerized=True
+    extension_resource,
+    experiment_uuid,
+    url,
+    task_description,
+    max_num_of_iteration,
+    dockerized=True,
 ):
     # start the server
     server = ServerInAThread(experiment_uuid)
@@ -75,29 +85,29 @@ def simulate(
 
 if __name__ == "__main__":
     scenarios = [
+        {
+            "url": "https://www.google.com/?hl=en",
+            "task_description": "I need to search my name in google, my name is 'sefi'",
+            "max_num_of_iteration": 5,
+        },
         # {
         #     "url": "https://www.google.com/?hl=en",
-        #     "task_description": "I need to search my name in google, my name is 'sefi'",
+        #     "task_description": "help my signin my facebook account.",
         #     "max_num_of_iteration": 5,
         # },
-        {
-            "url": "https://www.google.com/?hl=en",
-            "task_description": "help my signin my facebook account.",
-            "max_num_of_iteration": 5,
-        },
-        {
-            "url": "https://www.google.com/?hl=en",
-            "task_description": "i need to read my emails i've an account on gmail.",
-            "max_num_of_iteration": 5,
-        },
-        {
-            "url": "https://www.google.com/?hl=en",
-            "task_description": "help me find the latest twitte of elon musk?",
-            "max_num_of_iteration": 5,
-        },
+        # {
+        #     "url": "https://www.google.com/?hl=en",
+        #     "task_description": "i need to read my emails i've an account on gmail.",
+        #     "max_num_of_iteration": 5,
+        # },
+        # {
+        #     "url": "https://www.google.com/?hl=en",
+        #     "task_description": "help me find the latest twitte of elon musk?",
+        #     "max_num_of_iteration": 5,
+        # },
     ]
     dockerized_selenuim = False
-    extension_resource = os.environ['EXTENSION']
+    extension_resource = os.environ["EXTENSION"]
 
     df = pd.DataFrame(scenarios)
     df["uuid"] = df.apply(lambda _: str(uuid.uuid4()).replace("-", "_"), axis=1)

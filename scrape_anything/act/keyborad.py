@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from .tool import ToolInterface
 
+
 class HitAKey(ToolInterface):
     """Press a key on the keyboard"""
 

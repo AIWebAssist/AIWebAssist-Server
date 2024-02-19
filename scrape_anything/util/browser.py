@@ -29,7 +29,6 @@ def start_browesr(
     elif os.path.isdir(extension_resource):
         chrome_options.add_argument(f"load-extension={extension_resource}")
 
-
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--lang=en")
     chrome_options.add_argument("ignore-certificate-errors")

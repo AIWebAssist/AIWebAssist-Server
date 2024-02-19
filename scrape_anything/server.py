@@ -4,7 +4,14 @@ from scrape_anything import Agent
 from scrape_anything import TextOnlyLLM, VisionBaseLLM, TestAllTools
 from scrape_anything import RemoteFeedController
 from scrape_anything.util import DataBase, Logger
-from scrape_anything import OutGoingData, IncommingData, Error, AgnetStatus,IncomeingExecutionFailure,IncomeingExecutionReport
+from scrape_anything import (
+    OutGoingData,
+    IncommingData,
+    Error,
+    AgnetStatus,
+    IncomeingExecutionFailure,
+    IncomeingExecutionReport,
+)
 from scrape_anything.session_manager import SessionManager
 from queue import Queue
 import traceback
@@ -123,12 +130,14 @@ class Server:
 
     def process_status(self, session_id, data):
         (_, _, status_queue, _) = self.agents_queues[session_id]
-        assert "execution_status" in data.keys() and isinstance(data["execution_status"],bool)
-       
+        assert "execution_status" in data.keys() and isinstance(
+            data["execution_status"], bool
+        )
+
         if not data["execution_status"]:
-            status_queue.put(IncomeingExecutionFailure(data['message']))
+            status_queue.put(IncomeingExecutionFailure(data["message"]))
         else:
-            status_queue.put(IncomeingExecutionReport(data['data']))
+            status_queue.put(IncomeingExecutionReport(data["data"]))
 
         return jsonify({"status": "ok"}), 200
 

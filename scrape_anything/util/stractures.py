@@ -65,7 +65,7 @@ class ExecutionStep(ABC):
         response = {
             "iteration_number": self.num_loop - 1,
             "action_goal": self.current_action_description,
-            "next_goal":self.on_succeed_next_action_description
+            "next_goal": self.on_succeed_next_action_description,
         }
         if self.screen_changed is not None:
             response["is_screen_changed_after_action"] = self.screen_changed
@@ -185,4 +185,4 @@ class DataFramePromptValues:
         self.on_screen = on_screen
 
     def __str__(self) -> str:
-        return self.on_screen.rename_axis("index").to_csv(float_format=f"%.2f")
+        return self.on_screen.rename_axis("index").to_csv(float_format=f"%.2f",index=False)
