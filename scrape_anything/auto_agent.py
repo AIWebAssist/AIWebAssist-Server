@@ -104,7 +104,11 @@ class Agent(BaseModel):
                     Logger.info(
                         f"trying to extract tool '{tool}' and tool inputs '{tool_input}' "
                     )
-                    tool_executor, tool_input, contains_user_input = self.tool_box.extract(tool, tool_input)
+                    (
+                        tool_executor,
+                        tool_input,
+                        contains_user_input,
+                    ) = self.tool_box.extract(tool, tool_input)
                     # mark tool is well formatted
                     parsing_status = LLMResponseParsingStatus.Successful
                     Logger.info(
@@ -122,7 +126,11 @@ class Agent(BaseModel):
                     # use the tool
                     Logger.info("calling controller action.")
                     execution_status = controller.take_action(
-                        tool_executor, tool_input, contains_user_input, num_loops, self.context
+                        tool_executor,
+                        tool_input,
+                        contains_user_input,
+                        num_loops,
+                        self.context,
                     )
                     Logger.info(f"execution completed successfully.")
 
@@ -159,9 +167,7 @@ class Agent(BaseModel):
                         current_action_description=current_task,
                         on_succeed_next_action_description=next_task,
                     )
-                elif (
-                    execution_status == None
-                ):  # execution failed
+                elif execution_status == None:  # execution failed
                     current_status = FailedStepExecution(
                         num_loops,
                         error_message,

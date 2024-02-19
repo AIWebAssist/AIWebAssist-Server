@@ -1,10 +1,13 @@
 from .tool import ToolInterface
 
+
 class ScrollDown(ToolInterface):
     """Scroll down the web page by half of the screen height"""
 
     name: str = "Scroll Down"
-    description: str = "Scroll down the web page by half of the screen height. No input is required."
+    description: str = (
+        "Scroll down the web page by half of the screen height. No input is required."
+    )
     example_script: str = "scroll_down"
 
 
@@ -12,7 +15,9 @@ class ScrollUp(ToolInterface):
     """Scroll up the web page by half of the screen height"""
 
     name: str = "Scroll Up"
-    description: str = "Scroll up the web page by half of the screen height. No input is required."
+    description: str = (
+        "Scroll up the web page by half of the screen height. No input is required."
+    )
     example_script: str = "scroll_up"
 
 
