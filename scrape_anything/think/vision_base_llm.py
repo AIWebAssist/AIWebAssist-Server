@@ -11,8 +11,7 @@ from ..util import extract_tool_and_args, Logger, file_to_bytes, DataBase
 class VisionBaseLLM(LLMInterface):
     prompt_manager: TaskExtractionVisionBasePrompt = TaskExtractionVisionBasePrompt()
 
-
-    def reduce_resolution(self,input_path, output_path, percentage):
+    def reduce_resolution(self, input_path, output_path, percentage):
         # Open the image
         image = Image.open(input_path)
 
@@ -22,7 +21,6 @@ class VisionBaseLLM(LLMInterface):
 
         # Resize the image
         resized_image = image.resize((new_width, new_height), Image.LANCZOS)
-
 
         # Save the resized image
         resized_image.save(output_path)
@@ -37,7 +35,9 @@ class VisionBaseLLM(LLMInterface):
             "Authorization": f"Bearer {self.api_key}",
         }
         reduced_screenshot = ".temp.png"
-        self.reduce_resolution(input_path=screenshot,output_path=reduced_screenshot,percentage=75)
+        self.reduce_resolution(
+            input_path=screenshot, output_path=reduced_screenshot, percentage=75
+        )
         base64_image = file_to_bytes(reduced_screenshot)
 
         payload = {

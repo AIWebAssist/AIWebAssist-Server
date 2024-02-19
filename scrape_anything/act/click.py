@@ -1,5 +1,6 @@
 from .tool import ToolInterface
 
+
 class ClickOnCoordinates(ToolInterface):
     """Click on a certain coordinate on the screen"""
 

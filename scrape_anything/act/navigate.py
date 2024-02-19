@@ -1,5 +1,6 @@
 from .tool import ToolInterface
 
+
 class GoBack(ToolInterface):
     """Go back to the previous page"""
 
