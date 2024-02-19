@@ -28,7 +28,7 @@ File defining logic:
 
 ## Local Setup
 
-1. Create local SSL certificates:
+1. Create local SSL certificates (if you are running on windows, run the commends from wsl)
 
     a. Allow the script by running: `chmod +x ssl/generate_certs.sh`
 
@@ -38,7 +38,11 @@ File defining logic:
 
 2. Add a local route from `scrape_anything` to `localhost`:
 
-    a. Open host files with sudo: `sudo nano /private/etc/hosts`
+    a. Open host files as admin. 
+
+      - Linux/Mac: `sudo nano /private/etc/hosts`
+      
+      - Windows `C:\Windows\System32\drivers\etc\host`
 
     b. Add the following entry: `127.0.0.1 scrape_anything`
 
@@ -54,13 +58,17 @@ File defining logic:
 
     a. On the terminal run `python3 -m venv env`
 
-    b. Activate the created environment source `env/bin/activate`
+    b. Activate the created environment source:
+    
+      - Linux/Mac: `env/bin/activate`
+
+      - Windows `env/Scripts/activate.bat`
 
     c. Install Python dependencies `pip3 install -r requirements-dev.txt` and `pip3 install -r requirements.txt`
 
-    d. Allow the script by running: `chmod +x setup.sh`
+    d. Allow the script by running: `chmod +x setup.sh` (for windows from wsl)
 
-    e. Run Setup: `./setup`
+    e. Run Setup: `./setup` (for windows from wsl)
 
 2. Entry Points: (If you are using [VScode IDE](https://code.visualstudio.com/) you can simply use the pre-configured in vscode)
 
@@ -75,6 +83,8 @@ File defining logic:
       ```python
       python simulate.py 
       ```
+
+    - don't forgut to install the python extensions.
 
 ## Running the backend locally independent:
 
